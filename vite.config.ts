@@ -3,10 +3,11 @@ import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
 import path from 'path'
 import dts from 'vite-plugin-dts'
+import libInjectCss from './libInjectCss'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), svgLoader(), dts()],
+  plugins: [vue(), svgLoader(), dts(), libInjectCss()],
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.ts'),
