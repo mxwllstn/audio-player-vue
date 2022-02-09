@@ -25,10 +25,10 @@
     "dayjs": "^1.10.7",
     "vue-tsc": "^0.29.8",
     "vite": "^2.7.2",
-    "vite-plugin-dts": "^0.9.9"
+    "vite-plugin-dts": "^0.9.9",
+    "ress": "^4.0.0"
   },
   "devDependencies": {
-    "ress": "^4.0.0",
     "vue": "^3.2.25",
     "@types/node": "^17.0.13",
     "@types/svgo": "^2.6.1",
