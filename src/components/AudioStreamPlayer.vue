@@ -42,7 +42,15 @@ export default defineComponent({
       return this.isPaused === undefined ? 'stopped' : !this.isPaused ? 'playing' : 'paused'
     }
   },
+  mounted() {
+    this.initAudioPlayer()
+  },
   methods: {
+    initAudioPlayer() {
+      this.audioPlayer.onended = () => {
+        this.isPaused = this.audioPlayer.paused
+      }
+    },
     initAudioContext() {
       this.audioContext = new AudioContext()
       this.source = this.audioContext.createMediaElementSource(this.audioPlayer as HTMLMediaElement)
