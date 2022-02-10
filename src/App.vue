@@ -1,5 +1,5 @@
 <template>
-  <AudioPlayer :src="audioFile" />
+  <AudioPlayer :src="audioStream" stream />
 </template>
 
 <script lang="ts">
@@ -10,7 +10,8 @@ export default defineComponent({
   components: { AudioPlayer },
   data() {
     return {
-      audioFile: '/audio/1.mp3'
+      // audioFile: '/audio/1.mp3'
+      audioStream: 'https://stream.maxstein.net/max',
     }
   }
 })

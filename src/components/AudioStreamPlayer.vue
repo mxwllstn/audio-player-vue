@@ -20,6 +20,7 @@ export default defineComponent({
       default: null
     }
   },
+  emits: ['stream-ended'],
   data() {
     return {
       audioContext: null as AudioContext | null,
@@ -48,6 +49,7 @@ export default defineComponent({
   methods: {
     initAudioPlayer() {
       this.audioPlayer.onended = () => {
+        this.$emit('stream-ended')
         this.isPaused = this.audioPlayer.paused
       }
     },
@@ -70,10 +72,8 @@ export default defineComponent({
     },
     start() {
       console.log('start')
-      if (this.audioPlayer.src.includes('reset')) {
-        this.audioPlayer.src = this.src
-        this.audioPlayer.load()
-      }
+      this.audioPlayer.src = this.src
+      this.audioPlayer.load()
       this.play()
     },
     stop() {

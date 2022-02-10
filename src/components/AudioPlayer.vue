@@ -1,9 +1,12 @@
 <template>
   <div class="audio-player-container">
     <audio ref="audioPlayer" crossorigin="anonymous" :src="src"></audio>
-    <div v-if="loading" class="loading">Loading...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
-    <AudioStreamPlayer v-else-if="isStream" :src="src" />
+    <div v-if="loading || error" class="audio-player">
+      <Antenna />
+      <div v-if="loading" class="loading">Loading...</div>
+      <div v-else-if="error" class="error">{{ error }}</div>
+    </div>
+    <AudioStreamPlayer v-else-if="isStream" :src="src" @stream-ended="error='Stream ended'" />
     <AudioFilePlayer v-else :init-duration="duration" :audio-context="audioContext" />
   </div>
 </template>
@@ -13,9 +16,10 @@ import { defineComponent } from 'vue'
 import axios from 'axios'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
+import Antenna from '../assets/Antenna.svg?component'
 
 export default defineComponent({
-  components: { AudioFilePlayer, AudioStreamPlayer },
+  components: { Antenna, AudioFilePlayer, AudioStreamPlayer },
   props: {
     src: {
       type: String,
@@ -59,8 +63,7 @@ export default defineComponent({
               this.loading = false
             } else {
               this.loading = false
-              console.error('stream not found')
-              this.error = 'Error'
+              this.error = 'Stream not found'
             }
           }
 
@@ -95,7 +98,7 @@ export default defineComponent({
   .error {
     font-size: 1rem;
     font-family: SpaceGrotesk, Arial, sans-serif;
-    padding: 1rem;
+    margin: 0px 1rem;
   }
   .audio-player {
     font-family: SpaceGrotesk, Arial, sans-serif;
