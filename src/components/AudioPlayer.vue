@@ -26,7 +26,7 @@ export default defineComponent({
       default: null
     },
     stream: {
-      type: String,
+      type: Boolean,
       default: null
     }
   },
