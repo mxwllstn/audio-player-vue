@@ -2,7 +2,7 @@
   <div class="audio-player-container">
     <audio ref="audioPlayer" crossorigin="anonymous" :src="src"></audio>
     <div v-if="loading || error" class="audio-player">
-      <Antenna />
+      <Antenna class="button" />
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
     </div>
