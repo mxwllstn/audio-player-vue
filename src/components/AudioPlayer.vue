@@ -57,6 +57,10 @@ export default defineComponent({
           request.open('GET', this.src)
           request.responseType = 'arraybuffer'
           request.send()
+          request.onerror = () => {
+            this.loading = false
+            this.error = 'Stream not found'
+          }
           request.onprogress = () => {
             if (request.status === 200) {
               request.abort()

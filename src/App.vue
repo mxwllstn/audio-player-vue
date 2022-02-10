@@ -12,7 +12,7 @@ export default defineComponent({
   data() {
     return {
       audioFile: '/audio/1.mp3',
-      audioStream: 'https://stream.maxstein.net/max',
+      audioStream: 'http://localhost:8000/test',
     }
   }
 })
