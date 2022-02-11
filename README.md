@@ -1,5 +1,17 @@
-# audio-player (Vue component)
+# audio-player-vue
+[![Version](https://img.shields.io/npm/v/audio-player-vue.svg)](https://www.npmjs.org/package/audio-player-vue)
+
 Vue component for embedding audio files and streams
+
+## Install
+Use `yarn` to install the module
+```bash
+yarn add audio-player-vue
+```
+Or use `npm` to install the module
+```bash
+npm install audio-player-vue
+```
 
 ## Usage
 
