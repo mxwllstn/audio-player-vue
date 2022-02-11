@@ -1,6 +1,6 @@
 {
   "name": "audio-player-vue",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "description": "Vue component for embedding audio files and streams",
   "license": "MIT",
@@ -22,6 +22,10 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue",
     "postinstall": "yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mxwllstn/audio-player-vue"
   },
   "dependencies": {
     "axios": "^0.25.0",
