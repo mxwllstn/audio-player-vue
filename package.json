@@ -1,6 +1,6 @@
 {
   "name": "audio-player-vue",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Max Stein <maxwell.stein@gmail.com> (https://maxstein.net",
   "description": "Vue component for embedding audio files and streams",
   "license": "MIT",
@@ -30,10 +30,7 @@
   "dependencies": {
     "axios": "^0.25.0",
     "dayjs": "^1.10.7",
-    "ress": "^4.0.0",
-    "vite": "^2.7.2",
-    "vite-plugin-dts": "^0.9.9",
-    "vue-tsc": "^0.29.8"
+    "ress": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.13",
@@ -49,8 +46,11 @@
     "prettier": "^2.5.1",
     "sass": "^1.49.0",
     "typescript": "^4.5.5",
+    "vite": "^2.7.2",
+    "vite-plugin-dts": "^0.9.9",
     "vite-svg-loader": "^3.1.2",
     "vue": "^3.2.25",
-    "vue-eslint-parser": "^8.2.0"
+    "vue-eslint-parser": "^8.2.0",
+    "vue-tsc": "^0.29.8"
   }
 }
