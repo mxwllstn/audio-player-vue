@@ -25,8 +25,13 @@ export default defineComponent({
     initDuration: {
       type: Number,
       default: 0
+    },
+    audioStatus: {
+      type: String,
+      default: undefined
     }
   },
+  emits: ['toggle-audio'],
   data() {
     return {
       gainNode: null as GainNode | null,
@@ -50,6 +55,16 @@ export default defineComponent({
     },
     status(): string {
       return this.isPaused === undefined ? 'stopped' : !this.isPaused ? 'playing' : 'paused'
+    }
+  },
+  watch: {
+    audioStatus() {
+      if (this.audioStatus !== this.status) {
+        this.toggleAudio()
+      }
+    },
+    status() {
+      this.$emit('toggle-audio', this.status)
     }
   },
   mounted() {
