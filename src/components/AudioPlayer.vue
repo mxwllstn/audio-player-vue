@@ -6,8 +6,20 @@
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
     </div>
-    <AudioStreamPlayer v-else-if="isStream" :src="src" @stream-ended="error='Stream ended'" />
-    <AudioFilePlayer v-else :init-duration="duration" :audio-context="audioContext" />
+    <AudioStreamPlayer
+      v-else-if="isStream"
+      :src="src"
+      :audio-status="audioStatus"
+      @toggle-audio="toggleAudio"
+      @stream-ended="error = 'Stream ended'"
+    />
+    <AudioFilePlayer
+      v-else
+      :init-duration="duration"
+      :audio-context="audioContext"
+      :audio-status="audioStatus"
+      @toggle-audio="toggleAudio"
+    />
   </div>
 </template>
 
@@ -28,8 +40,17 @@ export default defineComponent({
     stream: {
       type: Boolean,
       default: null
+    },
+    audioStatus: {
+      type: String,
+      default: undefined
+    },
+    idx: {
+      type: Number,
+      default: null
     }
   },
+  emits: ['toggle-audio'],
   data() {
     return {
       loading: true,
@@ -47,6 +68,9 @@ export default defineComponent({
     this.initAudioContext()
   },
   methods: {
+    toggleAudio(status: any) {
+      this.$emit('toggle-audio', status, this.idx)
+    },
     async initAudioContext() {
       if (!this.src) {
         throw new Error('src is not set')
@@ -70,7 +94,6 @@ export default defineComponent({
               this.error = 'Stream not found'
             }
           }
-
         } else {
           if (!this.src) {
             throw new Error('src is not set')
