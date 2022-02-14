@@ -3,13 +3,19 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioPlayer :src="audio.src" :idx="idx" :stream="audio.stream" :audio-status="audio.status" @toggle-audio="setStatus" />
+        <AudioPlayer
+          :src="audio.src"
+          :idx="idx"
+          :stream="audio.stream"
+          :audio-status="audio.status"
+          @audio-status-updated="updateAudioStatus"
+        />
         <button @click="toggleAudio(idx)">{{ audio.status }}</button>
       </div>
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioPlayer :src="audioFile" :audio-status="status" @toggle-audio="setStatus" />
+      <AudioPlayer :src="audioFile" :audio-status="status" @audio-status-updated="updateAudioStatus" />
       <button @click="toggleAudio()">{{ status }}</button>
     </div>
   </div>
@@ -40,7 +46,7 @@ export default defineComponent({
     }
   },
   methods: {
-    setStatus(status: string, idx: number) {
+    updateAudioStatus(status: string, idx: number) {
       console.log(status)
       if (idx !== null) {
         this.audios[idx].status = status

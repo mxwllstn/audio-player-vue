@@ -24,7 +24,7 @@ export default defineComponent({
       default: undefined
     }
   },
-  emits: ['stream-ended', 'toggle-audio'],
+  emits: ['stream-ended', 'audio-status-updated'],
   data() {
     return {
       audioContext: null as AudioContext | null,
@@ -54,7 +54,7 @@ export default defineComponent({
       }
     },
     status() {
-      this.$emit('toggle-audio', this.status)
+      this.$emit('audio-status-updated', this.status)
     }
   },
   mounted() {
@@ -81,9 +81,7 @@ export default defineComponent({
       } else {
         this.start()
       }
-      // this.isPaused = this.source?.mediaElement.paused
       this.isPaused = this.audioPlayer.paused
-      this.$emit('toggle-audio', this.status)
     },
     start() {
       console.log('start')

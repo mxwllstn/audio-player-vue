@@ -31,7 +31,7 @@ export default defineComponent({
       default: undefined
     }
   },
-  emits: ['toggle-audio'],
+  emits: ['audio-status-updated'],
   data() {
     return {
       gainNode: null as GainNode | null,
@@ -64,7 +64,7 @@ export default defineComponent({
       }
     },
     status() {
-      this.$emit('toggle-audio', this.status)
+      this.$emit('audio-status-updated', this.status)
     }
   },
   mounted() {

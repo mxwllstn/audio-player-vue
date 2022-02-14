@@ -10,7 +10,7 @@
       v-else-if="isStream"
       :src="src"
       :audio-status="audioStatus"
-      @toggle-audio="toggleAudio"
+      @audio-status-updated="updateAudioStatus"
       @stream-ended="error = 'Stream ended'"
     />
     <AudioFilePlayer
@@ -18,7 +18,7 @@
       :init-duration="duration"
       :audio-context="audioContext"
       :audio-status="audioStatus"
-      @toggle-audio="toggleAudio"
+      @audio-status-updated="updateAudioStatus"
     />
   </div>
 </template>
@@ -50,7 +50,7 @@ export default defineComponent({
       default: null
     }
   },
-  emits: ['toggle-audio'],
+  emits: ['audio-status-updated'],
   data() {
     return {
       loading: true,
@@ -68,8 +68,8 @@ export default defineComponent({
     this.initAudioContext()
   },
   methods: {
-    toggleAudio(status: any) {
-      this.$emit('toggle-audio', status, this.idx)
+    updateAudioStatus(status: any) {
+      this.$emit('audio-status-updated', status, this.idx)
     },
     async initAudioContext() {
       if (!this.src) {
