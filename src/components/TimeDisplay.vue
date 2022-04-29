@@ -30,8 +30,11 @@ export default {
 
 <style lang="scss" scoped>
 .time {
+  position: relative;
+  top: -1px;
   font-family: SpaceMono, Arial, sans-serif;
   font-size: 1rem;
   flex-shrink: 0;
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 </style>
