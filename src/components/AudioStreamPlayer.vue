@@ -2,6 +2,14 @@
   <div v-if="src" class="audio-player">
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
+    <VolumeButton
+      :init-volume="initVolume"
+      :show-volume="showVolume"
+      :muted="muted"
+      @mouseover="showVolume = true"
+      @mouseleave="showVolume = false"
+      @set-gain="setGain"
+    />
     <div class="title">Stream</div>
   </div>
 </template>
@@ -11,9 +19,10 @@
 import { defineComponent } from 'vue'
 import PlayButton from '../assets/play.svg?component'
 import PauseButton from '../assets/pause.svg?component'
+import VolumeButton from './VolumeButton.vue'
 
 export default defineComponent({
-  components: { PlayButton, PauseButton },
+  components: { PlayButton, PauseButton, VolumeButton },
   props: {
     src: {
       type: String,
@@ -27,10 +36,14 @@ export default defineComponent({
   emits: ['stream-ended', 'audio-status-updated'],
   data() {
     return {
+      gainNode: null as GainNode | null,
       audioContext: null as AudioContext | null,
       source: null as MediaElementAudioSourceNode | null,
       isPaused: undefined as boolean | undefined,
-      isStream: null as boolean | null
+      isStream: null as boolean | null,
+      showVolume: false,
+      initVolume: 100,
+      volume: 100
     }
   },
   computed: {
@@ -45,6 +58,9 @@ export default defineComponent({
     },
     status(): string {
       return this.isPaused === undefined ? 'stopped' : !this.isPaused ? 'playing' : 'paused'
+    },
+    muted(): boolean {
+      return Number(this.volume) === 1
     }
   },
   watch: {
@@ -70,7 +86,10 @@ export default defineComponent({
     initAudioContext() {
       this.audioContext = new AudioContext()
       this.source = this.audioContext.createMediaElementSource(this.audioPlayer as HTMLMediaElement)
-      this.source.connect(this.audioContext.destination)
+      this.gainNode = this.audioContext.createGain()
+      this.source.connect(this.gainNode)
+      this.gainNode.connect(this.audioContext.destination)
+      this.setGain(this.volume)
     },
     async toggleAudio() {
       if (!this.audioContext) {
@@ -102,13 +121,16 @@ export default defineComponent({
     pause() {
       console.log('pause')
       this.audioPlayer.pause()
+    },
+    setGain(volume: number) {
+      this.volume = volume
+      if (this.gainNode) {
+        this.gainNode.gain.value = this.volume / 100
+      }
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.title {
-  margin: 0px 1rem;
-}
 </style>

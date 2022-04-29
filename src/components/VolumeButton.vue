@@ -56,7 +56,7 @@ export default {
 .volume {
   display: block;
   position: relative;
-  width: 50px;
+  margin: 0px 1rem;
   .slider-container {
     background: #efefef;
     width: 30px;
