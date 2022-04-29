@@ -3,6 +3,14 @@
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
     <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" />
+    <VolumeButton
+      :init-volume="initVolume"
+      :show-volume="showVolume"
+      :muted="muted"
+      @mouseover="showVolume = true"
+      @mouseleave="showVolume = false"
+      @set-gain="setGain"
+    />
     <TimeDisplay :current-time="currentTime" :duration="duration" />
   </div>
 </template>
@@ -11,12 +19,13 @@
 /// <reference types="vite-svg-loader" />
 import { defineComponent } from 'vue'
 import PlayBar from './PlayBar.vue'
+import VolumeButton from './VolumeButton.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import PlayButton from '../assets/play.svg?component'
 import PauseButton from '../assets/pause.svg?component'
 
 export default defineComponent({
-  components: { PlayButton, PauseButton, PlayBar, TimeDisplay },
+  components: { PlayButton, PauseButton, PlayBar, VolumeButton, TimeDisplay },
   props: {
     audioContext: {
       type: AudioContext,
@@ -40,7 +49,10 @@ export default defineComponent({
       duration: 0,
       currentTime: 0,
       timeUpdate: null as null | number,
-      isStream: null as boolean | null
+      isStream: null as boolean | null,
+      showVolume: false,
+      initVolume: 100,
+      volume: 100
     }
   },
   computed: {
@@ -55,6 +67,9 @@ export default defineComponent({
     },
     status(): string {
       return this.isPaused === undefined ? 'stopped' : !this.isPaused ? 'playing' : 'paused'
+    },
+    muted(): boolean {
+      return Number(this.volume) === 1
     }
   },
   watch: {
@@ -85,13 +100,11 @@ export default defineComponent({
     resumeAudioContext() {
       this.audioContext.resume()
       this.source = this.audioContext.createMediaElementSource(this.audioPlayer as HTMLMediaElement)
-      this.source.connect(this.audioContext.destination)
+      this.gainNode = this.audioContext.createGain()
+      this.source.connect(this.gainNode)
+      this.gainNode.connect(this.audioContext.destination)
+      this.setGain(this.volume)
     },
-    // initDuration() {
-    //   const { duration } = this.audioPlayer
-    //   this.isStream = !isFinite(duration)
-    //   this.duration = isFinite(duration) ? duration : null
-    // },
     toggleAudio() {
       console.log(this.audioContext.state)
       if (this.audioContext.state === 'suspended') {
@@ -102,20 +115,23 @@ export default defineComponent({
       } else {
         this.play()
       }
-      // this.isPaused = this.source?.mediaElement.paused
       this.isPaused = this.audioPlayer.paused
     },
     play() {
       console.log('play')
       this.audioPlayer.play()
       this.startTimeUpdate()
-      // this.source?.mediaElement.play()
+    },
+    setGain(volume: number) {
+      this.volume = volume
+      if (this.gainNode) {
+        this.gainNode.gain.value = this.volume / 100
+      }
     },
     pause() {
       console.log('pause')
       this.audioPlayer.pause()
       this.stopTimeUpdate()
-      // this.source?.mediaElement.pause()
     },
     seek(event: any): void {
       const seek = (event.x - event.target.offsetLeft) / event.target.offsetWidth

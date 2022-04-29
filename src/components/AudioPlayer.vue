@@ -119,8 +119,6 @@ export default defineComponent({
 <style lang="scss">
 @import '../assets/scss/main.scss';
 .audio-player-container {
-  font-size: 16px;
-  font-family: AuthenticSans, Arial, sans-serif;
   .loading,
   .error {
     font-size: 1rem;
@@ -135,7 +133,6 @@ export default defineComponent({
     padding: 1rem;
     .button {
       height: 1rem;
-      width: 1rem;
       flex-shrink: 0;
     }
   }

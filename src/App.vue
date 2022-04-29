@@ -36,7 +36,7 @@ export default defineComponent({
           status: 'stopped'
         },
         {
-          src: 'https://stream.maxstein.net/EAR2THEWINDOW',
+          src: 'https://stream.maxstein.net/maxstream',
           stream: true,
           status: 'stopped'
         }
