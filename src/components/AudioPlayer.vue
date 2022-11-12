@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue-demi'
 import axios from 'axios'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
