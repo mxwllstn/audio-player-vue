@@ -9,11 +9,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi'
 import MuteButton from '../assets/mute.svg?component'
 import VolumeButton from '../assets/volume.svg?component'
 
-export default defineComponent({
+export default {
   components: { MuteButton, VolumeButton },
   props: {
     initVolume: {
@@ -50,7 +49,7 @@ export default defineComponent({
       this.$emit('setGain', this.volume)
     }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>
