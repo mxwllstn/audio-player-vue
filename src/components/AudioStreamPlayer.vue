@@ -16,7 +16,7 @@
 
 <script lang="ts">
 /// <reference types="vite-svg-loader" />
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue-demi'
 import PlayButton from '../assets/play.svg?component'
 import PauseButton from '../assets/pause.svg?component'
 import VolumeButton from './VolumeButton.vue'
