@@ -18,7 +18,6 @@ import PlayButton from '../assets/play.svg?component'
 import PauseButton from '../assets/pause.svg?component'
 
 import { defineProps, defineEmits, ref, onMounted, watch, computed } from 'vue'
-import AudioPlayer from '.'
 
 const props = defineProps({
   audioContext: {

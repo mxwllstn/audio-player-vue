@@ -51,7 +51,7 @@ onMounted(async () => {
   await initAudioContext()
 })
 
-const updateAudioStatus = (status: any) => {
+const updateAudioStatus = (status: any): void => {
   emit('audio-status-updated', status, props.idx)
 }
 
