@@ -8,49 +8,43 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import MuteButton from '../assets/mute.svg?component'
 import VolumeButton from '../assets/volume.svg?component'
 
-export default defineComponent({
-  components: { MuteButton, VolumeButton },
-  props: {
-    initVolume: {
-      type: Number,
-      default: 100
-    },
-    showVolume: {
-      type: Boolean,
-      default: false
-    },
-    muted: {
-      type: Boolean,
-      default: false
-    }
+import { defineProps, defineEmits, ref } from 'vue'
+
+const props = defineProps({
+  initVolume: {
+    type: Number,
+    default: 100
   },
-  emits: ['setGain', 'toggleMute'],
-  data() {
-    return {
-      volume: this.initVolume,
-      prevVolume: 100
-    }
+  showVolume: {
+    type: Boolean,
+    default: false
   },
-  methods: {
-    setGain() {
-      this.$emit('setGain', this.volume)
-    },
-    toggleMute() {
-      if (this.muted) {
-        this.volume = this.prevVolume
-      } else {
-        this.prevVolume = this.volume
-        this.volume = 1
-      }
-      this.$emit('setGain', this.volume)
-    }
+  muted: {
+    type: Boolean,
+    default: false
   }
 })
+const emit = defineEmits(['setGain', 'toggleMute'])
+
+const volume = ref(props.initVolume)
+const prevVolume = ref(100)
+
+const setGain = () => {
+  emit('setGain', volume.value)
+}
+const toggleMute = () => {
+  if (props.muted) {
+    volume.value = prevVolume.value
+  } else {
+    prevVolume.value = volume.value
+    volume.value = 1
+  }
+  emit('setGain', volume.value)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -58,6 +52,7 @@ export default defineComponent({
   display: block;
   position: relative;
   margin: 0px 1rem;
+
   .slider-container {
     background: #efefef;
     width: 30px;
@@ -66,32 +61,46 @@ export default defineComponent({
     top: -80px;
     left: -5px;
     border: 5px solid white;
+
     .slider {
       position: relative;
       top: 22px;
       left: -15px;
-      -webkit-appearance: none; /* Override default CSS styles */
+      -webkit-appearance: none;
+      /* Override default CSS styles */
       appearance: none;
-      width: 50px; /* Full-width */
-      height: 3px; /* Specified height */
-      background: #000; /* Grey background */
-      outline: none; /* Remove outline */
-      opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-      -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+      width: 50px;
+      /* Full-width */
+      height: 3px;
+      /* Specified height */
+      background: #000;
+      /* Grey background */
+      outline: none;
+      /* Remove outline */
+      opacity: 0.7;
+      /* Set transparency (for mouse-over effects on hover) */
+      -webkit-transition: 0.2s;
+      /* 0.2 seconds transition on hover */
       transition: opacity 0.2s;
       transform: rotate(270deg);
 
       &::-webkit-slider-thumb {
-        -webkit-appearance: none; /* Override default look */
+        -webkit-appearance: none;
+        /* Override default look */
         appearance: none;
         border-radius: 10px;
-        width: 10px; /* Set a specific slider handle width */
-        height: 10px; /* Slider handle height */
-        background: #000; /* Green background */
-        cursor: pointer; /* Cursor on hover */
+        width: 10px;
+        /* Set a specific slider handle width */
+        height: 10px;
+        /* Slider handle height */
+        background: #000;
+        /* Green background */
+        cursor: pointer;
+        /* Cursor on hover */
       }
     }
   }
+
   .button {
     position: relative;
     top: 2px;

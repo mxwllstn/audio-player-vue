@@ -6,55 +6,48 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-  props: {
-    currentTime: {
-      type: Number,
-      default: null
-    },
-    duration: {
-      type: Number,
-      default: null
-    }
+<script lang="ts" setup>
+import { defineProps, defineEmits, ref, computed } from 'vue'
+const props = defineProps({
+  currentTime: {
+    type: Number,
+    default: null
   },
-  emits: ['seek', 'set-seek-time'],
-  data() {
-    return {
-      dragPosition: null as number | null,
-      dragInit: false
-    }
-  },
-  computed: {
-    playbar(): any {
-      return this.$refs.playbar as any
-    },
-    markerPosition(): number {
-      const position =  this.dragInit && this.dragPosition ? this.dragPosition : (this.currentTime / this.duration) * 100
-      return position > 100 ? 100 : position
-    }
-  },
-  methods: {
-    initDrag(event: any) {
-      this.dragPosition = (event.x - this.playbar.offsetLeft) / this.playbar.offsetWidth * 100
-      this.$emit('set-seek-time', this.dragPosition / 100)
-      this.dragInit = true
-    },
-    drag(event: any) {
-      if (this.dragInit) {
-        this.dragPosition = (event.x - this.playbar.offsetLeft) / this.playbar.offsetWidth * 100
-        this.$emit('set-seek-time', this.dragPosition / 100)
-      }
-    },
-    handleMouseup(event: any) {
-      this.dragPosition = null
-      this.dragInit = false
-      const seekPosition = (event.x - this.playbar.offsetLeft) / this.playbar.offsetWidth
-      this.$emit('seek', seekPosition)
-    }
+  duration: {
+    type: Number,
+    default: null
   }
 })
+
+const emit = defineEmits(['seek', 'set-seek-time'])
+
+const dragPosition = ref(null as number | null)
+const dragInit = ref(false)
+const playbar = ref()
+
+const markerPosition = computed((): number => {
+  const position = dragInit.value && dragPosition.value ? dragPosition.value : (props.currentTime / props.duration) * 100
+  return position > 100 ? 100 : position
+})
+
+const initDrag = (event: { x: number }): void => {
+  dragPosition.value = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth * 100
+  emit('set-seek-time', dragPosition.value / 100)
+  dragInit.value = true
+}
+const drag = (event: { x: number }): void => {
+  if (dragInit.value) {
+    dragPosition.value = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth * 100
+    emit('set-seek-time', dragPosition.value / 100)
+  }
+}
+const handleMouseup = (event: { x: number }): void => {
+  dragPosition.value = null
+  dragInit.value = false
+  const seekPosition = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth
+  emit('seek', seekPosition)
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -62,9 +55,11 @@ export default defineComponent({
   width: 100%;
   margin: 0px 1rem;
   padding: 1rem 0px;
+
   .playbar {
     background: #808080;
     height: 0.25rem;
+
     .marker {
       background: #000;
       height: 1.5rem;

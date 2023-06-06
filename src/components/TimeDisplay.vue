@@ -5,27 +5,27 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import dayjs, { Duration, DurationUnitType } from '../lib/dayjs'
+import { defineProps } from 'vue'
 
-export default {
-  props: {
-    currentTime: {
-      type: Number,
-      default: null
-    },
-    duration: {
-      type: Number,
-      default: null
-    }
+defineProps({
+  currentTime: {
+    type: Number,
+    default: null
   },
-  methods: {
-    formatTime(time: number, durationType = 'seconds' as DurationUnitType, format = 'mm:ss') {
-      const parsedTime = dayjs.duration(time, durationType) as Duration
-      return parsedTime.format(format)
-    }
+  duration: {
+    type: Number,
+    default: null
   }
+})
+
+const formatTime = (time: number, durationType = 'seconds' as DurationUnitType, format = 'mm:ss') => {
+  const parsedTime = dayjs.duration(time, durationType) as Duration
+  return parsedTime.format(format)
 }
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -35,6 +35,7 @@ export default {
   font-family: SpaceMono, Arial, sans-serif;
   font-size: 1rem;
   flex-shrink: 0;
-  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 </style>
