@@ -2,7 +2,7 @@
   <div v-if="audioContext" class="audio-player">
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
-    <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" />
+    <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
     <VolumeButton
       :init-volume="initVolume"
       :show-volume="showVolume"
@@ -11,7 +11,7 @@
       @mouseleave="showVolume = false"
       @set-gain="setGain"
     />
-    <TimeDisplay :current-time="currentTime" :duration="duration" />
+    <TimeDisplay :current-time="displayTime" :duration="duration" />
   </div>
 </template>
 
@@ -38,6 +38,14 @@ export default defineComponent({
     audioStatus: {
       type: String,
       default: undefined
+    },
+    playOnSeek: {
+      type: Boolean,
+      default: false
+    },
+    resetOnEnd: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['audio-status-updated'],
@@ -48,6 +56,7 @@ export default defineComponent({
       isPaused: undefined as boolean | undefined,
       duration: 0,
       currentTime: 0,
+      seekTime: null as null | number,
       timeUpdate: null as null | number,
       isStream: null as boolean | null,
       showVolume: false,
@@ -70,6 +79,9 @@ export default defineComponent({
     },
     muted(): boolean {
       return Number(this.volume) === 1
+    },
+    displayTime(): number {
+      return this.seekTime || this.currentTime
     }
   },
   watch: {
@@ -87,15 +99,17 @@ export default defineComponent({
   },
   methods: {
     initAudioPlayer() {
-      // this.initDuration()
       this.duration = this.initDuration
       this.audioPlayer.onended = () => {
         if (this.timeUpdate) {
           clearInterval(this.timeUpdate)
         }
         this.isPaused = this.audioPlayer.paused
-        this.currentTime = 0
+        this.resetOnEnd && this.resetCurrentTime()
       }
+    },
+    resetCurrentTime() {
+      this.currentTime = 0
     },
     resumeAudioContext() {
       this.audioContext.resume()
@@ -106,7 +120,6 @@ export default defineComponent({
       this.setGain(this.volume)
     },
     toggleAudio() {
-      console.log(this.audioContext.state)
       if (this.audioContext.state === 'suspended') {
         this.resumeAudioContext()
       }
@@ -118,7 +131,6 @@ export default defineComponent({
       this.isPaused = this.audioPlayer.paused
     },
     play() {
-      console.log('play')
       this.audioPlayer.play()
       this.startTimeUpdate()
     },
@@ -129,21 +141,22 @@ export default defineComponent({
       }
     },
     pause() {
-      console.log('pause')
       this.audioPlayer.pause()
       this.stopTimeUpdate()
     },
-    seek(event: any): void {
-      const seek = (event.x - event.target.offsetLeft) / event.target.offsetWidth
-      this.audioPlayer.currentTime = this.duration * seek
-      if (!this.isPlaying) {
-        this.toggleAudio()
-      }
+    setSeekTime(seekPosition: number): void {
+      this.seekTime = this.duration * seekPosition
+    },
+    seek(seekPosition: number): void {
+      this.seekTime = null
+      this.audioPlayer.currentTime = this.duration * seekPosition
+      this.currentTime = this.audioPlayer.currentTime
+      !this.isPlaying && this.playOnSeek && this.toggleAudio()
     },
     startTimeUpdate() {
       this.timeUpdate = window.setInterval(() => {
         this.currentTime = this.audioPlayer.currentTime
-      }, 50)
+      }, 25)
     },
     stopTimeUpdate() {
       if (this.timeUpdate) {

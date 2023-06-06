@@ -1,13 +1,14 @@
 <template>
-  <div v-if="duration" class="playbar-container" @mousedown="$emit('seek', $event)">
-    <div class="playbar">
-      <div v-if="currentTime" class="marker" :style="{ left: (currentTime / duration) * 100 + '%' }"></div>
+  <div v-if="duration" class="playbar-container" @mousedown="initDrag" @mousemove="drag" @mouseup="handleMouseup">
+    <div ref="playbar" class="playbar">
+      <div class="marker" :style="{ left: markerPosition + '%' }"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from 'vue'
+export default defineComponent({
   props: {
     currentTime: {
       type: Number,
@@ -18,8 +19,42 @@ export default {
       default: null
     }
   },
-  emits: ['seek']
-}
+  emits: ['seek', 'set-seek-time'],
+  data() {
+    return {
+      dragPosition: null as number | null,
+      dragInit: false
+    }
+  },
+  computed: {
+    playbar(): any {
+      return this.$refs.playbar as any
+    },
+    markerPosition(): number {
+      const position =  this.dragInit && this.dragPosition ? this.dragPosition : (this.currentTime / this.duration) * 100
+      return position > 100 ? 100 : position
+    }
+  },
+  methods: {
+    initDrag(event: any) {
+      this.dragPosition = (event.x - this.playbar.offsetLeft) / this.playbar.offsetWidth * 100
+      this.$emit('set-seek-time', this.dragPosition / 100)
+      this.dragInit = true
+    },
+    drag(event: any) {
+      if (this.dragInit) {
+        this.dragPosition = (event.x - this.playbar.offsetLeft) / this.playbar.offsetWidth * 100
+        this.$emit('set-seek-time', this.dragPosition / 100)
+      }
+    },
+    handleMouseup(event: any) {
+      this.dragPosition = null
+      this.dragInit = false
+      const seekPosition = (event.x - this.playbar.offsetLeft) / this.playbar.offsetWidth
+      this.$emit('seek', seekPosition)
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
