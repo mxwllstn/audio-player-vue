@@ -3,84 +3,76 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioPlayer
-          :src="audio.src"
-          :idx="idx"
-          :stream="audio.stream"
-          :audio-status="audio.status"
-          @audio-status-updated="updateAudioStatus"
-        />
+        <AudioPlayer :src="audio.src" :idx="idx" :stream="audio.stream" :audio-status="audio.status"
+          @audio-status-updated="updateAudioStatus" />
         <button @click="toggleAudio(idx)">{{ audio.status }}</button>
       </div>
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioPlayer :src="audioFile" :audio-status="status" @audio-status-updated="updateAudioStatus" />
-      <button @click="toggleAudio()">{{ status }}</button>
+      <AudioPlayer :src="audioFile" :audio-status="audioStatus" @audio-status-updated="updateAudioStatus" />
+      <button @click="toggleAudio()">{{ audioStatus }}</button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import AudioPlayer from './components'
+import { ref, defineEmits } from 'vue'
 
-export default defineComponent({
-  components: { AudioPlayer },
-  emits: ['toggleAudio'],
-  data() {
-    return {
-      audios: [
-        {
-          src: '/audio/1.mp3',
-          status: 'stopped'
-        },
-        {
-          src: 'https://stream.maxstein.net/maxstream',
-          stream: true,
-          status: 'stopped'
-        }
-      ],
-      audioFile: '/audio/1.mp3',
-      status: 'stopped'
-    }
+defineEmits(['toggleAudio'])
+
+const audios = ref([
+  {
+    src: '/audio/1.mp3',
+    status: 'stopped'
   },
-  methods: {
-    updateAudioStatus(status: string, idx: number) {
-      console.log(status)
-      if (idx !== null) {
-        this.audios[idx].status = status
-      } else {
-        this.status = status
-      }
-    },
-    toggleAudio(idx?: number) {
-      if (idx !== undefined) {
-        if (this.audios[idx].status === 'play') {
-          this.audios[idx].status = 'pause'
-        } else {
-          this.audios[idx].status = 'play'
-        }
-      } else {
-        if (this.status === 'play') {
-          this.status = 'pause'
-        } else {
-          this.status = 'play'
-        }
-      }
+  {
+    src: 'https://stream.sonicscape.land/audiohijack2',
+    stream: true,
+    status: 'stopped'
+  }
+])
+const audioFile = ref('/audio/1.mp3')
+const audioStatus = ref('stopped')
+
+const updateAudioStatus = (status: string, idx: number) => {
+  console.log(status)
+  if (idx !== null) {
+    audios.value[idx].status = status
+  } else {
+    audioStatus.value = status
+  }
+}
+const toggleAudio = (idx?: number) => {
+  if (idx !== undefined) {
+    if (audios.value[idx].status === 'play') {
+      audios.value[idx].status = 'pause'
+    } else {
+      audios.value[idx].status = 'play'
+    }
+  } else {
+    if (audioStatus.value === 'play') {
+      audioStatus.value = 'pause'
+    } else {
+      audioStatus.value = 'play'
     }
   }
-})
+}
+
 </script>
 <style lang="scss" scoped>
 .content {
   font-family: AuthenticSans, Arial, sans-serif;
+
   .container {
     padding: 1rem 0;
+
     h4 {
       padding: 1rem 1rem 0;
     }
   }
+
   button {
     border: 1px solid #000;
     border-radius: 0.25rem;

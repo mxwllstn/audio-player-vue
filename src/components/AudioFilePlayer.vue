@@ -3,168 +3,149 @@
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
     <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-    <VolumeButton
-      :init-volume="initVolume"
-      :show-volume="showVolume"
-      :muted="muted"
-      @mouseover="showVolume = true"
-      @mouseleave="showVolume = false"
-      @set-gain="setGain"
-    />
+    <VolumeButton :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
+      @mouseleave="showVolume = false" @set-gain="setGain" />
     <TimeDisplay :current-time="displayTime" :duration="duration" />
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /// <reference types="vite-svg-loader" />
-import { defineComponent } from 'vue'
 import PlayBar from './PlayBar.vue'
 import VolumeButton from './VolumeButton.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import PlayButton from '../assets/play.svg?component'
 import PauseButton from '../assets/pause.svg?component'
 
-export default defineComponent({
-  components: { PlayButton, PauseButton, PlayBar, VolumeButton, TimeDisplay },
-  props: {
-    audioContext: {
-      type: AudioContext,
-      default: null
-    },
-    initDuration: {
-      type: Number,
-      default: 0
-    },
-    audioStatus: {
-      type: String,
-      default: undefined
-    },
-    playOnSeek: {
-      type: Boolean,
-      default: false
-    },
-    resetOnEnd: {
-      type: Boolean,
-      default: false
-    }
+import { defineProps, defineEmits, ref, onMounted, watch, computed } from 'vue'
+
+const props = defineProps({
+  audioContext: {
+    type: AudioContext,
+    default: null
   },
-  emits: ['audio-status-updated'],
-  data() {
-    return {
-      gainNode: null as GainNode | null,
-      source: null as MediaElementAudioSourceNode | null,
-      isPaused: undefined as boolean | undefined,
-      duration: 0,
-      currentTime: 0,
-      seekTime: null as null | number,
-      timeUpdate: null as null | number,
-      isStream: null as boolean | null,
-      showVolume: false,
-      initVolume: 100,
-      volume: 100
-    }
+  initDuration: {
+    type: Number,
+    default: 0
   },
-  computed: {
-    audioPlayer(): any {
-      return this.$parent?.$refs.audioPlayer
-    },
-    isPlaying(): boolean {
-      return this.status === 'playing'
-    },
-    isStopped(): boolean {
-      return this.status === 'stopped'
-    },
-    status(): string {
-      return this.isPaused === undefined ? 'stopped' : !this.isPaused ? 'playing' : 'paused'
-    },
-    muted(): boolean {
-      return Number(this.volume) === 1
-    },
-    displayTime(): number {
-      return this.seekTime || this.currentTime
-    }
+  audioStatus: {
+    type: String,
+    default: null
   },
-  watch: {
-    audioStatus() {
-      if (this.audioStatus !== this.status) {
-        this.toggleAudio()
-      }
-    },
-    status() {
-      this.$emit('audio-status-updated', this.status)
-    }
+  playOnSeek: {
+    type: Boolean,
+    default: false
   },
-  mounted() {
-    this.initAudioPlayer()
+  resetOnEnd: {
+    type: Boolean,
+    default: false
   },
-  methods: {
-    initAudioPlayer() {
-      this.duration = this.initDuration
-      this.audioPlayer.onended = () => {
-        if (this.timeUpdate) {
-          clearInterval(this.timeUpdate)
-        }
-        this.isPaused = this.audioPlayer.paused
-        this.resetOnEnd && this.resetCurrentTime()
-      }
-    },
-    resetCurrentTime() {
-      this.currentTime = 0
-    },
-    resumeAudioContext() {
-      this.audioContext.resume()
-      this.source = this.audioContext.createMediaElementSource(this.audioPlayer as HTMLMediaElement)
-      this.gainNode = this.audioContext.createGain()
-      this.source.connect(this.gainNode)
-      this.gainNode.connect(this.audioContext.destination)
-      this.setGain(this.volume)
-    },
-    toggleAudio() {
-      if (this.audioContext.state === 'suspended') {
-        this.resumeAudioContext()
-      }
-      if (this.isPlaying) {
-        this.pause()
-      } else {
-        this.play()
-      }
-      this.isPaused = this.audioPlayer.paused
-    },
-    play() {
-      this.audioPlayer.play()
-      this.startTimeUpdate()
-    },
-    setGain(volume: number) {
-      this.volume = volume
-      if (this.gainNode) {
-        this.gainNode.gain.value = this.volume / 100
-      }
-    },
-    pause() {
-      this.audioPlayer.pause()
-      this.stopTimeUpdate()
-    },
-    setSeekTime(seekPosition: number): void {
-      this.seekTime = this.duration * seekPosition
-    },
-    seek(seekPosition: number): void {
-      this.seekTime = null
-      this.audioPlayer.currentTime = this.duration * seekPosition
-      this.currentTime = this.audioPlayer.currentTime
-      !this.isPlaying && this.playOnSeek && this.toggleAudio()
-    },
-    startTimeUpdate() {
-      this.timeUpdate = window.setInterval(() => {
-        this.currentTime = this.audioPlayer.currentTime
-      }, 25)
-    },
-    stopTimeUpdate() {
-      if (this.timeUpdate) {
-        clearInterval(this.timeUpdate)
-      }
-    }
+  src: {
+    type: String,
+    default: null
   }
 })
+
+const emit = defineEmits(['audio-status-updated'])
+
+const audioPlayer = ref(new Audio(props.src))
+
+const gainNode = ref(null as GainNode | null)
+const source = ref(null as MediaElementAudioSourceNode | null)
+const isPaused = ref(undefined as boolean | undefined)
+const duration = ref(0)
+const currentTime = ref(0)
+const seekTime = ref(null as null | number)
+const timeUpdate = ref(null as null | number)
+const showVolume = ref(false)
+const initVolume = ref(100)
+const volume = ref(100)
+
+const isPlaying = computed((): boolean => status.value === 'playing')
+const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
+const muted = computed((): boolean => Number(volume.value) === 1)
+const displayTime = computed((): number => seekTime.value || currentTime.value)
+
+watch(() => props.audioStatus, () => {
+  if (props.audioStatus !== status.value) {
+    toggleAudio()
+  }
+})
+
+watch(status, () => {
+  emit('audio-status-updated', status.value)
+})
+
+onMounted(() => {
+  initAudioPlayer()
+})
+
+const initAudioPlayer = () => {
+  duration.value = props.initDuration
+  audioPlayer.value.crossOrigin = 'anonymous'
+  audioPlayer.value.onended = () => {
+    if (timeUpdate.value) {
+      clearInterval(timeUpdate.value)
+    }
+    isPaused.value = audioPlayer.value.paused
+    props.resetOnEnd && resetCurrentTime()
+  }
+}
+const resetCurrentTime = () => {
+  currentTime.value = 0
+}
+const resumeAudioContext = () => {
+  props.audioContext.resume()
+  source.value = props.audioContext.createMediaElementSource(audioPlayer.value as HTMLMediaElement)
+  gainNode.value = props.audioContext.createGain()
+  source.value.connect(gainNode.value)
+  gainNode.value.connect(props.audioContext.destination)
+  setGain(volume.value)
+}
+const toggleAudio = () => {
+  if (props.audioContext.state === 'suspended') {
+    resumeAudioContext()
+  }
+  if (isPlaying.value) {
+    pause()
+  } else {
+    play()
+  }
+  isPaused.value = audioPlayer.value.paused
+}
+const play = () => {
+  audioPlayer.value.play()
+  startTimeUpdate()
+}
+const setGain = (vol: number) => {
+  volume.value = vol
+  if (gainNode.value) {
+    gainNode.value.gain.value = volume.value / 100
+  }
+}
+const pause = () => {
+  audioPlayer.value.pause()
+  stopTimeUpdate()
+}
+const setSeekTime = (seekPosition: number) => {
+  seekTime.value = duration.value * seekPosition
+}
+const seek = (seekPosition: number) => {
+  seekTime.value = null
+  audioPlayer.value.currentTime = duration.value * seekPosition
+  currentTime.value = audioPlayer.value.currentTime
+  !isPlaying.value && props.playOnSeek && toggleAudio()
+}
+const startTimeUpdate = () => {
+  timeUpdate.value = window.setInterval(() => {
+    currentTime.value = audioPlayer.value.currentTime
+  }, 25)
+}
+const stopTimeUpdate = () => {
+  if (timeUpdate.value) {
+    clearInterval(timeUpdate.value)
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>
