@@ -1,5 +1,5 @@
 <template>
-  <div v-if="duration" class="playbar-container" @mousedown="initDrag" @mousemove="drag" @mouseup="handleMouseup">
+  <div v-if="duration" class="playbar-container" @mousedown="initDrag">
     <div ref="playbar" class="playbar">
       <div class="elapsed" :style="{ width: markerPosition + '%' }"></div>
       <div class="marker" :style="{ left: markerPosition + '%' }"></div>
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref, computed } from 'vue'
+import { defineProps, defineEmits, ref, computed, onMounted } from 'vue'
 const props = defineProps({
   currentTime: {
     type: Number,
@@ -32,23 +32,33 @@ const markerPosition = computed((): number => {
 })
 
 const initDrag = (event: { x: number }): void => {
-  dragPosition.value = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth * 100
+  dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
   emit('set-seek-time', dragPosition.value / 100)
   dragInit.value = true
 }
 const drag = (event: { x: number }): void => {
   if (dragInit.value) {
-    dragPosition.value = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth * 100
+    dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
     emit('set-seek-time', dragPosition.value / 100)
   }
 }
 const handleMouseup = (event: { x: number }): void => {
-  dragPosition.value = null
-  dragInit.value = false
-  const seekPosition = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth
-  emit('seek', seekPosition)
+  if (dragInit.value) {
+    dragPosition.value = null
+    dragInit.value = false
+    const seekPosition = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth
+    emit('seek', seekPosition)
+  }
 }
 
+onMounted(() => {
+  window.addEventListener('mousemove', event => {
+    drag(event)
+  })
+  window.addEventListener('mouseup', event => {
+    handleMouseup(event)
+  })
+})
 </script>
 
 <style lang="scss" scoped>
@@ -61,6 +71,7 @@ const handleMouseup = (event: { x: number }): void => {
     background: #808080;
     height: 0.25rem;
     position: relative;
+
     .elapsed {
       content: '';
       background: #000;
