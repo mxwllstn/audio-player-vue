@@ -5,7 +5,7 @@
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
     </div>
-    <AudioStreamPlayer v-else-if="isStream" :src="src" :audio-status="audioStatus"
+    <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :init-duration="duration" :audio-context="audioContext" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" />
@@ -35,10 +35,14 @@ const props = defineProps({
   idx: {
     type: Number,
     default: null
+  },
+  volumeBar: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['audio-status-updated'])
+const emit = defineEmits(['set-loading', 'audio-status-updated'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -50,6 +54,10 @@ const isStream = computed(() => props.stream !== null)
 onMounted(async () => {
   await initAudioContext()
 })
+
+const setLoading = (state: boolean) => {
+  loading.value = state
+}
 
 const updateAudioStatus = (status: any): void => {
   emit('audio-status-updated', status, props.idx)
@@ -66,17 +74,16 @@ const initAudioContext = async () => {
       request.responseType = 'arraybuffer'
       request.send()
       request.onerror = () => {
-        loading.value = false
+        setLoading(false)
         error.value = 'Stream not found'
       }
       request.onprogress = () => {
         if (request.status === 200) {
           request.abort()
-          loading.value = false
         } else {
-          loading.value = false
           error.value = 'Stream not found'
         }
+        setLoading(false)
       }
     } else {
       if (!props.src) {
@@ -88,10 +95,10 @@ const initAudioContext = async () => {
       audioContext.value = new AudioContext()
       const decoded = await audioContext.value.decodeAudioData(data)
       duration.value = decoded.duration
-      loading.value = false
+      setLoading(false)
     }
   } catch (error: any) {
-    loading.value = false
+    setLoading(false)
     console.log(error)
     error.value = error.message
   }

@@ -3,7 +3,7 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioPlayer :src="audio.src" :idx="idx" :stream="audio.stream" :audio-status="audio.status"
+        <AudioPlayer :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar" :audio-status="audio.status"
           @audio-status-updated="updateAudioStatus" />
         <button @click="toggleAudio(idx)">{{ audio.status }}</button>
       </div>
@@ -28,9 +28,19 @@ const audios = ref([
     status: 'stopped'
   },
   {
+    src: '/audio/1.mp3',
+    status: 'stopped'
+  },
+  {
     src: 'https://stream.sonicscape.land/audiohijack2',
     stream: true,
     status: 'stopped'
+  },
+  {
+    src: 'https://stream.sonicscape.land/audiohijack2',
+    stream: true,
+    status: 'stopped',
+    volumeBar: true
   }
 ])
 const audioFile = ref('/audio/1.mp3')

@@ -28,13 +28,13 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['setGain', 'toggleMute'])
+const emit = defineEmits(['set-gain', 'toggle-mute'])
 
 const volume = ref(props.initVolume)
 const prevVolume = ref(100)
 
 const setGain = () => {
-  emit('setGain', volume.value)
+  emit('set-gain', volume.value)
 }
 const toggleMute = () => {
   if (props.muted) {
@@ -43,7 +43,7 @@ const toggleMute = () => {
     prevVolume.value = volume.value
     volume.value = 1
   }
-  emit('setGain', volume.value)
+  emit('set-gain', volume.value)
 }
 </script>
 

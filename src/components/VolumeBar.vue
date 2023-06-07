@@ -1,6 +1,6 @@
 <template>
-  <div v-if="duration" class="playbar-container" @mousedown="initDrag">
-    <div ref="playbar" class="playbar">
+  <div class="volumebar-container" @mousedown="initDrag">
+    <div ref="volumebar" class="volumebar">
       <div class="elapsed" :style="{ width: markerPosition + '%' }"></div>
       <div class="marker" :style="{ left: markerPosition + '%' }"></div>
     </div>
@@ -10,44 +10,47 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref, computed, onMounted } from 'vue'
 const props = defineProps({
-  currentTime: {
-    type: Number,
-    default: null
-  },
-  duration: {
+  volume: {
     type: Number,
     default: null
   }
 })
 
-const emit = defineEmits(['seek', 'set-seek-time'])
+const emit = defineEmits(['set-gain'])
 
 const dragPosition = ref(null as number | null)
+const gainPosition = ref(null as number | null)
 const dragInit = ref(false)
-const playbar = ref()
+const volumebar = ref()
 
 const markerPosition = computed((): number => {
-  const position = dragInit.value && dragPosition.value ? dragPosition.value : (props.currentTime / props.duration) * 100
+  const position = dragInit.value && dragPosition.value ? dragPosition.value : props.volume
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
+const setGainPosition = (position: number) => {
+  if (gainPosition.value !== position) {
+    gainPosition.value = position
+    emit('set-gain', gainPosition.value)
+  }
+}
 const initDrag = (event: { x: number }): void => {
-  dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
-  emit('set-seek-time', dragPosition.value / 100)
+  const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
+  dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
+  setGainPosition(dragPosition.value)
   dragInit.value = true
 }
 const drag = (event: { x: number }): void => {
   if (dragInit.value) {
-    dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
-    emit('set-seek-time', dragPosition.value / 100)
+    const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
+    dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
+    setGainPosition(dragPosition.value)
   }
 }
-const handleMouseup = (event: { x: number }): void => {
+const handleMouseup = (): void => {
   if (dragInit.value) {
     dragPosition.value = null
     dragInit.value = false
-    const seekPosition = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth
-    emit('seek', seekPosition)
   }
 }
 
@@ -55,19 +58,19 @@ onMounted(() => {
   window.addEventListener('mousemove', event => {
     drag(event)
   })
-  window.addEventListener('mouseup', event => {
-    handleMouseup(event)
+  window.addEventListener('mouseup', () => {
+    handleMouseup()
   })
 })
 </script>
 
 <style lang="scss" scoped>
-.playbar-container {
+.volumebar-container {
   width: 100%;
   margin: 0px 1rem;
   padding: 1rem 0px;
 
-  .playbar {
+  .volumebar {
     background: #808080;
     height: 0.25rem;
     position: relative;

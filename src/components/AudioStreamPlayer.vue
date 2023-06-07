@@ -2,7 +2,8 @@
   <div v-if="src" class="audio-player">
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
-    <VolumeButton :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
+    <VolumeBar v-if="volumeBar" :init-volume="initVolume" :volume="volume" @set-gain="setGain" />
+    <VolumeButton v-else :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <div class="title">Stream</div>
   </div>
@@ -10,6 +11,7 @@
 
 <script lang="ts" setup>
 /// <reference types="vite-svg-loader" />
+import VolumeBar from './VolumeBar.vue'
 import PlayButton from '../assets/play.svg?component'
 import PauseButton from '../assets/pause.svg?component'
 import VolumeButton from './VolumeButton.vue'
@@ -23,6 +25,10 @@ const props = defineProps({
   audioStatus: {
     type: String,
     default: undefined
+  },
+  volumeBar: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -102,6 +108,8 @@ const setGain = (vol: number) => {
   if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
   }
+  console.log({ vol })
+  console.log(gainNode.value && gainNode.value.gain.value)
 }
 
 </script>
