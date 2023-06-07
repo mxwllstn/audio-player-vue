@@ -108,8 +108,6 @@ const setGain = (vol: number) => {
   if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
   }
-  console.log({ vol })
-  console.log(gainNode.value && gainNode.value.gain.value)
 }
 
 </script>
