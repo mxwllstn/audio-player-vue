@@ -1,6 +1,7 @@
 <template>
   <div v-if="duration" class="playbar-container" @mousedown="initDrag" @mousemove="drag" @mouseup="handleMouseup">
     <div ref="playbar" class="playbar">
+      <div class="elapsed" :style="{ width: markerPosition + '%' }"></div>
       <div class="marker" :style="{ left: markerPosition + '%' }"></div>
     </div>
   </div>
@@ -59,6 +60,15 @@ const handleMouseup = (event: { x: number }): void => {
   .playbar {
     background: #808080;
     height: 0.25rem;
+    position: relative;
+    .elapsed {
+      content: '';
+      background: #000;
+      height: 100%;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
 
     .marker {
       background: #000;
