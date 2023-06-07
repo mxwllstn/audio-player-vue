@@ -2,7 +2,7 @@
   <div v-if="src" class="audio-player">
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
-    <VolumeBar v-if="volumeBar" :init-volume="initVolume" :volume="volume" @set-gain="setGain" />
+    <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
     <VolumeButton v-else :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <div class="title">Stream</div>
@@ -59,8 +59,10 @@ watch(status, () => {
 
 onMounted(() => {
   initAudioPlayer()
+  props.volumeBar && setVolume(50)
 })
 
+const setVolume = (vol: number) => volume.value = vol
 const initAudioPlayer = () => {
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {
@@ -104,7 +106,7 @@ const pause = () => {
   audioPlayer.value.pause()
 }
 const setGain = (vol: number) => {
-  volume.value = vol
+  setVolume(vol)
   if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
   }
