@@ -7,7 +7,6 @@
 
 <script lang="ts" setup>
 import dayjs, { Duration, DurationUnitType } from '../lib/dayjs'
-import { defineProps } from 'vue'
 
 defineProps({
   currentTime: {

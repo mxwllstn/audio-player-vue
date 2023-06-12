@@ -16,8 +16,8 @@
 import axios from 'axios'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
-import Antenna from '../assets/Antenna.svg?component'
-import { ref, computed, onMounted, defineEmits, defineProps } from 'vue'
+import AntennaIcon from './AntennaIcon.vue'
+import { ref, computed, onMounted } from 'vue'
 
 const props = defineProps({
   src: {
@@ -129,6 +129,7 @@ const initAudioContext = async () => {
 
     .button {
       height: 1rem;
+      width: auto;
       flex-shrink: 0;
     }
   }

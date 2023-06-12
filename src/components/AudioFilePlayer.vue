@@ -3,21 +3,20 @@
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
     <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-    <VolumeButton :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
+    <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <TimeDisplay :current-time="displayTime" :duration="duration" />
   </div>
 </template>
 
 <script lang="ts" setup>
-/// <reference types="vite-svg-loader" />
 import PlayBar from './PlayBar.vue'
-import VolumeButton from './VolumeButton.vue'
+import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
-import PlayButton from '../assets/play.svg?component'
-import PauseButton from '../assets/pause.svg?component'
+import PlayButton from './PlayButton.vue'
+import PauseButton from './PauseButton.vue'
 
-import { defineProps, defineEmits, ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 
 const props = defineProps({
   audioContext: {

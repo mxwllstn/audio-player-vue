@@ -3,20 +3,19 @@
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
     <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
-    <VolumeButton v-else :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
+    <VolumeToggle v-else :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <div class="title">Stream</div>
   </div>
 </template>
 
 <script lang="ts" setup>
-/// <reference types="vite-svg-loader" />
 import VolumeBar from './VolumeBar.vue'
-import PlayButton from '../assets/play.svg?component'
-import PauseButton from '../assets/pause.svg?component'
-import VolumeButton from './VolumeButton.vue'
+import PlayButton from './PlayButton.vue'
+import PauseButton from './PauseButton.vue'
+import VolumeToggle from './VolumeToggle.vue'
 
-import { defineProps, defineEmits, ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 const props = defineProps({
   src: {
     type: String,

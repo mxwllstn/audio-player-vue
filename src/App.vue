@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import AudioPlayer from './components'
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 
 defineEmits(['toggleAudio'])
 

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 const props = defineProps({
   currentTime: {
     type: Number,
