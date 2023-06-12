@@ -8,7 +8,7 @@
     "dist"
   ],
   "main": "./dist/audio-player.umd.js",
-  "types": "./dist/src/components/index.d.ts",
+  "types": "./dist/components/index.d.ts",
   "module": "./dist/audio-player.es.js",
   "exports": {
     ".": {
