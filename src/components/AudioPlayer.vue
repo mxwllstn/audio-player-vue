@@ -42,7 +42,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['set-loading', 'audio-status-updated'])
+const emit = defineEmits(['loaded', 'audio-status-updated'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -57,6 +57,7 @@ onMounted(async () => {
 
 const setLoading = (state: boolean) => {
   loading.value = state
+  state === true && emit('loaded')
 }
 
 const updateAudioStatus = (status: any): void => {
