@@ -57,7 +57,7 @@ onMounted(async () => {
 
 const setLoading = (state: boolean) => {
   loading.value = state
-  state === true && emit('loaded')
+  state === false && emit('loaded')
 }
 
 const updateAudioStatus = (status: any): void => {
