@@ -1,7 +1,7 @@
 <template>
   <div class="audio-player-container">
     <div v-if="loading || error" class="audio-player">
-      <Antenna class="button" />
+      <AntennaIcon class="button" />
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
     </div>
