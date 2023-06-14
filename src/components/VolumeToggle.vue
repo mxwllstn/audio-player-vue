@@ -41,7 +41,7 @@ const toggleMute = () => {
     volume.value = prevVolume.value
   } else {
     prevVolume.value = volume.value
-    volume.value = 1
+    volume.value = 0
   }
   emit('set-gain', volume.value)
 }

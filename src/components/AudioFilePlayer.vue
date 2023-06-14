@@ -62,7 +62,7 @@ const volume = ref(100)
 
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
-const muted = computed((): boolean => Number(volume.value) === 1)
+const muted = computed((): boolean => Number(volume.value) === 0)
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
 watch(() => props.audioStatus, () => {
