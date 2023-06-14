@@ -61,7 +61,7 @@ onMounted(() => {
   props.volumeBar && setVolume(50)
 })
 
-const setVolume = (vol: number) => volume.value = vol
+const setVolume = (vol: number) => volume.value = Number(vol)
 const initAudioPlayer = () => {
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {

@@ -56,16 +56,16 @@ const updateAudioStatus = (status: string, idx: number) => {
 }
 const toggleAudio = (idx?: number) => {
   if (idx !== undefined) {
-    if (audios.value[idx].status === 'play') {
-      audios.value[idx].status = 'pause'
+    if (audios.value[idx].status === 'playing') {
+      audios.value[idx].status = 'paused'
     } else {
-      audios.value[idx].status = 'play'
+      audios.value[idx].status = 'playing'
     }
   } else {
-    if (audioStatus.value === 'play') {
-      audioStatus.value = 'pause'
+    if (audioStatus.value === 'playing') {
+      audioStatus.value = 'paused'
     } else {
-      audioStatus.value = 'play'
+      audioStatus.value = 'playing'
     }
   }
 }
