@@ -65,6 +65,11 @@ const status = computed((): string => isPaused.value === undefined ? 'stopped' :
 const muted = computed((): boolean => Number(volume.value) === 0)
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
+watch(() => props.src, () => {
+  audioPlayer.value.src = props.src
+  audioPlayer.value.play()
+})
+
 watch(() => props.audioStatus, () => {
   if (props.audioStatus !== status.value) {
     toggleAudio()

@@ -12,6 +12,8 @@
       <h4>single audio example</h4>
       <AudioPlayer :src="audioFile" :audio-status="audioStatus" @audio-status-updated="updateAudioStatus" />
       <button @click="toggleAudio()">{{ audioStatus }}</button>
+      <button @click="changeTrack(0)">track 1</button>
+      <button @click="changeTrack(1)">track 2</button>
     </div>
   </div>
 </template>
@@ -20,15 +22,13 @@
 import AudioPlayer from './components'
 import { ref } from 'vue'
 
-defineEmits(['toggleAudio'])
-
 const audios = ref([
   {
     src: '/audio/1.mp3',
     status: 'stopped'
   },
   {
-    src: '/audio/1.mp3',
+    src: '/audio/2.mp3',
     status: 'stopped'
   },
   {
@@ -54,6 +54,11 @@ const updateAudioStatus = (status: string, idx: number) => {
     audioStatus.value = status
   }
 }
+const changeTrack = (idx: number) => {
+  console.log(audios.value[idx].src)
+  audioFile.value = audios.value[idx].src
+}
+
 const toggleAudio = (idx?: number) => {
   if (idx !== undefined) {
     if (audios.value[idx].status === 'playing') {
