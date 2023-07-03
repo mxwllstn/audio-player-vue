@@ -7,7 +7,7 @@
     </div>
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
-    <AudioFilePlayer v-else :src="src" :init-duration="duration" :audio-context="audioContext" :audio-status="audioStatus"
+    <AudioFilePlayer v-else :src="src" :init-duration="duration" :audio-context="audioContext" :audio-status="audioStatus" :play-on-mount="playOnMount"
       @audio-status-updated="updateAudioStatus" />
   </div>
 </template>
@@ -39,6 +39,10 @@ const props = defineProps({
   volumeBar: {
     type: Boolean,
     default: false
+  },
+  playOnMount: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -59,7 +63,6 @@ watch(() => props.src, async () => {
   audioContext.value && audioContext.value.state === 'closed' && audioContext.value.close()
   await initAudioContext()
 })
-
 
 const setLoading = (state: boolean) => {
   loading.value = state

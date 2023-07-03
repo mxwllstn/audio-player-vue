@@ -10,7 +10,7 @@
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioPlayer :src="audioFile" :audio-status="audioStatus" @audio-status-updated="updateAudioStatus" />
+      <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount" @audio-status-updated="updateAudioStatus" />
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
       <button @click="changeTrack(1)">track 2</button>
@@ -43,9 +43,9 @@ const audios = ref([
     volumeBar: true
   }
 ])
-// const audioFile = ref('/audio/1.mp3')
 const audioFile = ref()
 const audioStatus = ref('stopped')
+const playOnMount = ref(false)
 
 const updateAudioStatus = (status: string, idx: number) => {
   console.log(status)
@@ -57,6 +57,7 @@ const updateAudioStatus = (status: string, idx: number) => {
 }
 const changeTrack = (idx: number) => {
   console.log(audios.value[idx].src)
+  playOnMount.value = true
   audioFile.value = audios.value[idx].src
 }
 

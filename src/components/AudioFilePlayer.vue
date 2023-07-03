@@ -43,6 +43,10 @@ const props = defineProps({
   src: {
     type: String,
     default: null
+  },
+  playOnMount: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -66,15 +70,15 @@ const status = computed((): string => isPaused.value === undefined ? 'stopped' :
 const muted = computed((): boolean => Number(volume.value) === 0)
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
-watch(() => props.src, () => {
-  pause()
-  audioPlayer.value.src = props.src
-  if (isPlaying.value) {
-    play()
-  } else {
-    resetCurrentTime()
-  }
-})
+// watch(() => props.src, () => {
+//   pause()
+//   audioPlayer.value.src = props.src
+//   if (isPlaying.value) {
+//     play()
+//   } else {
+//     resetCurrentTime()
+//   }
+// })
 
 watch(() => props.audioStatus, () => {
   if (props.audioStatus !== status.value) {
@@ -88,6 +92,9 @@ watch(status, () => {
 
 onMounted(() => {
   initAudioPlayer()
+  props.playOnMount && toggleAudio()
+  // console.log(props.audioStatus)
+  // console.log(status.value)
 })
 
 const initAudioPlayer = () => {
