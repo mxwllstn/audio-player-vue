@@ -31,7 +31,15 @@ module.exports = {
     'vue/first-attribute-linebreak': 'off',
     'vue/html-self-closing': 'off',
     'vue/multiline-html-element-content-newline': 'off',
-    'vue/singleline-html-element-content-newline': 'off'
+    'vue/singleline-html-element-content-newline': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        ignoreRestSiblings: true,
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_'
+      }
+    ]
   },
   ignorePatterns: ['dist', 'node_modules']
 }
