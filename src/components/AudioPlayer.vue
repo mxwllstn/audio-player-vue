@@ -17,7 +17,7 @@ import axios from 'axios'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
 import AntennaIcon from './AntennaIcon.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 const props = defineProps({
   src: {
@@ -55,6 +55,11 @@ onMounted(async () => {
   await initAudioContext()
 })
 
+watch(() => props.src, async () => {
+  !audioContext.value && await initAudioContext()
+})
+
+
 const setLoading = (state: boolean) => {
   loading.value = state
   state === false && emit('loaded')
@@ -65,10 +70,14 @@ const updateAudioStatus = (status: any): void => {
 }
 
 const initAudioContext = async () => {
-  if (!props.src) {
-    throw new Error('src is not set')
-  }
   try {
+    if (!props.src) {
+      error.value = 'Select an audio source'
+      setLoading(false)
+      return
+    }
+    error.value = null
+    setLoading(true)
     if (isStream.value) {
       const request = new XMLHttpRequest()
       request.open('GET', props.src)
@@ -87,9 +96,6 @@ const initAudioContext = async () => {
         setLoading(false)
       }
     } else {
-      if (!props.src) {
-        throw new Error('src is not set')
-      }
       const { data } = await axios.get(props.src, {
         responseType: 'arraybuffer'
       })
@@ -100,8 +106,7 @@ const initAudioContext = async () => {
     }
   } catch (error: any) {
     setLoading(false)
-    console.log(error)
-    error.value = error.message
+    console.error(error.message)
   }
 }
 

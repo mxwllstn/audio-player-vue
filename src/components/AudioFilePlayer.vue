@@ -47,7 +47,7 @@ const props = defineProps({
 
 const emit = defineEmits(['audio-status-updated'])
 
-const audioPlayer = ref(new Audio(props.src))
+const audioPlayer = ref()
 
 const gainNode = ref(null as GainNode | null)
 const source = ref(null as MediaElementAudioSourceNode | null)
@@ -66,9 +66,12 @@ const muted = computed((): boolean => Number(volume.value) === 0)
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
 watch(() => props.src, () => {
+  pause()
   audioPlayer.value.src = props.src
   if (isPlaying.value) {
     play()
+  } else {
+    resetCurrentTime()
   }
 })
 
@@ -87,6 +90,7 @@ onMounted(() => {
 })
 
 const initAudioPlayer = () => {
+  audioPlayer.value = new Audio(props.src)
   duration.value = props.initDuration
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {

@@ -43,7 +43,8 @@ const audios = ref([
     volumeBar: true
   }
 ])
-const audioFile = ref('/audio/1.mp3')
+// const audioFile = ref('/audio/1.mp3')
+const audioFile = ref()
 const audioStatus = ref('stopped')
 
 const updateAudioStatus = (status: string, idx: number) => {
