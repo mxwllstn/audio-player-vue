@@ -56,7 +56,8 @@ onMounted(async () => {
 })
 
 watch(() => props.src, async () => {
-  !audioContext.value ? await initAudioContext() : audioContext.value && audioContext.value.state !== 'closed' && audioContext.value.close()
+  audioContext.value && audioContext.value.state === 'closed' && audioContext.value.close()
+  await initAudioContext()
 })
 
 

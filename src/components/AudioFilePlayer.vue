@@ -6,6 +6,7 @@
     <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <TimeDisplay :current-time="displayTime" :duration="duration" />
+    <audio ref="audioPlayer" :src="src"></audio>
   </div>
 </template>
 
@@ -90,7 +91,6 @@ onMounted(() => {
 })
 
 const initAudioPlayer = () => {
-  audioPlayer.value = new Audio(props.src)
   duration.value = props.initDuration
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {
@@ -148,7 +148,7 @@ const seek = (seekPosition: number) => {
 }
 const startTimeUpdate = () => {
   timeUpdate.value = window.setInterval(() => {
-    currentTime.value = audioPlayer.value.currentTime
+    currentTime.value = audioPlayer.value?.currentTime
   }, 25)
 }
 const stopTimeUpdate = () => {
