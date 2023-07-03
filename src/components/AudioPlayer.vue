@@ -127,13 +127,13 @@ const initAudioContext = async () => {
     font-size: 1rem;
     font-family: SpaceGrotesk, Arial, sans-serif;
     margin: 0px 1rem;
+    line-height: 2.25rem;
   }
 
   .audio-player {
     font-family: SpaceGrotesk, Arial, sans-serif;
     display: flex;
     align-items: center;
-    // justify-content: center;
     padding: 1rem;
 
     .button {
