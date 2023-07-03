@@ -67,7 +67,9 @@ const displayTime = computed((): number => seekTime.value || currentTime.value)
 
 watch(() => props.src, () => {
   audioPlayer.value.src = props.src
-  audioPlayer.value.play()
+  if (isPlaying.value) {
+    play()
+  }
 })
 
 watch(() => props.audioStatus, () => {
