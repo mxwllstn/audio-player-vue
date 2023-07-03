@@ -14,6 +14,7 @@
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
       <button @click="changeTrack(1)">track 2</button>
+      <button @click="changeTrack(2)">track 3</button>
     </div>
   </div>
 </template>
@@ -32,6 +33,10 @@ const audios = ref([
     status: 'stopped'
   },
   {
+    src: '/audio/3.mp3',
+    status: 'stopped'
+  },
+  {
     src: 'https://stream.sonicscape.land/audiohijack2',
     stream: true,
     status: 'stopped'
@@ -43,12 +48,12 @@ const audios = ref([
     volumeBar: true
   }
 ])
-const audioFile = ref()
+// const audioFile = ref()
+const audioFile = ref(audios.value[0].src)
 const audioStatus = ref('stopped')
 const playOnMount = ref(false)
 
 const updateAudioStatus = (status: string, idx: number) => {
-  console.log(status)
   if (idx !== null) {
     audios.value[idx].status = status
   } else {

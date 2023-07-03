@@ -7,17 +7,16 @@
     </div>
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
-    <AudioFilePlayer v-else :src="src" :init-duration="duration" :audio-context="audioContext" :audio-status="audioStatus" :play-on-mount="playOnMount"
+    <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
       @audio-status-updated="updateAudioStatus" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
 import AntennaIcon from './AntennaIcon.vue'
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 const props = defineProps({
   src: {
@@ -50,17 +49,10 @@ const emit = defineEmits(['loaded', 'audio-status-updated'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
-const duration = ref(0)
-const audioContext = ref(undefined as AudioContext | undefined)
 
 const isStream = computed(() => props.stream !== null)
 
 onMounted(async () => {
-  await initAudioContext()
-})
-
-watch(() => props.src, async () => {
-  audioContext.value && audioContext.value.state === 'closed' && audioContext.value.close()
   await initAudioContext()
 })
 
@@ -100,12 +92,6 @@ const initAudioContext = async () => {
         setLoading(false)
       }
     } else {
-      const { data } = await axios.get(props.src, {
-        responseType: 'arraybuffer'
-      })
-      audioContext.value = new AudioContext()
-      const decoded = await audioContext.value.decodeAudioData(data)
-      duration.value = decoded.duration
       setLoading(false)
     }
   } catch (error: any) {
