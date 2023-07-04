@@ -2,7 +2,7 @@
   <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
     <div ref="playbar" class="playbar">
       <div v-if="duration" class="elapsed" :style="{ width: markerPosition + '%' }"></div>
-      <div v-if="duration" class="marker" :style="{ left: markerPosition + '%' }"></div>
+      <div class="marker" :style="{ left: markerPosition + '%' }"></div>
     </div>
   </div>
 </template>
@@ -69,7 +69,7 @@ onMounted(() => {
   margin: 0px 1rem;
   padding: 1rem 0px;
   cursor: pointer;
-  
+
   .playbar {
     background: #808080;
     height: 0.25rem;
