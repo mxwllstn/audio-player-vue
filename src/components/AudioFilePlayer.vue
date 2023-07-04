@@ -79,6 +79,9 @@ watch(status, () => {
 
 onMounted(async () => {
   initAudioPlayer()
+  audioPlayer.value.onloadstart = () => {
+    duration.value = 0
+  }
   audioPlayer.value.onloadedmetadata = () => {
     resetCurrentTime()
     duration.value = audioPlayer.value.duration
