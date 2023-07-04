@@ -169,4 +169,8 @@ const stopTimeUpdate = () => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.button {
+  cursor: pointer;
+}
+</style>

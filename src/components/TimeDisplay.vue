@@ -1,14 +1,16 @@
 <template>
   <div class="time">
     <span>{{ formatTime(currentTime) }}</span>
-    <span v-if="duration"> / {{ formatTime(duration) }} </span>
+    <span v-if="showDuration"> / {{ formatTime(duration) }} </span>
   </div>
 </template>
 
 <script lang="ts" setup>
 import dayjs, { Duration, DurationUnitType } from '../lib/dayjs'
 
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   currentTime: {
     type: Number,
     default: null
@@ -18,6 +20,8 @@ defineProps({
     default: null
   }
 })
+
+const showDuration = computed(() => !isNaN(props.duration) && typeof props.duration !== 'undefined')
 
 const formatTime = (time: number, durationType = 'seconds' as DurationUnitType, format = 'mm:ss') => {
   const parsedTime = dayjs.duration(time, durationType) as Duration

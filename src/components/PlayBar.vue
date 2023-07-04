@@ -1,8 +1,8 @@
 <template>
-  <div v-if="duration" class="playbar-container" @mousedown="initDrag">
+  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
     <div ref="playbar" class="playbar">
-      <div class="elapsed" :style="{ width: markerPosition + '%' }"></div>
-      <div class="marker" :style="{ left: markerPosition + '%' }"></div>
+      <div v-if="duration" class="elapsed" :style="{ width: markerPosition + '%' }"></div>
+      <div v-if="duration" class="marker" :style="{ left: markerPosition + '%' }"></div>
     </div>
   </div>
 </template>
@@ -25,6 +25,8 @@ const emit = defineEmits(['seek', 'set-seek-time'])
 const dragPosition = ref(null as number | null)
 const dragInit = ref(false)
 const playbar = ref()
+
+const showDuration = computed(() => !isNaN(props.duration) && typeof props.duration !== 'undefined')
 
 const markerPosition = computed((): number => {
   const position = dragInit.value && dragPosition.value ? dragPosition.value : (props.currentTime / props.duration) * 100
@@ -66,7 +68,8 @@ onMounted(() => {
   width: 100%;
   margin: 0px 1rem;
   padding: 1rem 0px;
-
+  cursor: pointer;
+  
   .playbar {
     background: #808080;
     height: 0.25rem;
