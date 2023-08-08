@@ -94,9 +94,18 @@ const initAudioContext = async () => {
   const { data } = await axios.get(props.src, {
     responseType: 'arraybuffer'
   })
+
   audioContext.value = new AudioContext()
+  /* set duration */
   const decoded = await audioContext.value.decodeAudioData(data)
   duration.value = decoded.duration
+
+  /* gainNode setup */
+  source.value = audioContext.value.createMediaElementSource(audioPlayer.value as HTMLMediaElement)
+  gainNode.value = audioContext.value.createGain()
+  source.value.connect(gainNode.value)
+  gainNode.value.connect(audioContext.value.destination)
+
 }
 const initAudioPlayer = () => {
   duration.value = props.initDuration
@@ -115,10 +124,6 @@ const resetCurrentTime = () => {
 const resumeAudioContext = () => {
   if (audioContext.value) {
     audioContext.value.resume()
-    source.value = audioContext.value.createMediaElementSource(audioPlayer.value as HTMLMediaElement)
-    gainNode.value = audioContext.value.createGain()
-    source.value.connect(gainNode.value)
-    gainNode.value.connect(audioContext.value.destination)
     setGain(Number(volume.value))
   }
 }
