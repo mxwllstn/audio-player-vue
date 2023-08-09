@@ -35,13 +35,13 @@ const markerPosition = computed((): number => {
 
 const initDrag = (event: { x: number }): void => {
   dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
-  emit('set-seek-time', dragPosition.value / 100)
+  emit('set-seek-time', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   dragInit.value = true
 }
 const drag = (event: { x: number }): void => {
   if (dragInit.value) {
     dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
-    emit('set-seek-time', dragPosition.value / 100)
+    emit('set-seek-time', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   }
 }
 const handleMouseup = (event: { x: number }): void => {
@@ -85,13 +85,23 @@ onMounted(() => {
     }
 
     .marker {
+      opacity: 0;
       background: #000;
       height: 1.5rem;
       position: relative;
       top: -10px;
       left: 0px;
       width: 0.25rem;
+      transition: opacity 100ms;
     }
+
   }
+
+  &:hover, &:active {
+      .marker {
+        opacity: 1
+      }
+    }
+
 }
 </style>

@@ -1,18 +1,16 @@
 <template>
   <div class="volume">
-    <MuteButton v-if="muted" class="button" @click="toggleMute" />
-    <VolumeButton v-if="!muted" class="button" @click="toggleMute" />
+    <VolumeButton :volume="volume" class="button" @click="toggleMute" />
     <div v-if="showVolume" class="slider-container">
-      <input v-model="volume" type="range" min="1" max="100" class="slider" @input="setGain" />
+      <input v-model="volume" type="range" min="0" max="100" class="slider" @input="setGain" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import MuteButton from './MuteButton.vue'
 import VolumeButton from './VolumeButton.vue'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   initVolume: {
@@ -22,22 +20,20 @@ const props = defineProps({
   showVolume: {
     type: Boolean,
     default: false
-  },
-  muted: {
-    type: Boolean,
-    default: false
-  }
+  } 
 })
 const emit = defineEmits(['set-gain', 'toggle-mute'])
 
 const volume = ref(props.initVolume)
 const prevVolume = ref(100)
 
+const muted = computed((): boolean => Number(volume.value) === 0)
+
 const setGain = () => {
   emit('set-gain', volume.value)
 }
 const toggleMute = () => {
-  if (props.muted) {
+  if (muted.value) {
     volume.value = prevVolume.value
   } else {
     prevVolume.value = volume.value
@@ -83,6 +79,7 @@ const toggleMute = () => {
       /* 0.2 seconds transition on hover */
       transition: opacity 0.2s;
       transform: rotate(270deg);
+      cursor: pointer;
 
       &::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -102,6 +99,7 @@ const toggleMute = () => {
   }
 
   .button {
+    cursor: pointer;
     position: relative;
     top: 2px;
   }

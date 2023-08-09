@@ -2,10 +2,11 @@
   <div class="audio-player">
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
+    <TimeDisplay type="current" :current-time="displayTime" />
     <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-    <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
+    <TimeDisplay type="duration" :duration="duration" />
+    <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
-    <TimeDisplay :current-time="displayTime" :duration="duration" />
     <audio ref="audioPlayer" :src="src"></audio>
   </div>
 </template>
@@ -65,7 +66,6 @@ const volume = ref(100)
 const initVolume = computed(() => Number(volume.value) || 100)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
-const muted = computed((): boolean => Number(volume.value) === 0)
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
 watch(() => props.audioStatus, () => {
@@ -114,6 +114,7 @@ const initAudioPlayer = () => {
     if (timeUpdate.value) {
       clearInterval(timeUpdate.value)
     }
+    currentTime.value = duration.value
     isPaused.value = audioPlayer.value.paused
     props.resetOnEnd && resetCurrentTime()
   }

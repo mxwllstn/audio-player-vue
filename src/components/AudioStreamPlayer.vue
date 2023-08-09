@@ -3,7 +3,7 @@
     <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
     <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
     <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
-    <VolumeToggle v-else :init-volume="initVolume" :show-volume="showVolume" :muted="muted" @mouseover="showVolume = true"
+    <VolumeToggle v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <div class="title">Stream</div>
   </div>
@@ -44,7 +44,6 @@ const volume = ref(100)
 const initVolume = computed(() => volume.value || 100)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
-const muted = computed((): boolean => Number(volume.value) === 0)
 
 watch(() => props.audioStatus, () => {
   if (props.audioStatus !== status.value) {

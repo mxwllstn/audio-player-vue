@@ -1,7 +1,11 @@
 <template>
   <div class="time">
-    <span>{{ formatTime(currentTime) }}</span>
-    <span v-if="showDuration"> / {{ formatTime(duration) }} </span>
+    <span v-if="type === 'joint'">
+      <span>{{ formatTime(currentTime) }}</span
+      ><span v-if="showDuration"> / {{ formatTime(duration) }} </span>
+    </span>
+    <span v-else-if="type === 'current'" class="current">{{ formatTime(currentTime) }}</span>
+    <span v-else-if="type === 'duration' && showDuration" class="duration">{{ formatTime(duration) }}</span>
   </div>
 </template>
 
@@ -18,6 +22,10 @@ const props = defineProps({
   duration: {
     type: Number,
     default: null
+  },
+  type: {
+    type: String,
+    default: 'joint'
   }
 })
 
@@ -27,8 +35,6 @@ const formatTime = (time: number, durationType = 'seconds' as DurationUnitType, 
   const parsedTime = dayjs.duration(time, durationType) as Duration
   return parsedTime.format(format)
 }
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -39,6 +45,8 @@ const formatTime = (time: number, durationType = 'seconds' as DurationUnitType, 
   font-size: 1rem;
   flex-shrink: 0;
   user-select: none;
-  /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  .current {
+    padding-left: 1rem;
+  }
 }
 </style>
