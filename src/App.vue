@@ -3,14 +3,15 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioPlayer :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar" :audio-status="audio.status"
-          @audio-status-updated="updateAudioStatus" />
+        <AudioPlayer :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
+          :audio-status="audio.status" @audio-status-updated="updateAudioStatus" />
         <button @click="toggleAudio(idx)">{{ audio.status }}</button>
       </div>
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount" @audio-status-updated="updateAudioStatus" />
+      <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount" :show-extended="true"
+        :audio-data="audioData" @audio-status-updated="updateAudioStatus" />
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
       <button @click="changeTrack(1)">track 2</button>
@@ -26,15 +27,28 @@ import { ref } from 'vue'
 const audios = ref([
   {
     src: '/audio/1.mp3',
-    status: 'stopped'
+    status: 'stopped',
+    data: {
+      artist: 'Max Stein',
+      title: 'Parc Lafontaine 2023.08.09',
+      image: '/image/1.jpg'
+    }
   },
   {
     src: '/audio/2.mp3',
-    status: 'stopped'
+    status: 'stopped',
+    data: {
+      artist: 'Max Stein',
+      title: 'Echo Park Lake 2023.03.01'
+    }
   },
   {
     src: '/audio/3.mp3',
-    status: 'stopped'
+    status: 'stopped',
+    data: {
+      artist: 'Max Stein',
+      title: 'Parc Jarry 2022.05.12'
+    }
   },
   {
     src: 'https://stream.sonicscape.land/audiohijack2',
@@ -50,6 +64,7 @@ const audios = ref([
 ])
 // const audioFile = ref()
 const audioFile = ref(audios.value[0].src)
+const audioData = ref(audios.value[0].data)
 const audioStatus = ref('stopped')
 const playOnMount = ref(false)
 
@@ -64,6 +79,7 @@ const changeTrack = (idx: number) => {
   console.log(audios.value[idx].src)
   playOnMount.value = true
   audioFile.value = audios.value[idx].src
+  audioData.value = audios.value[idx].data
 }
 
 const toggleAudio = (idx?: number) => {
@@ -81,7 +97,6 @@ const toggleAudio = (idx?: number) => {
     }
   }
 }
-
 </script>
 <style lang="scss" scoped>
 .content {

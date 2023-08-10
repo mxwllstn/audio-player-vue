@@ -7,6 +7,7 @@
     <TimeDisplay type="duration" :duration="duration" />
     <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
+    <ExtendedInfo v-if="showExtended" :audio-data="audioData" :extended-info-open="extendedInfoOpen" @extended-click="$emit('extended-click', $event)" />
     <audio ref="audioPlayer" :src="src"></audio>
   </div>
 </template>
@@ -17,6 +18,7 @@ import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import PlayButton from './PlayButton.vue'
 import PauseButton from './PauseButton.vue'
+import ExtendedInfo from './ExtendedInfo.vue'
 import axios from 'axios'
 
 import { ref, onMounted, watch, computed } from 'vue'
@@ -45,10 +47,22 @@ const props = defineProps({
   playOnMount: {
     type: Boolean,
     default: false
+  },
+  showExtended: {
+    type: Boolean,
+    default: false
+  },
+  audioData: {
+    type: Object,
+    default: null
+  },
+  extendedInfoOpen: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['audio-status-updated'])
+const emit = defineEmits(['audio-status-updated', 'extended-click'])
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)

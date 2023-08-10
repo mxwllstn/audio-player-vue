@@ -8,7 +8,8 @@
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
-      @audio-status-updated="updateAudioStatus" />
+      :show-extended="showExtended" :audio-data="audioData" :extended-info-open="extendedInfoOpen"
+      @audio-status-updated="updateAudioStatus" @extended-click="$emit('extended-click', $event)" />
   </div>
 </template>
 
@@ -42,10 +43,22 @@ const props = defineProps({
   playOnMount: {
     type: Boolean,
     default: false
+  },
+  audioData: {
+    type: Object,
+    default: null
+  },
+  showExtended: {
+    type: Boolean,
+    default: false
+  },
+  extendedInfoOpen: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['loaded', 'audio-status-updated'])
+const emit = defineEmits(['loaded', 'audio-status-updated', 'extended-click'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -99,8 +112,6 @@ const initAudioContext = async () => {
     console.error(error.message)
   }
 }
-
-
 </script>
 
 <style lang="scss">
@@ -120,7 +131,7 @@ const initAudioContext = async () => {
     font-family: SpaceGrotesk, Arial, sans-serif;
     display: flex;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem;
 
     .button {
       height: 1rem;
