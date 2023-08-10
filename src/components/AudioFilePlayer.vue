@@ -1,7 +1,6 @@
 <template>
   <div class="audio-player">
-    <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
-    <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
+    <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
     <TimeDisplay type="current" :current-time="displayTime" />
     <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
     <TimeDisplay type="duration" :duration="duration" />
@@ -17,7 +16,6 @@ import PlayBar from './PlayBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import PlayButton from './PlayButton.vue'
-import PauseButton from './PauseButton.vue'
 import ExtendedInfo from './ExtendedInfo.vue'
 import axios from 'axios'
 

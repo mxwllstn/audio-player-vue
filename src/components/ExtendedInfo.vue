@@ -50,6 +50,7 @@ const image = computed(() => props.audioData.image)
   align-items: center;
   gap: 0.5rem;
   width: 360px;
+  margin-left: 1rem;
 
   .audio-data {
     display: flex;

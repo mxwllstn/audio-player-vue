@@ -1,7 +1,6 @@
 <template>
   <div v-if="src" class="audio-player">
-    <PlayButton v-if="!isPlaying" class="button" @click="toggleAudio" />
-    <PauseButton v-else-if="isPlaying" class="button" @click="toggleAudio" />
+    <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
     <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
     <VolumeToggle v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
@@ -12,7 +11,6 @@
 <script lang="ts" setup>
 import VolumeBar from './VolumeBar.vue'
 import PlayButton from './PlayButton.vue'
-import PauseButton from './PauseButton.vue'
 import VolumeToggle from './VolumeToggle.vue'
 
 import { ref, computed, watch, onMounted } from 'vue'

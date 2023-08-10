@@ -47,7 +47,7 @@ const toggleMute = () => {
 .volume {
   display: block;
   position: relative;
-  margin: 0px 1rem;
+  margin-left: 1rem;
 
   .slider-container {
     background: #efefef;
