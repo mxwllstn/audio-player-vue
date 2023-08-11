@@ -58,9 +58,7 @@ const image = computed(() => props.audioData.image)
     align-items: center;
     gap: 0.5rem;
     transition: background-color 300ms;
-    border-radius: 0.25rem;
-    padding: 0.5rem 0.75rem;
-    margin: -0.5rem 0;
+    padding: 0px 0.75rem 0px 0.25rem;
     width: 100%;
 
     .container {
@@ -99,8 +97,6 @@ const image = computed(() => props.audioData.image)
 
     &:hover {
       cursor: pointer;
-      background: #f2f9f5;
-
       .info {
         .artist {
           color: #000;

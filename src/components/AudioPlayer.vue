@@ -131,7 +131,7 @@ const initAudioContext = async () => {
     font-family: SpaceGrotesk, Arial, sans-serif;
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
 
     .button {
       height: 1rem;
