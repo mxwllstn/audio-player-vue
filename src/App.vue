@@ -10,8 +10,10 @@
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount" :show-extended="true"
-        :audio-data="audioData" @audio-status-updated="updateAudioStatus" />
+      <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
+        @audio-status-updated="updateAudioStatus">
+        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" />
+      </AudioPlayer>
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
       <button @click="changeTrack(1)">track 2</button>
@@ -22,6 +24,7 @@
 
 <script lang="ts" setup>
 import AudioPlayer from './components'
+import ExtendedInfo from './components/ExtendedInfo.vue'
 import { ref } from 'vue'
 
 const audios = ref([

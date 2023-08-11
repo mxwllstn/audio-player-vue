@@ -6,8 +6,7 @@
     <TimeDisplay type="duration" :duration="duration" />
     <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
-    <ExtendedInfo v-if="showExtended" :audio-data="audioData" :extended-info-open="extendedInfoOpen" @extended-click="$emit('extended-click', $event)" />
-    <audio ref="audioPlayer" :src="src"></audio>
+    <slot></slot>
   </div>
 </template>
 
@@ -16,7 +15,6 @@ import PlayBar from './PlayBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import PlayButton from './PlayButton.vue'
-import ExtendedInfo from './ExtendedInfo.vue'
 import axios from 'axios'
 
 import { ref, onMounted, watch, computed } from 'vue'
@@ -45,22 +43,10 @@ const props = defineProps({
   playOnMount: {
     type: Boolean,
     default: false
-  },
-  showExtended: {
-    type: Boolean,
-    default: false
-  },
-  audioData: {
-    type: Object,
-    default: null
-  },
-  extendedInfoOpen: {
-    type: Boolean,
-    default: false
   }
 })
 
-const emit = defineEmits(['audio-status-updated', 'extended-click'])
+const emit = defineEmits(['audio-status-updated'])
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)
@@ -77,14 +63,17 @@ const volume = ref(100)
 
 const initVolume = computed(() => Number(volume.value) || 100)
 const isPlaying = computed((): boolean => status.value === 'playing')
-const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
+const status = computed((): string => (isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
-watch(() => props.audioStatus, () => {
-  if (props.audioStatus !== status.value) {
-    toggleAudio()
+watch(
+  () => props.audioStatus,
+  () => {
+    if (props.audioStatus !== status.value) {
+      toggleAudio()
+    }
   }
-})
+)
 watch(status, () => {
   emit('audio-status-updated', status.value)
 })
@@ -117,7 +106,6 @@ const initAudioContext = async () => {
   gainNode.value = audioContext.value.createGain()
   source.value.connect(gainNode.value)
   gainNode.value.connect(audioContext.value.destination)
-
 }
 const initAudioPlayer = () => {
   duration.value = props.initDuration

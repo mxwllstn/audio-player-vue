@@ -8,8 +8,10 @@
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
-      :show-extended="showExtended" :audio-data="audioData" :extended-info-open="extendedInfoOpen"
-      @audio-status-updated="updateAudioStatus" @extended-click="$emit('extended-click', $event)" />
+      @audio-status-updated="updateAudioStatus">
+      <slot></slot>
+      <audio ref="audioPlayer" :src="src"></audio>
+    </AudioFilePlayer>
   </div>
 </template>
 
@@ -43,22 +45,10 @@ const props = defineProps({
   playOnMount: {
     type: Boolean,
     default: false
-  },
-  audioData: {
-    type: Object,
-    default: null
-  },
-  showExtended: {
-    type: Boolean,
-    default: false
-  },
-  extendedInfoOpen: {
-    type: Boolean,
-    default: false
   }
 })
 
-const emit = defineEmits(['loaded', 'audio-status-updated', 'extended-click'])
+const emit = defineEmits(['loaded', 'audio-status-updated'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
