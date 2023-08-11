@@ -58,7 +58,8 @@ const image = computed(() => props.audioData.image)
     align-items: center;
     gap: 0.5rem;
     transition: background-color 300ms;
-    padding: 0px 0.75rem 0px 0.25rem;
+    padding: 0.5rem 0.75rem;
+    margin: -0.5rem 0;
     width: 100%;
 
     .container {
