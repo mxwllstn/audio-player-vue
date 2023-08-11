@@ -7,6 +7,7 @@
     <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <slot></slot>
+    <audio ref="audioPlayer" :src="src"></audio>
   </div>
 </template>
 
