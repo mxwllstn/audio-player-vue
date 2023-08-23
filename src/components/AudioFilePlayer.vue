@@ -6,7 +6,7 @@
     <TimeDisplay type="duration" :duration="duration" />
     <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
-    <slot></slot>
+    <slot />
     <audio ref="audioPlayer" :src="src"></audio>
   </div>
 </template>

@@ -9,7 +9,7 @@
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
       @audio-status-updated="updateAudioStatus">
-      <slot></slot>
+      <slot />
       <audio ref="audioPlayer" :src="src"></audio>
     </AudioFilePlayer>
   </div>
