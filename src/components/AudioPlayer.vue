@@ -8,7 +8,8 @@
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
-      @audio-status-updated="updateAudioStatus">
+      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton" :shuffle-button="shuffleButton"
+      @audio-status-updated="updateAudioStatus" @previous="$emit('previous')" @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
       <slot />
       <audio ref="audioPlayer" :src="src"></audio>
     </AudioFilePlayer>
@@ -45,10 +46,26 @@ const props = defineProps({
   playOnMount: {
     type: Boolean,
     default: false
+  },
+  previousButton: {
+    type: Boolean,
+    default: false
+  },
+  nextButton: {
+    type: Boolean,
+    default: false
+  },
+  volumeButton: {
+    type: Boolean,
+    default: true
+  },
+  shuffleButton: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['loaded', 'audio-status-updated'])
+const emit = defineEmits(['loaded', 'audio-status-updated', 'previous', 'next', 'shuffle-toggle'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -66,6 +83,10 @@ const setLoading = (state: boolean) => {
 
 const updateAudioStatus = (status: any): void => {
   emit('audio-status-updated', status, props.idx)
+}
+
+const handleShuffleToggle = (active: any): void => {
+  emit('shuffle-toggle', active)
 }
 
 const initAudioContext = async () => {
@@ -121,6 +142,7 @@ const initAudioContext = async () => {
     font-family: SpaceGrotesk, Arial, sans-serif;
     display: flex;
     align-items: center;
+    gap: 1rem;
     padding: 0.75rem 1rem;
 
     .button {

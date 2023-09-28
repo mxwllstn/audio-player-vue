@@ -66,7 +66,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .playbar-container {
   width: 100%;
-  margin: 0px 1rem;
+  // margin: 0px 1rem;
   padding: 1rem 0px;
   cursor: pointer;
 

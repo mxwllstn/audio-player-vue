@@ -1,10 +1,14 @@
 <template>
   <div class="audio-player">
+    <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
     <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
+    <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
     <TimeDisplay type="current" :current-time="displayTime" />
     <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
     <TimeDisplay type="duration" :duration="duration" />
-    <VolumeToggle :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+    <ShuffleButton v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
+      @click="toggleShuffle" />
+    <VolumeToggle v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <slot />
     <audio ref="audioPlayer" :src="src"></audio>
@@ -16,6 +20,9 @@ import PlayBar from './PlayBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import PlayButton from './PlayButton.vue'
+import PreviousButton from './PreviousButton.vue'
+import NextButton from './NextButton.vue'
+import ShuffleButton from './ShuffleButton.vue'
 import axios from 'axios'
 
 import { ref, onMounted, watch, computed } from 'vue'
@@ -44,10 +51,26 @@ const props = defineProps({
   playOnMount: {
     type: Boolean,
     default: false
+  },
+  previousButton: {
+    type: Boolean,
+    default: false
+  },
+  nextButton: {
+    type: Boolean,
+    default: false
+  },
+  volumeButton: {
+    type: Boolean,
+    default: true
+  },
+  shuffleButton: {
+    type: Boolean,
+    default: true
   }
 })
 
-const emit = defineEmits(['audio-status-updated'])
+const emit = defineEmits(['audio-status-updated', 'previous', 'next', 'shuffle-toggle'])
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)
@@ -61,6 +84,8 @@ const seekTime = ref(null as null | number)
 const timeUpdate = ref(null as null | number)
 const showVolume = ref(false)
 const volume = ref(100)
+
+const shuffleActive = ref(false)
 
 const initVolume = computed(() => Number(volume.value) || 100)
 const isPlaying = computed((): boolean => status.value === 'playing')
@@ -174,10 +199,24 @@ const stopTimeUpdate = () => {
     clearInterval(timeUpdate.value)
   }
 }
+
+const toggleShuffle = () => {
+  shuffleActive.value = !shuffleActive.value
+  emit('shuffle-toggle', shuffleActive.value)
+}
 </script>
 
 <style lang="scss" scoped>
-.button {
+svg.button {
   cursor: pointer;
-}
-</style>
+
+  &.next {
+    padding-right: 0.5rem;
+  }
+
+  &.shuffle.active {
+    :deep(path) {
+      fill: green;
+    }
+  }
+}</style>

@@ -12,7 +12,19 @@
       <h4>single audio example</h4>
       <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
         @audio-status-updated="updateAudioStatus">
-        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" />
+        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :queue-button="true" :location-button="true" />
+      </AudioPlayer>
+      <button @click="toggleAudio()">{{ audioStatus }}</button>
+      <button @click="changeTrack(0)">track 1</button>
+      <button @click="changeTrack(1)">track 2</button>
+      <button @click="changeTrack(2)">track 3</button>
+    </div>
+    <div class="container">
+      <h4>single audio example</h4>
+      <AudioPlayer :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
+        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" @audio-status-updated="updateAudioStatus" @next="handleNext"
+        @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle">
+        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :location-button="true" />
       </AudioPlayer>
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
@@ -71,6 +83,8 @@ const audioData = ref(audios.value[0].data)
 const audioStatus = ref('stopped')
 const playOnMount = ref(false)
 
+const shuffleActive = ref(false)
+
 const updateAudioStatus = (status: string, idx: number) => {
   if (idx !== null) {
     audios.value[idx].status = status
@@ -99,6 +113,17 @@ const toggleAudio = (idx?: number) => {
       audioStatus.value = 'playing'
     }
   }
+}
+const handleNext = () => {
+  changeTrack(2)
+}
+
+const handlePrevious = () => {
+  changeTrack(1)
+}
+
+const handleShuffleToggle = (active: boolean) => {
+  shuffleActive.value = active
 }
 </script>
 <style lang="scss" scoped>

@@ -12,8 +12,8 @@
         <InfoButton class="button" :open="extendedInfoOpen" />
       </div>
       <div class="buttons">
-        <QueueButton class="button" @click="$emit('extended-click', 'queue')" />
-        <LocationButton class="button" @click="$emit('extended-click', 'location')" />
+        <QueueButton v-if="queueButton" class="button" @click="$emit('extended-click', 'queue')" />
+        <LocationButton v-if="locationButton" class="button" @click="$emit('extended-click', 'location')" />
       </div>
     </div>
   </div>
@@ -30,6 +30,14 @@ const props = defineProps({
     default: null
   },
   extendedInfoOpen: {
+    type: Boolean,
+    default: false
+  },
+  queueButton: {
+    type: Boolean,
+    default: false
+  },
+  locationButton: {
     type: Boolean,
     default: false
   }
