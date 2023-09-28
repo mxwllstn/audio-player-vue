@@ -94,7 +94,6 @@ const updateAudioStatus = (status: string, idx: number) => {
   }
 }
 const changeTrack = (idx: number) => {
-  console.log(audios.value[idx].src)
   playOnMount.value = true
   audioFile.value = audios.value[idx].src
   audioData.value = audios.value[idx].data
