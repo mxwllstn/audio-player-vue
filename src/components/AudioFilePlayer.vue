@@ -213,10 +213,4 @@ svg.button {
   &.next {
     padding-right: 0.5rem;
   }
-
-  &.shuffle.active {
-    :deep(path) {
-      fill: green;
-    }
-  }
 }</style>

@@ -22,8 +22,9 @@
     <div class="container">
       <h4>single audio example</h4>
       <AudioPlayer :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
-        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" @audio-status-updated="updateAudioStatus" @next="handleNext"
-        @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle">
+        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true"
+        @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
+        @shuffle-toggle="handleShuffleToggle">
         <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :location-button="true" />
       </AudioPlayer>
       <button @click="toggleAudio()">{{ audioStatus }}</button>
@@ -145,5 +146,18 @@ const handleShuffleToggle = (active: boolean) => {
     margin: 0px 1rem;
     font-size: 0.75rem;
   }
+}
+
+:deep(.audio-player-container .audio-player .button) {
+  &.shuffle.active {
+    path {
+      fill: green;
+    }
+  }
+  // :deep(button.shuffle.active) {
+    // :deep(path) {
+      // fill: green;
+    // }
+  // }
 }
 </style>
