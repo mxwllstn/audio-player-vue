@@ -22,7 +22,7 @@
     <div class="container">
       <h4>single audio example</h4>
       <AudioPlayer :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
-        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true"
+        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true"
         @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
         @shuffle-toggle="handleShuffleToggle">
         <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :location-button="true" />

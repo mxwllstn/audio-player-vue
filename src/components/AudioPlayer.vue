@@ -8,8 +8,9 @@
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
-      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton" :shuffle-button="shuffleButton"
-      @audio-status-updated="updateAudioStatus" @previous="$emit('previous')" @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
+      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
+      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" @audio-status-updated="updateAudioStatus"
+      @previous="$emit('previous')" @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
       <slot />
       <audio ref="audioPlayer" :src="src"></audio>
     </AudioFilePlayer>
@@ -60,6 +61,10 @@ const props = defineProps({
     default: true
   },
   shuffleButton: {
+    type: Boolean,
+    default: false
+  },
+  spacebarToggle: {
     type: Boolean,
     default: false
   }

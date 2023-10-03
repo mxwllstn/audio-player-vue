@@ -67,6 +67,10 @@ const props = defineProps({
   shuffleButton: {
     type: Boolean,
     default: true
+  },
+  spacebarToggle: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -115,6 +119,7 @@ onMounted(async () => {
     props.playOnMount && play()
   }
   await initAudioContext()
+  props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
 })
 
 const initAudioContext = async () => {
