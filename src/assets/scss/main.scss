@@ -1,3 +1,62 @@
-@import 'variables';
-@import 'mixins';
-@import 'base';
+@import 'ress';
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('../assets/fonts/space-grotesk/SpaceGrotesk-Regular.woff2') format('woff2'),
+    url('../assets/fonts/space-grotesk/SpaceGrotesk-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('../assets/fonts/space-grotesk/SpaceGrotesk-Light.woff2') format('woff2'),
+    url('../assets/fonts/space-grotesk/SpaceGrotesk-Light.otf') format('opentype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('../assets/fonts/space-grotesk/SpaceGrotesk-Medium.woff2') format('woff2'),
+    url('../assets/fonts/space-grotesk/SpaceGrotesk-Medium.otf') format('opentype');
+    font-weight: 500;
+}
+
+@font-face {
+  font-family: 'SpaceGrotesk';
+  src: url('../assets/fonts/space-grotesk/SpaceGrotesk-Bold.woff2') format('woff2'),
+    url('../assets/fonts/space-grotesk/SpaceGrotesk-Bold.otf') format('opentype');
+    font-weight: 700;
+}
+
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('../assets/fonts/space-mono/SpaceMono-Regular.WOFF') format('woff'),
+    url('../assets/fonts/space-mono/SpaceMono-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('../assets/fonts/space-mono/SpaceMono-Regular.WOFF') format('woff'),
+    url('../assets/fonts/space-mono/SpaceMono-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('../assets/fonts/space-mono/SpaceMono-Italic.WOFF') format('woff'),
+    url('../assets/fonts/space-mono/SpaceMono-Italic.ttf') format('truetype');
+    font-style: italic;
+}
+
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('../assets/fonts/space-mono/SpaceMono-Bold.WOFF') format('woff'),
+    url('../assets/fonts/space-mono/SpaceMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('../assets/fonts/space-mono/SpaceMono-BoldItalic.WOFF') format('woff'),
+    url('../assets/fonts/space-mono/SpaceMono-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
