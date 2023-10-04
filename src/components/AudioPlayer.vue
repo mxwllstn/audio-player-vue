@@ -131,8 +131,6 @@ const initAudioContext = async () => {
 </script>
 
 <style lang="scss">
-@import '../assets/scss/main.scss';
-
 .audio-player-container {
 
   .loading,
