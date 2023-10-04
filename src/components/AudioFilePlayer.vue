@@ -1,15 +1,17 @@
 <template>
   <div class="audio-player">
-    <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
-    <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
-    <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
-    <TimeDisplay type="current" :current-time="displayTime" />
-    <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-    <TimeDisplay type="duration" :duration="duration" />
-    <ShuffleButton v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
-      @click="toggleShuffle" />
-    <VolumeToggle v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
-      @mouseleave="showVolume = false" @set-gain="setGain" />
+    <div class="controls">
+      <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
+      <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
+      <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
+      <TimeDisplay type="current" :current-time="displayTime" />
+      <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
+      <TimeDisplay type="duration" :duration="duration" />
+      <ShuffleButton v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
+        @click="toggleShuffle" />
+      <VolumeToggle v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+        @mouseleave="showVolume = false" @set-gain="setGain" />
+    </div>
     <slot />
     <audio ref="audioPlayer" :src="src"></audio>
   </div>
@@ -212,10 +214,43 @@ const toggleShuffle = () => {
 </script>
 
 <style lang="scss" scoped>
-svg.button {
-  cursor: pointer;
+.audio-player {
+  display: flex;
+  align-items: center;
+  width: 100%;
 
-  &.next {
-    padding-right: 0.5rem;
+  .controls {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 1rem;
+
+    svg.button {
+      cursor: pointer;
+
+      &.next {
+        padding-right: 0.5rem;
+      }
+    }
+
+    :deep(.time) {}
+
+    :deep(.playbar-container) {
+      .playbar {
+        @include md {
+          display: none;
+        }
+      }
+
+      @include md {
+        width: auto;
+        margin: 0px -0.5rem;
+
+        &::after {
+          content: '/'
+        }
+      }
+    }
   }
-}</style>
+}
+</style>

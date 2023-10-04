@@ -59,6 +59,10 @@ const image = computed(() => props.audioData.image)
   gap: 0.5rem;
   width: 360px;
   margin-left: 1rem;
+  @include md {
+    width: auto;
+    margin-left: 0px;
+  }
 
   .audio-data {
     display: flex;
@@ -69,6 +73,10 @@ const image = computed(() => props.audioData.image)
     padding: 0.5rem 0.75rem;
     margin: -0.5rem 0;
     width: 100%;
+
+    @include md {
+      padding: 0.5rem 0.5rem 0.5rem 0rem;
+    }
 
     .container {
       display: flex;
@@ -88,6 +96,11 @@ const image = computed(() => props.audioData.image)
         // white-space: nowrap;
         line-height: 1;
         justify-content: space-between;
+
+        @include md {
+          display: none;
+        }
+
 
         .artist {
           transition: color 300ms;
