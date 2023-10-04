@@ -225,15 +225,27 @@ const toggleShuffle = () => {
     align-items: center;
     gap: 1rem;
 
+    @include md {
+      gap: 0.75rem;
+    }
+
     svg.button {
       cursor: pointer;
 
       &.next {
         padding-right: 0.5rem;
       }
+
+      @include md {
+        height: 0.8rem;
+      }
     }
 
-    :deep(.time) {}
+    :deep(.time) {
+      @include md {
+        font-size: 0.8rem;
+      }
+    }
 
     :deep(.playbar-container) {
       .playbar {
@@ -247,7 +259,10 @@ const toggleShuffle = () => {
         margin: 0px -0.5rem;
 
         &::after {
-          content: '/'
+          font-size: 0.8rem;
+          content: '/';
+          position: relative;
+          top: -0.125rem;
         }
       }
     }
