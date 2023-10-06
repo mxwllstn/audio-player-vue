@@ -45,8 +45,11 @@ const formatTime = (time: number, durationType = 'seconds' as DurationUnitType, 
   font-size: 1rem;
   flex-shrink: 0;
   user-select: none;
-  .current {
-    // padding-left: 1rem;
+  @include md {
+    top: 0px;
   }
+  // .current {
+    // padding-left: 1rem;
+  // }
 }
 </style>
