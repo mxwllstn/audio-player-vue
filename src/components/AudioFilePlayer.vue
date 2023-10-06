@@ -4,9 +4,9 @@
       <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
       <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
       <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
-      <TimeDisplay type="current" :current-time="displayTime" />
+      <TimeDisplay type="current" class="current" :current-time="displayTime" />
       <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-      <TimeDisplay type="duration" :duration="duration" />
+      <TimeDisplay type="duration" class="duration" :duration="duration" />
       <ShuffleButton v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
         @click="toggleShuffle" />
       <VolumeToggle v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
@@ -225,9 +225,9 @@ const toggleShuffle = () => {
     align-items: center;
     gap: 1rem;
 
-    @include md {
-      gap: 0.75rem;
-    }
+    // @include md {
+    //   gap: 0.75rem;
+    // }
 
     svg.button {
       cursor: pointer;
@@ -237,15 +237,21 @@ const toggleShuffle = () => {
       }
 
       @include md {
-        height: 0.8rem;
+        // height: 0.8rem;
       }
     }
 
-    :deep(.time) {
+    .duration {
       @include md {
-        font-size: 0.8rem;
+        display: none;
       }
     }
+
+    // :deep(.time) {
+    //   @include md {
+    //     // font-size: 0.8rem;
+    //   }
+    // }
 
     :deep(.playbar-container) {
       .playbar {
@@ -256,14 +262,15 @@ const toggleShuffle = () => {
 
       @include md {
         width: auto;
-        margin: 0px -0.5rem;
+        display: none;
+        // margin: 0px -0.5rem;
 
-        &::after {
-          font-size: 0.8rem;
-          content: '/';
-          position: relative;
-          top: -0.125rem;
-        }
+        // &::after {
+          // font-size: 0.8rem;
+          // content: '/';
+          // position: relative;
+          // top: -0.125rem;
+        // }
       }
     }
   }
