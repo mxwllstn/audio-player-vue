@@ -5,6 +5,7 @@
     <VolumeToggle v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain" />
     <div class="title">Stream</div>
+    <audio ref="audioPlayer" :src="src"></audio>
   </div>
 </template>
 

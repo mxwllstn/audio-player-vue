@@ -12,7 +12,6 @@
       :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext" @audio-status-updated="updateAudioStatus"
       @previous="$emit('previous')" @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
       <slot />
-      <audio ref="audioPlayer" :src="src"></audio>
     </AudioFilePlayer>
   </div>
 </template>
