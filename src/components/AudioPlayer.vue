@@ -6,10 +6,10 @@
       <div v-else-if="error" class="error">{{ error }}</div>
     </div>
     <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
+      :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
       :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
-      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" @audio-status-updated="updateAudioStatus"
+      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext" @audio-status-updated="updateAudioStatus"
       @previous="$emit('previous')" @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
       <slot />
       <audio ref="audioPlayer" :src="src"></audio>
@@ -24,6 +24,10 @@ import AntennaIcon from './AntennaIcon.vue'
 import { ref, computed, onMounted } from 'vue'
 
 const props = defineProps({
+  useAudioContext: {
+    type: Boolean,
+    default: false
+  },
   src: {
     type: String,
     default: null

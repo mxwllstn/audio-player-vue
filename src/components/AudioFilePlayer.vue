@@ -32,6 +32,10 @@ import axios from 'axios'
 import { ref, onMounted, watch, computed } from 'vue'
 
 const props = defineProps({
+  useAudioContext: {
+    type: Boolean,
+    default: false
+  },
   initDuration: {
     type: Number,
     default: 0
@@ -124,7 +128,7 @@ onMounted(async () => {
     props.playOnMount && play()
     loading.value = false
   }
-  await initAudioContext()
+  props.useAudioContext && await initAudioContext()
   props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
 })
 
@@ -181,9 +185,11 @@ const play = () => {
   isPaused.value = audioPlayer.value.paused
 }
 const setGain = (vol: number) => {
-  volume.value = vol
+  volume.value = Number(vol)
   if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
+  } else {
+    audioPlayer.value.volume = vol / 100
   }
 }
 const pause = () => {

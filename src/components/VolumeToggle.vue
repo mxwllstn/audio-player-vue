@@ -1,6 +1,6 @@
 <template>
   <div class="volume">
-    <VolumeButton :volume="volume" class="button" @click="toggleMute" />
+    <VolumeButton :volume="Number(volume)" class="button" @click="toggleMute" />
     <div v-if="showVolume" class="slider-container">
       <input v-model="volume" type="range" min="0" max="100" class="slider" @input="setGain" />
     </div>
@@ -24,22 +24,22 @@ const props = defineProps({
 })
 const emit = defineEmits(['set-gain', 'toggle-mute'])
 
-const volume = ref(props.initVolume)
+const volume = ref(Number(props.initVolume))
 const prevVolume = ref(100)
 
 const muted = computed((): boolean => Number(volume.value) === 0)
 
 const setGain = () => {
-  emit('set-gain', volume.value)
+  emit('set-gain', Number(volume.value))
 }
 const toggleMute = () => {
   if (muted.value) {
-    volume.value = prevVolume.value
+    volume.value = Number(prevVolume.value)
   } else {
-    prevVolume.value = volume.value
+    prevVolume.value = Number(volume.value)
     volume.value = 0
   }
-  emit('set-gain', volume.value)
+  emit('set-gain', Number(volume.value))
 }
 </script>
 
