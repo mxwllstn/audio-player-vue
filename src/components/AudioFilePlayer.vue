@@ -2,7 +2,8 @@
   <div class="audio-player">
     <div class="controls">
       <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
-      <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
+      <Loading v-if="loading" class="button" />
+      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
       <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
       <TimeDisplay type="current" class="current" :current-time="displayTime" />
       <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
@@ -21,6 +22,7 @@
 import PlayBar from './PlayBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
+import Loading from './Loading.vue'
 import PlayButton from './PlayButton.vue'
 import PreviousButton from './PreviousButton.vue'
 import NextButton from './NextButton.vue'
@@ -80,6 +82,7 @@ const emit = defineEmits(['audio-status-updated', 'previous', 'next', 'shuffle-t
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)
+const loading = ref(true)
 
 const gainNode = ref(null as GainNode | null)
 const source = ref(null as MediaElementAudioSourceNode | null)
@@ -119,6 +122,7 @@ onMounted(async () => {
     resetCurrentTime()
     duration.value = audioPlayer.value.duration
     props.playOnMount && play()
+    loading.value = false
   }
   await initAudioContext()
   props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
