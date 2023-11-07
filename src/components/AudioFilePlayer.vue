@@ -2,7 +2,7 @@
   <div class="audio-player">
     <div class="controls">
       <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
-      <Loading v-if="loading" class="button" />
+      <LoadingSpinner v-if="loading" class="button" />
       <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
       <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
       <TimeDisplay type="current" class="current" :current-time="displayTime" />
@@ -22,7 +22,7 @@
 import PlayBar from './PlayBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
-import Loading from './Loading.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
 import PlayButton from './PlayButton.vue'
 import PreviousButton from './PreviousButton.vue'
 import NextButton from './NextButton.vue'
