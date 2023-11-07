@@ -26,7 +26,7 @@ import { ref, computed, onMounted } from 'vue'
 const props = defineProps({
   useAudioContext: {
     type: Boolean,
-    default: false
+    default: true
   },
   src: {
     type: String,

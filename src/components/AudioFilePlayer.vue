@@ -137,6 +137,9 @@ const initAudioContext = async () => {
     responseType: 'arraybuffer'
   })
 
+  const blob = new Blob([data], { type: 'audio/mp3' })
+  audioPlayer.value.src = window.URL.createObjectURL(blob)
+
   audioContext.value = new AudioContext()
   /* set duration */
   const decoded = await audioContext.value.decodeAudioData(data)
