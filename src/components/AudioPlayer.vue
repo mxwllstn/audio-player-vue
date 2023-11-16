@@ -142,7 +142,6 @@ const initAudioContext = async () => {
   .error {
     font-size: 1rem;
     font-family: SpaceGrotesk, Arial, sans-serif;
-    margin: 0px 1rem;
     line-height: 2.25rem;
   }
 
