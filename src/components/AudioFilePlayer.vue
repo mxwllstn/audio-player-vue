@@ -235,9 +235,15 @@ const toggleShuffle = () => {
     align-items: center;
     gap: 1rem;
 
-    // @include md {
-    //   gap: 0.75rem;
-    // }
+    @include md {
+      width: auto;
+
+      .previous,
+      .next,
+      .shuffle {
+        display: none;
+      }
+    }
 
     svg.button {
       cursor: pointer;
@@ -257,11 +263,11 @@ const toggleShuffle = () => {
       }
     }
 
-    // :deep(.time) {
-    //   @include md {
-    //     // font-size: 0.8rem;
-    //   }
-    // }
+    .current {
+      @include md {
+        display: none;
+      }
+    }
 
     :deep(.playbar-container) {
       .playbar {
@@ -273,14 +279,6 @@ const toggleShuffle = () => {
       @include md {
         width: auto;
         display: none;
-        // margin: 0px -0.5rem;
-
-        // &::after {
-          // font-size: 0.8rem;
-          // content: '/';
-          // position: relative;
-          // top: -0.125rem;
-        // }
       }
     }
   }

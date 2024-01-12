@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="extended-info">
     <div class="extended">
       <div v-if="audioData" class="audio-data" @click="$emit('extended-click', 'info')">
         <div class="container">
-          <div class="image" :style="{ backgroundImage: `url(${image})`, backgroundColor: '#80c79b' }"></div>
+          <div class="image" :style="{ backgroundImage: `url(${image})` }"></div>
           <div class="info">
             <p class="artist">{{ artist }}</p>
             <p class="title">{{ title }}</p>
@@ -52,89 +52,85 @@ const image = computed(() => props.audioData.image)
 </script>
 
 <style lang="scss" scoped>
-.extended {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  width: 360px;
-  margin-left: 1rem;
-  @include md {
-    width: auto;
-    margin-left: 0px;
-  }
+.extended-info {
+  width: 100%;
 
-  .audio-data {
+  .extended {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    transition: background-color 300ms;
-    padding: 0.5rem 0.75rem;
-    margin: -0.5rem 0;
-    width: 100%;
+    width: 360px;
+    margin-left: 1rem;
 
     @include md {
-      padding: 0.5rem 0.5rem 0.5rem 0rem;
+      width: auto;
+      margin-left: 0px;
     }
 
-    .container {
+    .audio-data {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 0.5rem;
+      transition: background-color 300ms;
+      padding: 0.5rem 0.75rem;
+      margin: -0.5rem 0;
+      width: 100%;
 
-      .image {
-        height: 30px;
-        width: 30px;
-        background-size: cover;
-        background-position: center;
-      }
-
-      .info {
-        font-size: 0.825rem;
+      .container {
         display: flex;
-        flex-direction: column;
-        // white-space: nowrap;
-        line-height: 1;
-        justify-content: space-between;
+        gap: 0.5rem;
 
-        @include md {
-          display: none;
+        .image {
+          height: 30px;
+          width: 30px;
+          background-size: cover;
+          background-position: center;
+        }
+
+        .info {
+          font-size: 0.825rem;
+          display: flex;
+          flex-direction: column;
+          line-height: 1;
+          justify-content: space-between;
+
+          .artist {
+            transition: color 300ms;
+            color: #808080;
+          }
+
+          .title {
+            transition: color 300ms;
+            color: #000;
+          }
         }
 
 
-        .artist {
-          transition: color 300ms;
-          color: #808080;
-        }
 
-        .title {
-          transition: color 300ms;
-          color: #000;
-        }
       }
 
+      &:hover {
+        cursor: pointer;
 
-
+        .info {
+          .artist {
+            color: #000;
+          }
+        }
+      }
     }
 
-    &:hover {
+    .button {
+      height: 1rem;
       cursor: pointer;
-      .info {
-        .artist {
-          color: #000;
-        }
-      }
     }
-  }
 
-  .button {
-    height: 1rem;
-    cursor: pointer;
-  }
-
-  .buttons {
-    display: flex;
-    gap: 1rem;
+    .buttons {
+      display: flex;
+      gap: 1rem;
+    }
   }
 }
 </style>

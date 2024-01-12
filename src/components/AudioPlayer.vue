@@ -137,12 +137,15 @@ const initAudioContext = async () => {
 @import '../assets/scss/main.scss';
 
 .audio-player-container {
-
   .loading,
   .error {
     font-size: 1rem;
     font-family: SpaceGrotesk, Arial, sans-serif;
     line-height: 2.25rem;
+  }
+
+  @include md {
+    padding: 1rem;
   }
 
   .audio-player {
@@ -151,6 +154,10 @@ const initAudioContext = async () => {
     align-items: center;
     gap: 1rem;
     padding: 0.75rem 1rem;
+
+    @include md {
+      border-radius: 0.25rem;
+    }
 
     .button {
       height: 1rem;
