@@ -1,7 +1,7 @@
 <template>
   <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
     <div ref="playbar" class="playbar">
-      <div v-if="duration" class="elapsed" :style="{ width: markerPosition + '%' }"></div>
+      <div v-if="duration" class="elapsed" :class="{ 'complete': markerPosition >= 100 }" :style="{ width: markerPosition + '%' }"></div>
       <div class="marker" :style="{ left: markerPosition + '%' }"></div>
     </div>
   </div>
@@ -98,6 +98,14 @@ onMounted(() => {
       position: absolute;
       left: 0px;
       top: 0px;
+
+      @include md {
+        border-radius: 0.25rem 0px 0px 0px;
+        &.complete {
+          border-radius: 0.25rem 0.25rem 0px 0px;
+        }
+      }
+
     }
 
     .marker {
@@ -109,6 +117,7 @@ onMounted(() => {
       left: 0px;
       width: 0.25rem;
       transition: opacity 100ms;
+
       @include md {
         display: none;
       }
