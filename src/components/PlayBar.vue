@@ -34,21 +34,24 @@ const markerPosition = computed((): number => {
 })
 
 const initDrag = (event: { x: number }): void => {
-  dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
+  const windowOffset = window.innerWidth < 768 ? -16 : -2
+  dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
   emit('set-seek-time', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   dragInit.value = true
 }
 const drag = (event: { x: number }): void => {
   if (dragInit.value) {
-    dragPosition.value = ((event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth) * 100
+    const windowOffset = window.innerWidth < 768 ? -16 : -2
+    dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('set-seek-time', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   }
 }
 const handleMouseup = (event: { x: number }): void => {
   if (dragInit.value) {
+    const windowOffset = window.innerWidth < 768 ? -16 : -2
     dragPosition.value = null
     dragInit.value = false
-    const seekPosition = (event.x - playbar.value.offsetLeft) / playbar.value.offsetWidth
+    const seekPosition = (event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth
     emit('seek', seekPosition)
   }
 }
@@ -106,6 +109,9 @@ onMounted(() => {
       left: 0px;
       width: 0.25rem;
       transition: opacity 100ms;
+      @include md {
+        display: none;
+      }
     }
 
   }

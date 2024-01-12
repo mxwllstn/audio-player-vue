@@ -162,6 +162,7 @@ const initAudioContext = async () => {
     padding: 0.75rem 1rem;
 
     @include md {
+      padding: 1rem 1rem 1rem 0.75rem;
       border-radius: 0.25rem;
     }
 
