@@ -228,6 +228,8 @@ const toggleShuffle = () => {
   display: flex;
   align-items: center;
   width: 100%;
+  position: relative;
+  background: #f4f4f4;
 
   .controls {
     display: flex;
@@ -269,18 +271,18 @@ const toggleShuffle = () => {
       }
     }
 
-    :deep(.playbar-container) {
-      .playbar {
-        @include md {
-          display: none;
-        }
-      }
+    // :deep(.playbar-container) {
+    //   .playbar {
+    //     @include md {
+    //       display: none;
+    //     }
+    //   }
 
-      @include md {
-        width: auto;
-        display: none;
-      }
-    }
+    //   @include md {
+    //     width: auto;
+    //     display: none;
+    //   }
+    // }
   }
 }
 </style>

@@ -70,10 +70,23 @@ onMounted(() => {
   padding: 1rem 0px;
   cursor: pointer;
 
+  @include md {
+    padding: 0px;
+    position: absolute;
+    top: 0px;
+    left: 0rem;
+    // width: auto;
+    // display: none;
+  }
+
   .playbar {
     background: #808080;
     height: 0.25rem;
     position: relative;
+
+    @include md {
+      border-radius: 0.25rem 0.25rem 0px 0px;
+    }
 
     .elapsed {
       content: '';
@@ -97,11 +110,12 @@ onMounted(() => {
 
   }
 
-  &:hover, &:active {
-      .marker {
-        opacity: 1
-      }
+  &:hover,
+  &:active {
+    .marker {
+      opacity: 1
     }
+  }
 
 }
 </style>
