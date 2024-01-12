@@ -53,7 +53,9 @@ const image = computed(() => props.audioData.image)
 
 <style lang="scss" scoped>
 .extended-info {
-  width: 100%;
+  @include md {
+    width: 100%;
+  }
 
   .extended {
     display: flex;

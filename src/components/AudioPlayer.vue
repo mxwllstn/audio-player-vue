@@ -9,8 +9,9 @@
       :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
     <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
       :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
-      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext" @audio-status-updated="updateAudioStatus"
-      @previous="$emit('previous')" @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
+      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
+      :class="{ 'extended-info-opened': extendedInfoOpened }" @audio-status-updated="updateAudioStatus" @previous="$emit('previous')"
+      @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
       <slot />
     </AudioFilePlayer>
   </div>
@@ -68,6 +69,10 @@ const props = defineProps({
     default: false
   },
   spacebarToggle: {
+    type: Boolean,
+    default: false
+  },
+  extendedInfoOpened: {
     type: Boolean,
     default: false
   }
@@ -137,6 +142,7 @@ const initAudioContext = async () => {
 @import '../assets/scss/main.scss';
 
 .audio-player-container {
+
   .loading,
   .error {
     font-size: 1rem;
