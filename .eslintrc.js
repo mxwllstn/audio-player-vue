@@ -39,7 +39,8 @@ module.exports = {
         varsIgnorePattern: '^_',
         argsIgnorePattern: '^_'
       }
-    ]
+    ],
+    '@typescript-eslint/no-explicit-any': ['warn']
   },
   ignorePatterns: ['dist', 'node_modules']
 }
