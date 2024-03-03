@@ -1,5 +1,6 @@
 <template>
   <div class="audio-player-container">
+    <slot name="extended-top" />
     <div v-if="loading || error" class="audio-player">
       <AntennaIcon class="button" />
       <div v-if="loading" class="loading">Loading...</div>
@@ -14,6 +15,7 @@
       @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
       <slot />
     </AudioFilePlayer>
+    <slot name="extended-bottom" />
   </div>
 </template>
 
@@ -142,6 +144,8 @@ const initAudioContext = async () => {
 @import '../assets/scss/main.scss';
 
 .audio-player-container {
+  display: flex;
+  flex-direction: column;
 
   .loading,
   .error {

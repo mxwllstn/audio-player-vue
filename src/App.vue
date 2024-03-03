@@ -12,7 +12,8 @@
       <h4>single audio example</h4>
       <AudioPlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
         @audio-status-updated="updateAudioStatus">
-        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :queue-button="true" :location-button="true" />
+        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :queue-button="true"
+          :location-button="true" />
       </AudioPlayer>
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
@@ -25,7 +26,11 @@
         :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true"
         @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
         @shuffle-toggle="handleShuffleToggle">
-        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :location-button="true" />
+        <template v-if="showExtended" #extended-top>
+          <div>test</div>
+        </template>
+        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :location-button="true"
+          @extended-click="showExtended = !showExtended" />
       </AudioPlayer>
       <button @click="toggleAudio()">{{ audioStatus }}</button>
       <button @click="changeTrack(0)">track 1</button>
@@ -39,6 +44,8 @@
 import AudioPlayer from './components'
 import ExtendedInfo from './components/ExtendedInfo.vue'
 import { ref } from 'vue'
+
+const showExtended = ref(false)
 
 const audios = ref([
   {
@@ -126,6 +133,7 @@ const handleShuffleToggle = (active: boolean) => {
   shuffleActive.value = active
 }
 </script>
+
 <style lang="scss" scoped>
 .content {
   font-family: AuthenticSans, Arial, sans-serif;
@@ -153,10 +161,11 @@ const handleShuffleToggle = (active: boolean) => {
       fill: green;
     }
   }
+
   // :deep(button.shuffle.active) {
-    // :deep(path) {
-      // fill: green;
-    // }
+  // :deep(path) {
+  // fill: green;
+  // }
   // }
 }
 </style>
