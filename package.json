@@ -10,6 +10,7 @@
   "type": "module",
   "main": "./dist/audio-player.cjs",
   "module": "./dist/audio-player.mjs",
+  "types": "./dist/components/index.d.ts",
   "exports": {
     ".": {
       "import": {
