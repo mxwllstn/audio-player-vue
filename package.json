@@ -10,15 +10,14 @@
   "type": "module",
   "main": "./dist/audio-player.cjs",
   "module": "./dist/audio-player.mjs",
-  "types": "./dist/components/index.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/components/index.d.mts",
+        "types": "./dist/components/index.d.ts",
         "default": "./dist/audio-player.mjs"
       },
       "require": {
-        "types": "./dist/components/index.d.cts",
+        "types": "./dist/components/index.d.ts",
         "default": "./dist/audio-player.cjs"
       }
     }
