@@ -8,13 +8,18 @@
     "dist"
   ],
   "type": "module",
-  "main": "./dist/audio-player.umd.js",
-  "types": "./dist/components/index.d.ts",
-  "module": "./dist/audio-player.es.js",
+  "main": "./dist/audio-player.cjs",
+  "module": "./dist/audio-player.mjs",
   "exports": {
     ".": {
-      "import": "./dist/audio-player.es.js",
-      "require": "./dist/audio-player.umd.js"
+      "import": {
+        "types": "./dist/components/index.d.mts",
+        "default": "./dist/audio-player.mjs"
+      },
+      "require": {
+        "types": "./dist/components/index.d.cts",
+        "default": "./dist/audio-player.cjs"
+      }
     }
   },
   "scripts": {
@@ -31,7 +36,6 @@
   "dependencies": {
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
-    "follow-redirects": "^1.15.5",
     "ress": "^5.0.2"
   },
   "devDependencies": {
@@ -41,7 +45,6 @@
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "@vitejs/plugin-vue": "^5.0.4",
-    "add": "^2.0.6",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
