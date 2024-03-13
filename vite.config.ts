@@ -18,7 +18,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.ts'),
       name: 'AudioFilePlayer',
-      fileName: format => format === 'es' ? 'audio-player.mjs' : 'audio-player.cjs'
+      fileName: format => (format === 'es' ? 'audio-player.mjs' : 'audio-player.cjs')
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
