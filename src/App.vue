@@ -122,10 +122,11 @@ const playOnMount = ref(false)
 const shuffleActive = ref(false)
 
 function updateAudioStatus(status: string, idx: number) {
-  if (idx !== null)
+  if (idx !== null) {
     audios.value[idx].status = status
-  else
+  } else {
     audioStatus.value = status
+  }
 }
 function changeTrack(idx: number) {
   playOnMount.value = true
@@ -135,16 +136,17 @@ function changeTrack(idx: number) {
 
 function toggleAudio(idx?: number) {
   if (idx !== undefined) {
-    if (audios.value[idx].status === 'playing')
+    if (audios.value[idx].status === 'playing') {
       audios.value[idx].status = 'paused'
-    else
+    } else {
       audios.value[idx].status = 'playing'
-  }
-  else {
-    if (audioStatus.value === 'playing')
+    }
+  } else {
+    if (audioStatus.value === 'playing') {
       audioStatus.value = 'paused'
-    else
+    } else {
       audioStatus.value = 'playing'
+    }
   }
 }
 function handleNext() {

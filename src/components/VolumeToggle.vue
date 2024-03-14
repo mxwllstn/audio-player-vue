@@ -34,8 +34,7 @@ function setGain() {
 function toggleMute() {
   if (muted.value) {
     volume.value = Number(prevVolume.value)
-  }
-  else {
+  } else {
     prevVolume.value = Number(volume.value)
     volume.value = 0
   }

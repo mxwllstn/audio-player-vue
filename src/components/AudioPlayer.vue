@@ -131,19 +131,18 @@ async function initAudioContext() {
         error.value = 'Stream not found'
       }
       request.onprogress = () => {
-        if (request.status === 200)
+        if (request.status === 200) {
           request.abort()
-        else
+        } else {
           error.value = 'Stream not found'
+        }
 
         setLoading(false)
       }
-    }
-    else {
+    } else {
       setLoading(false)
     }
-  }
-  catch (error: any) {
+  } catch (error: any) {
     setLoading(false)
     console.error(error.message)
   }

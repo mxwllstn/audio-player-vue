@@ -49,8 +49,9 @@ const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
 
 watch(() => props.audioStatus, () => {
-  if (props.audioStatus !== status.value)
+  if (props.audioStatus !== status.value) {
     toggleAudio()
+  }
 })
 
 watch(status, () => {
@@ -79,13 +80,15 @@ function initAudioContext() {
   setGain(volume.value)
 }
 async function toggleAudio() {
-  if (!audioContext.value)
+  if (!audioContext.value) {
     initAudioContext()
+  }
 
-  if (isPlaying.value)
+  if (isPlaying.value) {
     stop()
-  else
+  } else {
     start()
+  }
 
   isPaused.value = audioPlayer.value.paused
 }
@@ -107,7 +110,8 @@ function pause() {
 }
 function setGain(vol: number) {
   setVolume(vol)
-  if (gainNode.value)
+  if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
+  }
 }
 </script>

@@ -111,8 +111,9 @@ const displayTime = computed((): number => seekTime.value || currentTime.value)
 watch(
   () => props.audioStatus,
   () => {
-    if (props.audioStatus !== status.value)
+    if (props.audioStatus !== status.value) {
       toggleAudio()
+    }
   },
 )
 watch(status, () => {
@@ -154,8 +155,9 @@ function initAudioPlayer() {
   duration.value = props.initDuration
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {
-    if (timeUpdate.value)
+    if (timeUpdate.value) {
       clearInterval(timeUpdate.value)
+    }
 
     currentTime.value = duration.value
     isPaused.value = audioPlayer.value.paused
@@ -172,13 +174,15 @@ function resumeAudioContext() {
   }
 }
 function toggleAudio() {
-  if (audioContext.value && audioContext.value.state === 'suspended')
+  if (audioContext.value && audioContext.value.state === 'suspended') {
     resumeAudioContext()
+  }
 
-  if (isPlaying.value)
+  if (isPlaying.value) {
     pause()
-  else
+  } else {
     play()
+  }
 }
 function play() {
   audioPlayer.value.play()
@@ -187,10 +191,11 @@ function play() {
 }
 function setGain(vol: number) {
   volume.value = Number(vol)
-  if (gainNode.value)
+  if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
-  else
+  } else {
     audioPlayer.value.volume = vol / 100
+  }
 }
 function pause() {
   audioPlayer.value.pause()
@@ -212,8 +217,9 @@ function startTimeUpdate() {
   }, 25)
 }
 function stopTimeUpdate() {
-  if (timeUpdate.value)
+  if (timeUpdate.value) {
     clearInterval(timeUpdate.value)
+  }
 }
 
 function toggleShuffle() {
