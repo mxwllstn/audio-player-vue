@@ -1,3 +1,32 @@
+<template>
+  <div class="audio-player-container">
+    <slot name="extended-top" />
+    <div v-if="loading || error" class="audio-player">
+      <AntennaIcon class="button" />
+      <div v-if="loading" class="loading">
+        Loading...
+      </div>
+      <div v-else-if="error" class="error">
+        {{ error }}
+      </div>
+    </div>
+    <AudioStreamPlayer
+      v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
+      :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
+    />
+    <AudioFilePlayer
+      v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
+      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
+      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
+      :class="{ 'extended-info-opened': extendedInfoOpened }" @audio-status-updated="updateAudioStatus" @previous="$emit('previous')"
+      @next="$emit('next')" @shuffle-toggle="handleShuffleToggle"
+    >
+      <slot />
+    </AudioFilePlayer>
+    <slot name="extended-bottom" />
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import AudioFilePlayer from './AudioFilePlayer.vue'
@@ -120,35 +149,6 @@ async function initAudioContext() {
   }
 }
 </script>
-
-<template>
-  <div class="audio-player-container">
-    <slot name="extended-top" />
-    <div v-if="loading || error" class="audio-player">
-      <AntennaIcon class="button" />
-      <div v-if="loading" class="loading">
-        Loading...
-      </div>
-      <div v-else-if="error" class="error">
-        {{ error }}
-      </div>
-    </div>
-    <AudioStreamPlayer
-      v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
-    />
-    <AudioFilePlayer
-      v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
-      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
-      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
-      :class="{ 'extended-info-opened': extendedInfoOpened }" @audio-status-updated="updateAudioStatus" @previous="$emit('previous')"
-      @next="$emit('next')" @shuffle-toggle="handleShuffleToggle"
-    >
-      <slot />
-    </AudioFilePlayer>
-    <slot name="extended-bottom" />
-  </div>
-</template>
 
 <style lang="scss">
 @import '../assets/scss/main';

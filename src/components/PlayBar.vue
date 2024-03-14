@@ -1,3 +1,12 @@
+<template>
+  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
+    <div ref="playbar" class="playbar">
+      <div v-if="duration" class="elapsed" :class="{ complete: markerPosition >= 100 }" :style="{ width: `${markerPosition}%` }" />
+      <div class="marker" :style="{ left: `${markerPosition}%` }" />
+    </div>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 
@@ -57,15 +66,6 @@ onMounted(() => {
   })
 })
 </script>
-
-<template>
-  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
-    <div ref="playbar" class="playbar">
-      <div v-if="duration" class="elapsed" :class="{ complete: markerPosition >= 100 }" :style="{ width: `${markerPosition}%` }" />
-      <div class="marker" :style="{ left: `${markerPosition}%` }" />
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .playbar-container {

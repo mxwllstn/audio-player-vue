@@ -1,12 +1,3 @@
-<script lang="ts" setup>
-defineProps({
-  open: {
-    type: Boolean,
-    default: false,
-  },
-})
-</script>
-
 <template>
   <svg v-if="open" width="100%" height="100%" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -21,3 +12,12 @@ defineProps({
     />
   </svg>
 </template>
+
+<script lang="ts" setup>
+defineProps({
+  open: {
+    type: Boolean,
+    default: false,
+  },
+})
+</script>

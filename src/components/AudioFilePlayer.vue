@@ -1,3 +1,27 @@
+<template>
+  <div class="audio-player">
+    <div class="controls">
+      <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
+      <LoadingSpinner v-if="loading" class="button" />
+      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
+      <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
+      <TimeDisplay type="current" class="current" :current-time="displayTime" />
+      <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
+      <TimeDisplay type="duration" class="duration" :duration="duration" />
+      <ShuffleButton
+        v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
+        @click="toggleShuffle"
+      />
+      <VolumeToggle
+        v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+        @mouseleave="showVolume = false" @set-gain="setGain"
+      />
+    </div>
+    <slot />
+    <audio ref="audioPlayer" :src="src" />
+  </div>
+</template>
+
 <script lang="ts" setup>
 import axios from 'axios'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -197,30 +221,6 @@ function toggleShuffle() {
   emit('shuffleToggle', shuffleActive.value)
 }
 </script>
-
-<template>
-  <div class="audio-player">
-    <div class="controls">
-      <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
-      <LoadingSpinner v-if="loading" class="button" />
-      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
-      <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
-      <TimeDisplay type="current" class="current" :current-time="displayTime" />
-      <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-      <TimeDisplay type="duration" class="duration" :duration="duration" />
-      <ShuffleButton
-        v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
-        @click="toggleShuffle"
-      />
-      <VolumeToggle
-        v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
-        @mouseleave="showVolume = false" @set-gain="setGain"
-      />
-    </div>
-    <slot />
-    <audio ref="audioPlayer" :src="src" />
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .audio-player {

@@ -1,3 +1,28 @@
+<template>
+  <div class="extended-info">
+    <div class="extended">
+      <div v-if="audioData" class="audio-data" @click="$emit('extendedClick', 'info')">
+        <div class="container">
+          <div class="image" :style="{ backgroundImage: `url(${image})` }" />
+          <div class="info">
+            <p class="artist">
+              {{ artist }}
+            </p>
+            <p class="title">
+              {{ title }}
+            </p>
+          </div>
+        </div>
+        <InfoButton class="button" :open="extendedInfoOpen" />
+      </div>
+      <div class="buttons">
+        <QueueButton v-if="queueButton" class="button" @click="$emit('extendedClick', 'queue')" />
+        <LocationButton v-if="locationButton" class="button" @click="$emit('extendedClick', 'location')" />
+      </div>
+    </div>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed } from 'vue'
 import InfoButton from './InfoButton.vue'
@@ -29,31 +54,6 @@ const artist = computed(() => props.audioData.artist)
 const title = computed(() => props.audioData.title)
 const image = computed(() => props.audioData.image)
 </script>
-
-<template>
-  <div class="extended-info">
-    <div class="extended">
-      <div v-if="audioData" class="audio-data" @click="$emit('extendedClick', 'info')">
-        <div class="container">
-          <div class="image" :style="{ backgroundImage: `url(${image})` }" />
-          <div class="info">
-            <p class="artist">
-              {{ artist }}
-            </p>
-            <p class="title">
-              {{ title }}
-            </p>
-          </div>
-        </div>
-        <InfoButton class="button" :open="extendedInfoOpen" />
-      </div>
-      <div class="buttons">
-        <QueueButton v-if="queueButton" class="button" @click="$emit('extendedClick', 'queue')" />
-        <LocationButton v-if="locationButton" class="button" @click="$emit('extendedClick', 'location')" />
-      </div>
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .extended-info {

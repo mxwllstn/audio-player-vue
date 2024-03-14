@@ -1,3 +1,12 @@
+<template>
+  <div class="volume">
+    <VolumeButton :volume="Number(volume)" class="button" @click="toggleMute" />
+    <div v-if="showVolume" class="slider-container">
+      <input v-model="volume" type="range" min="0" max="100" class="slider" @input="setGain">
+    </div>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import VolumeButton from './VolumeButton.vue'
@@ -33,15 +42,6 @@ function toggleMute() {
   emit('setGain', Number(volume.value))
 }
 </script>
-
-<template>
-  <div class="volume">
-    <VolumeButton :volume="Number(volume)" class="button" @click="toggleMute" />
-    <div v-if="showVolume" class="slider-container">
-      <input v-model="volume" type="range" min="0" max="100" class="slider" @input="setGain">
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .volume {

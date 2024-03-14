@@ -1,3 +1,18 @@
+<template>
+  <div v-if="src" class="audio-player">
+    <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
+    <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
+    <VolumeToggle
+      v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+      @mouseleave="showVolume = false" @set-gain="setGain"
+    />
+    <div class="title">
+      Stream
+    </div>
+    <audio ref="audioPlayer" :src="src" />
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import VolumeBar from './VolumeBar.vue'
@@ -96,18 +111,3 @@ function setGain(vol: number) {
     gainNode.value.gain.value = volume.value / 100
 }
 </script>
-
-<template>
-  <div v-if="src" class="audio-player">
-    <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
-    <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
-    <VolumeToggle
-      v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
-      @mouseleave="showVolume = false" @set-gain="setGain"
-    />
-    <div class="title">
-      Stream
-    </div>
-    <audio ref="audioPlayer" :src="src" />
-  </div>
-</template>

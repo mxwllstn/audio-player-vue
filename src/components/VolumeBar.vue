@@ -1,3 +1,12 @@
+<template>
+  <div class="volumebar-container" @mousedown="initDrag">
+    <div ref="volumebar" class="volumebar">
+      <div class="elapsed" :style="{ width: `${markerPosition}%` }" />
+      <div class="marker" :style="{ left: `${markerPosition}%` }" />
+    </div>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 
@@ -55,15 +64,6 @@ onMounted(() => {
   })
 })
 </script>
-
-<template>
-  <div class="volumebar-container" @mousedown="initDrag">
-    <div ref="volumebar" class="volumebar">
-      <div class="elapsed" :style="{ width: `${markerPosition}%` }" />
-      <div class="marker" :style="{ left: `${markerPosition}%` }" />
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .volumebar-container {

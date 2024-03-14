@@ -1,3 +1,13 @@
+<template>
+  <div class="time">
+    <span v-if="type === 'joint'">
+      <span>{{ formatTime(currentTime) }}</span><span v-if="showDuration"> / {{ formatTime(duration) }} </span>
+    </span>
+    <span v-else-if="type === 'current'" class="current">{{ formatTime(currentTime) }}</span>
+    <span v-else-if="type === 'duration' && showDuration" class="duration">{{ formatTime(duration) }}</span>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { Duration, DurationUnitType } from '../lib/dayjs'
@@ -25,16 +35,6 @@ function formatTime(time: number, durationType = 'seconds' as DurationUnitType, 
   return parsedTime.format(format)
 }
 </script>
-
-<template>
-  <div class="time">
-    <span v-if="type === 'joint'">
-      <span>{{ formatTime(currentTime) }}</span><span v-if="showDuration"> / {{ formatTime(duration) }} </span>
-    </span>
-    <span v-else-if="type === 'current'" class="current">{{ formatTime(currentTime) }}</span>
-    <span v-else-if="type === 'duration' && showDuration" class="duration">{{ formatTime(duration) }}</span>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .time {

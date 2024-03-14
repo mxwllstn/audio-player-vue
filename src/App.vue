@@ -1,3 +1,73 @@
+<template>
+  <div class="content">
+    <div class="container">
+      <h4>multiple audio example</h4>
+      <div v-for="(audio, idx) of audios" :key="idx">
+        <AudioPlayer
+          :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
+          :audio-status="audio.status" @audio-status-updated="updateAudioStatus"
+        />
+        <button @click="toggleAudio(idx)">
+          {{ audio.status }}
+        </button>
+      </div>
+    </div>
+    <div class="container">
+      <h4>single audio example</h4>
+      <AudioPlayer
+        :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
+        @audio-status-updated="updateAudioStatus"
+      >
+        <ExtendedInfo
+          :audio-data="audioData" :extended-info-open="false" :queue-button="true"
+          :location-button="true"
+        />
+      </AudioPlayer>
+      <button @click="toggleAudio()">
+        {{ audioStatus }}
+      </button>
+      <button @click="changeTrack(0)">
+        track 1
+      </button>
+      <button @click="changeTrack(1)">
+        track 2
+      </button>
+      <button @click="changeTrack(2)">
+        track 3
+      </button>
+    </div>
+    <div class="container">
+      <h4>single audio example</h4>
+      <AudioPlayer
+        :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
+        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true"
+        @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
+        @shuffle-toggle="handleShuffleToggle"
+      >
+        <template v-if="showExtended" #extended-top>
+          <div>test</div>
+        </template>
+        <ExtendedInfo
+          :audio-data="audioData" :extended-info-open="false" :location-button="true"
+          @extended-click="showExtended = !showExtended"
+        />
+      </AudioPlayer>
+      <button @click="toggleAudio()">
+        {{ audioStatus }}
+      </button>
+      <button @click="changeTrack(0)">
+        track 1
+      </button>
+      <button @click="changeTrack(1)">
+        track 2
+      </button>
+      <button @click="changeTrack(2)">
+        track 3
+      </button>
+    </div>
+  </div>
+</template>
+
 <script lang="ts" setup>
 import { ref } from 'vue'
 import AudioPlayer from './components'
@@ -89,76 +159,6 @@ function handleShuffleToggle(active: boolean) {
   shuffleActive.value = active
 }
 </script>
-
-<template>
-  <div class="content">
-    <div class="container">
-      <h4>multiple audio example</h4>
-      <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioPlayer
-          :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
-          :audio-status="audio.status" @audio-status-updated="updateAudioStatus"
-        />
-        <button @click="toggleAudio(idx)">
-          {{ audio.status }}
-        </button>
-      </div>
-    </div>
-    <div class="container">
-      <h4>single audio example</h4>
-      <AudioPlayer
-        :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
-        @audio-status-updated="updateAudioStatus"
-      >
-        <ExtendedInfo
-          :audio-data="audioData" :extended-info-open="false" :queue-button="true"
-          :location-button="true"
-        />
-      </AudioPlayer>
-      <button @click="toggleAudio()">
-        {{ audioStatus }}
-      </button>
-      <button @click="changeTrack(0)">
-        track 1
-      </button>
-      <button @click="changeTrack(1)">
-        track 2
-      </button>
-      <button @click="changeTrack(2)">
-        track 3
-      </button>
-    </div>
-    <div class="container">
-      <h4>single audio example</h4>
-      <AudioPlayer
-        :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
-        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true"
-        @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
-        @shuffle-toggle="handleShuffleToggle"
-      >
-        <template v-if="showExtended" #extended-top>
-          <div>test</div>
-        </template>
-        <ExtendedInfo
-          :audio-data="audioData" :extended-info-open="false" :location-button="true"
-          @extended-click="showExtended = !showExtended"
-        />
-      </AudioPlayer>
-      <button @click="toggleAudio()">
-        {{ audioStatus }}
-      </button>
-      <button @click="changeTrack(0)">
-        track 1
-      </button>
-      <button @click="changeTrack(1)">
-        track 2
-      </button>
-      <button @click="changeTrack(2)">
-        track 3
-      </button>
-    </div>
-  </div>
-</template>
 
 <style lang="scss" scoped>
 .content {

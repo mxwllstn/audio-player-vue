@@ -1,12 +1,3 @@
-<script lang="ts" setup>
-defineProps({
-  volume: {
-    type: Number,
-    default: 100,
-  },
-})
-</script>
-
 <template>
   <svg
     v-if="Number(volume) === 0" width="19" height="14" viewBox="0 0 19 14" fill="none"
@@ -49,3 +40,12 @@ defineProps({
     />
   </svg>
 </template>
+
+<script lang="ts" setup>
+defineProps({
+  volume: {
+    type: Number,
+    default: 100,
+  },
+})
+</script>
