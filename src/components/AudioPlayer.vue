@@ -1,86 +1,65 @@
-<template>
-  <div class="audio-player-container">
-    <slot name="extended-top" />
-    <div v-if="loading || error" class="audio-player">
-      <AntennaIcon class="button" />
-      <div v-if="loading" class="loading">Loading...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
-    </div>
-    <AudioStreamPlayer v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'" />
-    <AudioFilePlayer v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
-      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
-      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
-      :class="{ 'extended-info-opened': extendedInfoOpened }" @audio-status-updated="updateAudioStatus" @previous="$emit('previous')"
-      @next="$emit('next')" @shuffle-toggle="handleShuffleToggle">
-      <slot />
-    </AudioFilePlayer>
-    <slot name="extended-bottom" />
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { computed, onMounted, ref } from 'vue'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
 import AntennaIcon from './AntennaIcon.vue'
-import { ref, computed, onMounted } from 'vue'
 
 const props = defineProps({
   useAudioContext: {
     type: Boolean,
-    default: false
+    default: false,
   },
   src: {
     type: String,
-    default: null
+    default: null,
   },
   stream: {
     type: Boolean,
-    default: null
+    default: null,
   },
   audioStatus: {
     type: String,
-    default: undefined
+    default: undefined,
   },
   idx: {
     type: Number,
-    default: null
+    default: null,
   },
   volumeBar: {
     type: Boolean,
-    default: false
+    default: false,
   },
   playOnMount: {
     type: Boolean,
-    default: false
+    default: false,
   },
   previousButton: {
     type: Boolean,
-    default: false
+    default: false,
   },
   nextButton: {
     type: Boolean,
-    default: false
+    default: false,
   },
   volumeButton: {
     type: Boolean,
-    default: true
+    default: true,
   },
   shuffleButton: {
     type: Boolean,
-    default: false
+    default: false,
   },
   spacebarToggle: {
     type: Boolean,
-    default: false
+    default: false,
   },
   extendedInfoOpened: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const emit = defineEmits(['loaded', 'audio-status-updated', 'previous', 'next', 'shuffle-toggle'])
+const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -91,20 +70,20 @@ onMounted(async () => {
   await initAudioContext()
 })
 
-const setLoading = (state: boolean) => {
+function setLoading(state: boolean) {
   loading.value = state
   state === false && emit('loaded')
 }
 
-const updateAudioStatus = (status: any): void => {
-  emit('audio-status-updated', status, props.idx)
+function updateAudioStatus(status: any): void {
+  emit('audioStatusUpdated', status, props.idx)
 }
 
-const handleShuffleToggle = (active: any): void => {
-  emit('shuffle-toggle', active)
+function handleShuffleToggle(active: any): void {
+  emit('shuffleToggle', active)
 }
 
-const initAudioContext = async () => {
+async function initAudioContext() {
   try {
     if (!props.src) {
       error.value = 'Select an audio source'
@@ -123,25 +102,56 @@ const initAudioContext = async () => {
         error.value = 'Stream not found'
       }
       request.onprogress = () => {
-        if (request.status === 200) {
+        if (request.status === 200)
           request.abort()
-        } else {
+        else
           error.value = 'Stream not found'
-        }
+
         setLoading(false)
       }
-    } else {
+    }
+    else {
       setLoading(false)
     }
-  } catch (error: any) {
+  }
+  catch (error: any) {
     setLoading(false)
     console.error(error.message)
   }
 }
 </script>
 
+<template>
+  <div class="audio-player-container">
+    <slot name="extended-top" />
+    <div v-if="loading || error" class="audio-player">
+      <AntennaIcon class="button" />
+      <div v-if="loading" class="loading">
+        Loading...
+      </div>
+      <div v-else-if="error" class="error">
+        {{ error }}
+      </div>
+    </div>
+    <AudioStreamPlayer
+      v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
+      :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
+    />
+    <AudioFilePlayer
+      v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
+      :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
+      :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
+      :class="{ 'extended-info-opened': extendedInfoOpened }" @audio-status-updated="updateAudioStatus" @previous="$emit('previous')"
+      @next="$emit('next')" @shuffle-toggle="handleShuffleToggle"
+    >
+      <slot />
+    </AudioFilePlayer>
+    <slot name="extended-bottom" />
+  </div>
+</template>
+
 <style lang="scss">
-@import '../assets/scss/main.scss';
+@import '../assets/scss/main';
 
 .audio-player-container {
   display: flex;

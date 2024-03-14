@@ -1,22 +1,14 @@
-<template>
-  <div class="volumebar-container" @mousedown="initDrag">
-    <div ref="volumebar" class="volumebar">
-      <div class="elapsed" :style="{ width: markerPosition + '%' }"></div>
-      <div class="marker" :style="{ left: markerPosition + '%' }"></div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+
 const props = defineProps({
   volume: {
     type: Number,
-    default: null
-  }
+    default: null,
+  },
 })
 
-const emit = defineEmits(['set-gain'])
+const emit = defineEmits(['setGain'])
 
 const dragPosition = ref(null as number | null)
 const gainPosition = ref(null as number | null)
@@ -28,26 +20,26 @@ const markerPosition = computed((): number => {
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
-const setGainPosition = (position: number) => {
+function setGainPosition(position: number) {
   if (gainPosition.value !== position) {
     gainPosition.value = position
-    emit('set-gain', gainPosition.value)
+    emit('setGain', gainPosition.value)
   }
 }
-const initDrag = (event: { x: number }): void => {
+function initDrag(event: { x: number }): void {
   const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
   dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
   setGainPosition(dragPosition.value)
   dragInit.value = true
 }
-const drag = (event: { x: number }): void => {
+function drag(event: { x: number }): void {
   if (dragInit.value) {
     const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
     dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
     setGainPosition(dragPosition.value)
   }
 }
-const handleMouseup = (): void => {
+function handleMouseup(): void {
   if (dragInit.value) {
     dragPosition.value = null
     dragInit.value = false
@@ -55,7 +47,7 @@ const handleMouseup = (): void => {
 }
 
 onMounted(() => {
-  window.addEventListener('mousemove', event => {
+  window.addEventListener('mousemove', (event) => {
     drag(event)
   })
   window.addEventListener('mouseup', () => {
@@ -64,11 +56,20 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <div class="volumebar-container" @mousedown="initDrag">
+    <div ref="volumebar" class="volumebar">
+      <div class="elapsed" :style="{ width: `${markerPosition}%` }" />
+      <div class="marker" :style="{ left: `${markerPosition}%` }" />
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .volumebar-container {
   width: 100%;
-  margin: 0px 1rem;
-  padding: 1rem 0px;
+  margin: 0 1rem;
+  padding: 1rem 0;
 
   .volumebar {
     background: #808080;
@@ -80,8 +81,8 @@ onMounted(() => {
       background: #000;
       height: 100%;
       position: absolute;
-      left: 0px;
-      top: 0px;
+      left: 0;
+      top: 0;
     }
 
     .marker {
@@ -89,7 +90,7 @@ onMounted(() => {
       height: 1.5rem;
       position: relative;
       top: -10px;
-      left: 0px;
+      left: 0;
       width: 0.25rem;
     }
   }

@@ -1,24 +1,6 @@
-<template>
-  <div class="audio-player">
-    <div class="controls">
-      <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
-      <LoadingSpinner v-if="loading" class="button" />
-      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
-      <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
-      <TimeDisplay type="current" class="current" :current-time="displayTime" />
-      <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-      <TimeDisplay type="duration" class="duration" :duration="duration" />
-      <ShuffleButton v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
-        @click="toggleShuffle" />
-      <VolumeToggle v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
-        @mouseleave="showVolume = false" @set-gain="setGain" />
-    </div>
-    <slot />
-    <audio ref="audioPlayer" :src="src"></audio>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import axios from 'axios'
+import { computed, onMounted, ref, watch } from 'vue'
 import PlayBar from './PlayBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 import TimeDisplay from './TimeDisplay.vue'
@@ -27,62 +9,59 @@ import PlayButton from './PlayButton.vue'
 import PreviousButton from './PreviousButton.vue'
 import NextButton from './NextButton.vue'
 import ShuffleButton from './ShuffleButton.vue'
-import axios from 'axios'
-
-import { ref, onMounted, watch, computed } from 'vue'
 
 const props = defineProps({
   useAudioContext: {
     type: Boolean,
-    default: false
+    default: false,
   },
   initDuration: {
     type: Number,
-    default: 0
+    default: 0,
   },
   audioStatus: {
     type: String,
-    default: null
+    default: null,
   },
   playOnSeek: {
     type: Boolean,
-    default: false
+    default: false,
   },
   resetOnEnd: {
     type: Boolean,
-    default: false
+    default: false,
   },
   src: {
     type: String,
-    default: null
+    default: null,
   },
   playOnMount: {
     type: Boolean,
-    default: false
+    default: false,
   },
   previousButton: {
     type: Boolean,
-    default: false
+    default: false,
   },
   nextButton: {
     type: Boolean,
-    default: false
+    default: false,
   },
   volumeButton: {
     type: Boolean,
-    default: true
+    default: true,
   },
   shuffleButton: {
     type: Boolean,
-    default: true
+    default: true,
   },
   spacebarToggle: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
-const emit = defineEmits(['audio-status-updated', 'previous', 'next', 'shuffle-toggle'])
+const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle'])
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)
@@ -108,13 +87,12 @@ const displayTime = computed((): number => seekTime.value || currentTime.value)
 watch(
   () => props.audioStatus,
   () => {
-    if (props.audioStatus !== status.value) {
+    if (props.audioStatus !== status.value)
       toggleAudio()
-    }
-  }
+  },
 )
 watch(status, () => {
-  emit('audio-status-updated', status.value)
+  emit('audioStatusUpdated', status.value)
 })
 
 onMounted(async () => {
@@ -132,9 +110,9 @@ onMounted(async () => {
   props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
 })
 
-const initAudioContext = async () => {
+async function initAudioContext() {
   const { data } = await axios.get(props.src, {
-    responseType: 'arraybuffer'
+    responseType: 'arraybuffer',
   })
 
   audioContext.value = new AudioContext()
@@ -148,80 +126,101 @@ const initAudioContext = async () => {
   source.value.connect(gainNode.value)
   gainNode.value.connect(audioContext.value.destination)
 }
-const initAudioPlayer = () => {
+function initAudioPlayer() {
   duration.value = props.initDuration
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {
-    if (timeUpdate.value) {
+    if (timeUpdate.value)
       clearInterval(timeUpdate.value)
-    }
+
     currentTime.value = duration.value
     isPaused.value = audioPlayer.value.paused
     props.resetOnEnd && resetCurrentTime()
   }
 }
-const resetCurrentTime = () => {
+function resetCurrentTime() {
   currentTime.value = 0
 }
-const resumeAudioContext = () => {
+function resumeAudioContext() {
   if (audioContext.value) {
     audioContext.value.resume()
     setGain(Number(volume.value))
   }
 }
-const toggleAudio = () => {
-  if (audioContext.value && audioContext.value.state === 'suspended') {
+function toggleAudio() {
+  if (audioContext.value && audioContext.value.state === 'suspended')
     resumeAudioContext()
-  }
-  if (isPlaying.value) {
+
+  if (isPlaying.value)
     pause()
-  } else {
+  else
     play()
-  }
 }
-const play = () => {
+function play() {
   audioPlayer.value.play()
   startTimeUpdate()
   isPaused.value = audioPlayer.value.paused
 }
-const setGain = (vol: number) => {
+function setGain(vol: number) {
   volume.value = Number(vol)
-  if (gainNode.value) {
+  if (gainNode.value)
     gainNode.value.gain.value = volume.value / 100
-  } else {
+  else
     audioPlayer.value.volume = vol / 100
-  }
 }
-const pause = () => {
+function pause() {
   audioPlayer.value.pause()
   stopTimeUpdate()
   isPaused.value = audioPlayer.value.paused
 }
-const setSeekTime = (seekPosition: number) => {
+function setSeekTime(seekPosition: number) {
   seekTime.value = duration.value * seekPosition
 }
-const seek = (seekPosition: number) => {
+function seek(seekPosition: number) {
   seekTime.value = null
   audioPlayer.value.currentTime = duration.value * seekPosition
   currentTime.value = audioPlayer.value.currentTime
   !isPlaying.value && props.playOnSeek && toggleAudio()
 }
-const startTimeUpdate = () => {
+function startTimeUpdate() {
   timeUpdate.value = window.setInterval(() => {
     currentTime.value = audioPlayer.value?.currentTime
   }, 25)
 }
-const stopTimeUpdate = () => {
-  if (timeUpdate.value) {
+function stopTimeUpdate() {
+  if (timeUpdate.value)
     clearInterval(timeUpdate.value)
-  }
 }
 
-const toggleShuffle = () => {
+function toggleShuffle() {
   shuffleActive.value = !shuffleActive.value
-  emit('shuffle-toggle', shuffleActive.value)
+  emit('shuffleToggle', shuffleActive.value)
 }
 </script>
+
+<template>
+  <div class="audio-player">
+    <div class="controls">
+      <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
+      <LoadingSpinner v-if="loading" class="button" />
+      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
+      <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
+      <TimeDisplay type="current" class="current" :current-time="displayTime" />
+      <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
+      <TimeDisplay type="duration" class="duration" :duration="duration" />
+      <ShuffleButton
+        v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
+        @click="toggleShuffle"
+      />
+      <VolumeToggle
+        v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+        @mouseleave="showVolume = false" @set-gain="setGain"
+      />
+    </div>
+    <slot />
+    <audio ref="audioPlayer" :src="src" />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .audio-player {
@@ -253,10 +252,6 @@ const toggleShuffle = () => {
       &.next {
         padding-right: 0.5rem;
       }
-
-      @include md {
-        // height: 0.8rem;
-      }
     }
 
     .duration {
@@ -270,19 +265,6 @@ const toggleShuffle = () => {
         display: none;
       }
     }
-
-    // :deep(.playbar-container) {
-    //   .playbar {
-    //     @include md {
-    //       display: none;
-    //     }
-    //   }
-
-    //   @include md {
-    //     width: auto;
-    //     display: none;
-    //   }
-    // }
   }
 }
 </style>

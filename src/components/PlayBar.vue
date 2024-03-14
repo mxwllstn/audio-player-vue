@@ -1,52 +1,44 @@
-<template>
-  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
-    <div ref="playbar" class="playbar">
-      <div v-if="duration" class="elapsed" :class="{ 'complete': markerPosition >= 100 }" :style="{ width: markerPosition + '%' }"></div>
-      <div class="marker" :style="{ left: markerPosition + '%' }"></div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+
 const props = defineProps({
   currentTime: {
     type: Number,
-    default: null
+    default: null,
   },
   duration: {
     type: Number,
-    default: null
-  }
+    default: null,
+  },
 })
 
-const emit = defineEmits(['seek', 'set-seek-time'])
+const emit = defineEmits(['seek', 'setSeekTime'])
 
 const dragPosition = ref(null as number | null)
 const dragInit = ref(false)
 const playbar = ref()
 
-const showDuration = computed(() => !isNaN(props.duration) && typeof props.duration !== 'undefined')
+const showDuration = computed(() => !Number.isNaN(props.duration) && typeof props.duration !== 'undefined')
 
 const markerPosition = computed((): number => {
   const position = dragInit.value && dragPosition.value ? dragPosition.value : (props.currentTime / props.duration) * 100
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
-const initDrag = (event: { x: number }): void => {
+function initDrag(event: { x: number }): void {
   const windowOffset = window.innerWidth < 768 ? -16 : -2
   dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-  emit('set-seek-time', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
+  emit('setSeekTime', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   dragInit.value = true
 }
-const drag = (event: { x: number }): void => {
+function drag(event: { x: number }): void {
   if (dragInit.value) {
     const windowOffset = window.innerWidth < 768 ? -16 : -2
     dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-    emit('set-seek-time', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
+    emit('setSeekTime', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   }
 }
-const handleMouseup = (event: { x: number }): void => {
+function handleMouseup(event: { x: number }): void {
   if (dragInit.value) {
     const windowOffset = window.innerWidth < 768 ? -16 : -2
     dragPosition.value = null
@@ -57,29 +49,35 @@ const handleMouseup = (event: { x: number }): void => {
 }
 
 onMounted(() => {
-  window.addEventListener('mousemove', event => {
+  window.addEventListener('mousemove', (event) => {
     drag(event)
   })
-  window.addEventListener('mouseup', event => {
+  window.addEventListener('mouseup', (event) => {
     handleMouseup(event)
   })
 })
 </script>
 
+<template>
+  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
+    <div ref="playbar" class="playbar">
+      <div v-if="duration" class="elapsed" :class="{ complete: markerPosition >= 100 }" :style="{ width: `${markerPosition}%` }" />
+      <div class="marker" :style="{ left: `${markerPosition}%` }" />
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .playbar-container {
   width: 100%;
-  // margin: 0px 1rem;
-  padding: 1rem 0px;
+  padding: 1rem 0;
   cursor: pointer;
 
   @include md {
-    padding: 0px;
+    padding: 0;
     position: absolute;
-    top: 0px;
-    left: 0rem;
-    // width: auto;
-    // display: none;
+    top: 0;
+    left: 0;
   }
 
   .playbar {
@@ -88,7 +86,7 @@ onMounted(() => {
     position: relative;
 
     @include md {
-      border-radius: 0.25rem 0.25rem 0px 0px;
+      border-radius: 0.25rem 0.25rem 0 0;
     }
 
     .elapsed {
@@ -96,13 +94,14 @@ onMounted(() => {
       background: #000;
       height: 100%;
       position: absolute;
-      left: 0px;
-      top: 0px;
+      left: 0;
+      top: 0;
 
       @include md {
-        border-radius: 0.25rem 0px 0px 0px;
+        border-radius: 0.25rem 0 0;
+
         &.complete {
-          border-radius: 0.25rem 0.25rem 0px 0px;
+          border-radius: 0.25rem 0.25rem 0 0;
         }
       }
 
@@ -114,7 +113,7 @@ onMounted(() => {
       height: 1.5rem;
       position: relative;
       top: -10px;
-      left: 0px;
+      left: 0;
       width: 0.25rem;
       transition: opacity 100ms;
 

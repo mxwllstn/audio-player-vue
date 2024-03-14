@@ -1,47 +1,47 @@
-<template>
-  <div class="volume">
-    <VolumeButton :volume="Number(volume)" class="button" @click="toggleMute" />
-    <div v-if="showVolume" class="slider-container">
-      <input v-model="volume" type="range" min="0" max="100" class="slider" @input="setGain" />
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
+import { computed, ref } from 'vue'
 import VolumeButton from './VolumeButton.vue'
-
-import { ref, computed } from 'vue'
 
 const props = defineProps({
   initVolume: {
     type: Number,
-    default: 100
+    default: 100,
   },
   showVolume: {
     type: Boolean,
-    default: false
-  } 
+    default: false,
+  },
 })
-const emit = defineEmits(['set-gain', 'toggle-mute'])
+const emit = defineEmits(['setGain', 'toggle-mute'])
 
 const volume = ref(Number(props.initVolume))
 const prevVolume = ref(100)
 
 const muted = computed((): boolean => Number(volume.value) === 0)
 
-const setGain = () => {
-  emit('set-gain', Number(volume.value))
+function setGain() {
+  emit('setGain', Number(volume.value))
 }
-const toggleMute = () => {
+function toggleMute() {
   if (muted.value) {
     volume.value = Number(prevVolume.value)
-  } else {
+  }
+  else {
     prevVolume.value = Number(volume.value)
     volume.value = 0
   }
-  emit('set-gain', Number(volume.value))
+  emit('setGain', Number(volume.value))
 }
 </script>
+
+<template>
+  <div class="volume">
+    <VolumeButton :volume="Number(volume)" class="button" @click="toggleMute" />
+    <div v-if="showVolume" class="slider-container">
+      <input v-model="volume" type="range" min="0" max="100" class="slider" @input="setGain">
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .volume {
@@ -62,38 +62,42 @@ const toggleMute = () => {
       position: relative;
       top: 22px;
       left: -15px;
-      -webkit-appearance: none;
+
       /* Override default CSS styles */
       appearance: none;
       width: 50px;
+
       /* Full-width */
       height: 3px;
+
       /* Specified height */
       background: #000;
+
       /* Grey background */
       outline: none;
+
       /* Remove outline */
       opacity: 0.7;
-      /* Set transparency (for mouse-over effects on hover) */
-      -webkit-transition: 0.2s;
+
       /* 0.2 seconds transition on hover */
       transition: opacity 0.2s;
       transform: rotate(270deg);
       cursor: pointer;
 
       &::-webkit-slider-thumb {
-        -webkit-appearance: none;
         /* Override default look */
         appearance: none;
         border-radius: 10px;
         width: 10px;
+
         /* Set a specific slider handle width */
         height: 10px;
+
         /* Slider handle height */
         background: #000;
+
         /* Green background */
         cursor: pointer;
-        /* Cursor on hover */
       }
     }
   }

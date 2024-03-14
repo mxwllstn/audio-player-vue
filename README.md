@@ -7,7 +7,7 @@ Vue component for embedding audio files and streams
 ```vue
   /* audio file player */
   <AudioPlayer src="https://test.com/file.mp3" />
-  
+
   /* audio stream player */
   <AudioPlayer src="https://test.com/stream" stream />
 ```
