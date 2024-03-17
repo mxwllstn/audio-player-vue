@@ -5,7 +5,7 @@
       <div v-for="(audio, idx) of audios" :key="idx">
         <AudioPlayer
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
-          :audio-status="audio.status" @audio-status-updated="updateAudioStatus"
+          :audio-status="audio.status" @audio-status-updated="updateAudioStatus" @set-master="onSetMaster"
         />
         <button @click="toggleAudio(idx)">
           {{ audio.status }}
@@ -120,6 +120,10 @@ const audioStatus = ref('stopped')
 const playOnMount = ref(false)
 
 const shuffleActive = ref(false)
+
+function onSetMaster($event: any) {
+  console.log($event)
+}
 
 function updateAudioStatus(status: string, idx: number) {
   if (idx !== null) {

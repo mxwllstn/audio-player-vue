@@ -1,7 +1,8 @@
 <template>
   <div v-if="src" class="audio-player">
+    {{ masterVolume }}
     <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
-    <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
+    <VolumeBar v-if="volumeBar" :volume="masterVolume" @set-master="$emit('setMaster', $event)" />
     <VolumeToggle
       v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
       @mouseleave="showVolume = false" @set-gain="setGain"
@@ -38,7 +39,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['streamEnded', 'audioStatusUpdated'])
+const emit = defineEmits(['streamEnded', 'audioStatusUpdated', 'setMaster'])
 
 const audioPlayer = ref(new Audio(props.src))
 const gainNode = ref(null as GainNode | null)

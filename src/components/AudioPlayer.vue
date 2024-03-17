@@ -12,7 +12,7 @@
     </div>
     <AudioStreamPlayer
       v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      :use-audio-context="true" :master-volume="masterVolume"
+      :use-audio-context="true" :master-volume="masterVolume" @set-master="$emit('setMaster', $event)"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
     />
     <AudioFilePlayer
@@ -90,11 +90,11 @@ const props = defineProps({
   },
   masterVolume: {
     type: Number,
-    default: 1,
+    default: 0.1,
   },
 })
 
-const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle'])
+const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'setMaster'])
 
 const loading = ref(true)
 const error = ref(null as string | null)

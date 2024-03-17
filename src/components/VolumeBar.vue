@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['setGain'])
+const emit = defineEmits(['setMaster'])
 
 const dragPosition = ref(null as number | null)
 const gainPosition = ref(null as number | null)
@@ -32,7 +32,7 @@ const markerPosition = computed((): number => {
 function setGainPosition(position: number) {
   if (gainPosition.value !== position) {
     gainPosition.value = position
-    emit('setGain', gainPosition.value)
+    emit('setMaster', gainPosition.value / 100)
   }
 }
 function initDrag(event: { x: number }): void {
