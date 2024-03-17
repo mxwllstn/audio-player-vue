@@ -123,6 +123,12 @@ watch(
 watch(status, () => {
   emit('audioStatusUpdated', status.value)
 })
+watch(
+  () => props.masterVolume,
+  () => {
+    setGain(volume.value)
+  },
+)
 
 onMounted(async () => {
   initAudioPlayer()
