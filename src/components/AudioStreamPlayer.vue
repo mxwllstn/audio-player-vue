@@ -64,7 +64,7 @@ watch(status, () => {
 watch(
   () => props.masterVolume,
   () => {
-    setGain(volume.value)
+    setGain()
   },
 )
 
@@ -74,7 +74,7 @@ onMounted(() => {
 })
 
 function setVolume(vol: number) {
-  volume.value = Number(vol)
+  volume.value = Number(vol * props.masterVolume)
 }
 
 function initAudioPlayer() {
@@ -121,10 +121,10 @@ function play() {
 function pause() {
   audioPlayer.value.pause()
 }
-function setGain(vol: number) {
-  setVolume(vol)
+function setGain(vol?: number) {
+  vol && setVolume(vol)
   if (gainNode.value) {
-    gainNode.value.gain.value = (volume.value * props.masterVolume) / 100
+    gainNode.value.gain.value = volume.value / 100
   }
 }
 </script>
