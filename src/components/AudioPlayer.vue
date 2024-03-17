@@ -12,14 +12,16 @@
     </div>
     <AudioStreamPlayer
       v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      :use-audio-context="true" @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
+      :use-audio-context="true" :master-volume="masterVolume"
+      @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
     />
     <AudioFilePlayer
       v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
       :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
       :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
-      :class="{ 'extended-info-opened': extendedInfoOpened }" @audio-status-updated="updateAudioStatus" @previous="$emit('previous')"
-      @next="$emit('next')" @shuffle-toggle="handleShuffleToggle"
+      :class="{ 'extended-info-opened': extendedInfoOpened }" :master-volume="masterVolume"
+      @audio-status-updated="updateAudioStatus" @previous="$emit('previous')" @next="$emit('next')"
+      @shuffle-toggle="handleShuffleToggle"
     >
       <slot />
     </AudioFilePlayer>
@@ -85,6 +87,10 @@ const props = defineProps({
   extendedInfoOpened: {
     type: Boolean,
     default: false,
+  },
+  masterVolume: {
+    type: Number,
+    default: 1,
   },
 })
 

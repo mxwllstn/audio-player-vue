@@ -32,6 +32,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  masterVolume: {
+    type: Number,
+    default: 1,
+  },
 })
 
 const emit = defineEmits(['streamEnded', 'audioStatusUpdated'])
@@ -44,7 +48,7 @@ const isPaused = ref(undefined as boolean | undefined)
 const showVolume = ref(false)
 const volume = ref(100)
 
-const initVolume = computed(() => volume.value || 100)
+const initVolume = computed(() => Number(volume.value || 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
 
@@ -63,7 +67,10 @@ onMounted(() => {
   props.volumeBar && setVolume(50)
 })
 
-const setVolume = (vol: number) => volume.value = Number(vol)
+function setVolume(vol: number) {
+  volume.value = Number(vol * props.masterVolume)
+}
+
 function initAudioPlayer() {
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {

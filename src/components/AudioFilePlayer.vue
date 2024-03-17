@@ -83,6 +83,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  masterVolume: {
+    type: Number,
+    default: 1,
+  },
 })
 
 const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle'])
@@ -103,7 +107,7 @@ const volume = ref(100)
 
 const shuffleActive = ref(false)
 
-const initVolume = computed(() => Number(volume.value) || 100)
+const initVolume = computed(() => Number((volume.value) || 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => (isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
 const displayTime = computed((): number => seekTime.value || currentTime.value)
@@ -190,7 +194,7 @@ function play() {
   isPaused.value = audioPlayer.value.paused
 }
 function setGain(vol: number) {
-  volume.value = Number(vol)
+  volume.value = Number(vol * props.masterVolume)
   if (gainNode.value) {
     gainNode.value.gain.value = volume.value / 100
   } else {
