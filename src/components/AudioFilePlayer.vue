@@ -200,11 +200,11 @@ function play() {
   isPaused.value = audioPlayer.value.paused
 }
 function setGain(vol: number) {
-  volume.value = Number(vol * props.masterVolume)
+  volume.value = Number(vol)
   if (gainNode.value) {
-    gainNode.value.gain.value = volume.value / 100
+    gainNode.value.gain.value = (volume.value * props.masterVolume) / 100
   } else {
-    audioPlayer.value.volume = vol / 100
+    audioPlayer.value.volume = (vol * props.masterVolume) / 100
   }
 }
 function pause() {
