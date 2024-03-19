@@ -12,7 +12,7 @@
     </div>
     <AudioStreamPlayer
       v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      :use-audio-context="true" :master-volume="masterVolume"
+      :use-audio-context="true" :master-volume="masterVolume" :loading="loading"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
     />
     <AudioFilePlayer
@@ -102,7 +102,7 @@ const error = ref(null as string | null)
 const isStream = computed(() => props.stream !== null)
 
 onMounted(async () => {
-  await initAudioContext()
+  await initAudioPlayer()
 })
 
 function setLoading(state: boolean) {
@@ -118,7 +118,7 @@ function handleShuffleToggle(active: any): void {
   emit('shuffleToggle', active)
 }
 
-async function initAudioContext() {
+async function initAudioPlayer() {
   try {
     if (!props.src) {
       error.value = 'Select an audio source'

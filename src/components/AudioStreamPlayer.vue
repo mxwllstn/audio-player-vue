@@ -1,6 +1,7 @@
 <template>
   <div v-if="src" class="audio-player">
-    <PlayButton :is-playing="isPlaying" class="button" @click="toggleAudio" />
+    <AntennaIcon v-if="isConnecting" class="button" />
+    <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
     <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
     <VolumeToggle
       v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
@@ -15,6 +16,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import AntennaIcon from './AntennaIcon.vue'
 import VolumeBar from './VolumeBar.vue'
 import PlayButton from './PlayButton.vue'
 import VolumeToggle from './VolumeToggle.vue'
@@ -36,6 +38,10 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['streamEnded', 'audioStatusUpdated'])
@@ -48,12 +54,15 @@ const isPaused = ref(undefined as boolean | undefined)
 const showVolume = ref(false)
 const volume = ref(100)
 
-const initVolume = computed(() => Number(volume.value || 100) * props.masterVolume)
+const isReady = ref()
+const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
-const status = computed((): string => isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
+const isLoading = computed((): boolean => props.loading)
+const isConnecting = computed(() => !isLoading.value && isReady.value === false)
+const status = computed((): string => isConnecting.value ? 'connecting' : isLoading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
 
 watch(() => props.audioStatus, () => {
-  if (props.audioStatus !== status.value) {
+  if ((status.value !== 'loading' && status.value !== 'connecting') && props.audioStatus !== status.value) {
     toggleAudio()
   }
 })
@@ -92,9 +101,18 @@ function initAudioContext() {
   gainNode.value.connect(audioContext.value.destination)
   setGain(volume.value)
 }
+
+audioPlayer.value.addEventListener('canplaythrough', () => {
+  isReady.value = true
+})
+
 async function toggleAudio() {
   if (!audioContext.value) {
     initAudioContext()
+  }
+
+  if (!isReady.value) {
+    isReady.value = false
   }
 
   if (isPlaying.value) {
