@@ -14,6 +14,7 @@
       v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
       :use-audio-context="true" :master-volume="masterVolume" :loading="loading"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
+      @amplitude-data="onAmplitudeData" @spectral-data="onSpectralData"
     />
     <AudioFilePlayer
       v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
@@ -94,7 +95,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle'])
+const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'amplitudeData', 'spectralData'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -112,6 +113,14 @@ function setLoading(state: boolean) {
 
 function updateAudioStatus(status: any): void {
   emit('audioStatusUpdated', status, props.idx)
+}
+
+function onAmplitudeData(data: any): void {
+  emit('amplitudeData', data, props.idx)
+}
+
+function onSpectralData(data: any): void {
+  emit('spectralData', data, props.idx)
 }
 
 function handleShuffleToggle(active: any): void {

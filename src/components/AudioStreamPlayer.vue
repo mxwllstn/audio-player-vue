@@ -44,7 +44,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['streamEnded', 'audioStatusUpdated'])
+const emit = defineEmits(['streamEnded', 'audioStatusUpdated', 'spectralData', 'amplitudeData'])
 
 const audioPlayer = ref(new Audio(props.src))
 const gainNode = ref(null as GainNode | null)
@@ -54,6 +54,7 @@ const isPaused = ref(undefined as boolean | undefined)
 const showVolume = ref(false)
 const volume = ref(100)
 
+const analyser = ref(null as AnalyserNode | null)
 const isReady = ref()
 const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
@@ -70,12 +71,10 @@ watch(() => props.audioStatus, () => {
 watch(status, () => {
   emit('audioStatusUpdated', status.value)
 })
-watch(
-  () => props.masterVolume,
-  () => {
-    setGain(volume.value)
-  },
-)
+
+watch(() => props.masterVolume, () => {
+  setGain(volume.value)
+})
 
 onMounted(() => {
   initAudioPlayer()
@@ -84,6 +83,7 @@ onMounted(() => {
 
 function setVolume(vol: number) {
   volume.value = Number(vol)
+  audioPlayer.value.volume = (volume.value * props.masterVolume) / 100
 }
 
 function initAudioPlayer() {
@@ -100,11 +100,65 @@ function initAudioContext() {
   source.value.connect(gainNode.value)
   gainNode.value.connect(audioContext.value.destination)
   setGain(volume.value)
+  analyser.value = audioContext.value.createAnalyser()
+  analyser.value.connect(audioContext.value.destination)
 }
 
 audioPlayer.value.addEventListener('canplaythrough', () => {
+  source.value && analyser.value && source.value.connect(analyser.value)
   isReady.value = true
+  trackData('amplitude')
 })
+
+function trackData(type: string | string[]) {
+  if (type.includes('amplitude')) {
+    setInterval(() => {
+      const data = getAmplitudeData()
+      emit('amplitudeData', data)
+    }, 100)
+  }
+  if (type.includes('spectral')) {
+    setInterval(() => {
+      const data = getSpectralData()
+      if (data) {
+        emit('spectralData', data)
+      }
+    }, 100)
+  }
+}
+
+function getAmplitudeData() {
+  if (analyser.value) {
+    analyser.value.fftSize = 2048
+    const bufferLength = analyser.value.frequencyBinCount
+    const dataArray = new Uint8Array(bufferLength)
+    const amplitudeData = new Float32Array(dataArray)
+
+    analyser.value.getFloatTimeDomainData(amplitudeData)
+
+    const sumOfSquares = amplitudeData.reduce((accumulator: number, currentValue: number) => accumulator + currentValue ** 2)
+    const avgPowerDecibels = 10 * Math.log10(sumOfSquares / amplitudeData.length)
+
+    const peakInstantaneousPower = amplitudeData.reduce((accumulator: number, currentValue: number) => Math.max(currentValue ** 2, accumulator))
+    const peakInstantaneousPowerDecibels = 10 * Math.log10(peakInstantaneousPower)
+
+    return { avg: avgPowerDecibels, peak: peakInstantaneousPowerDecibels }
+  }
+}
+
+function getSpectralData() {
+  if (analyser.value) {
+    analyser.value.fftSize = 2048
+    const bufferLength = analyser.value.frequencyBinCount
+    const dataArray = new Uint8Array(bufferLength)
+    const freqByteData = new Uint8Array(dataArray)
+    const timeByteData = new Uint8Array(dataArray)
+
+    analyser.value.getByteFrequencyData(freqByteData)
+    analyser.value.getByteTimeDomainData(timeByteData)
+    return { freq: freqByteData, time: timeByteData }
+  }
+}
 
 async function toggleAudio() {
   if (!audioContext.value) {
