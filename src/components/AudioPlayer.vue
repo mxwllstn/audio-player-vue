@@ -12,7 +12,7 @@
     </div>
     <AudioStreamPlayer
       v-else-if="isStream" :volume-bar="volumeBar" :src="src" :audio-status="audioStatus"
-      :use-audio-context="true" :master-volume="masterVolume" :loading="loading"
+      :use-audio-context="true" :master-volume="masterVolume" :loading="loading" :data-tracking="dataTracking"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
       @amplitude-data="onAmplitudeData" @spectral-data="onSpectralData"
     />
@@ -92,6 +92,10 @@ const props = defineProps({
   masterVolume: {
     type: Number,
     default: 1,
+  },
+  dataTracking: {
+    type: [String, Array],
+    default: null,
   },
 })
 

@@ -42,6 +42,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  dataTracking: {
+    type: [String, Array],
+    default: null,
+  },
 })
 
 const emit = defineEmits(['streamEnded', 'audioStatusUpdated', 'spectralData', 'amplitudeData'])
@@ -107,7 +111,10 @@ function initAudioContext() {
 audioPlayer.value.addEventListener('canplaythrough', () => {
   source.value && analyser.value && source.value.connect(analyser.value)
   isReady.value = true
-  trackData('amplitude')
+  if (props.dataTracking) {
+    props.dataTracking.includes('amplitude') && trackData('amplitude')
+    props.dataTracking.includes('spectral') && trackData('spectral')
+  }
 })
 
 function trackData(type: string | string[]) {
