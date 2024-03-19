@@ -120,15 +120,19 @@ audioPlayer.value.addEventListener('canplaythrough', () => {
 function trackData(type: string | string[]) {
   if (type.includes('amplitude')) {
     setInterval(() => {
-      const data = getAmplitudeData()
-      emit('amplitudeData', data)
-    }, 100)
+      if (status.value === 'playing') {
+        const data = getAmplitudeData()
+        emit('amplitudeData', data)
+      }
+    }, 50)
   }
   if (type.includes('spectral')) {
     setInterval(() => {
-      const data = getSpectralData()
-      if (data) {
-        emit('spectralData', data)
+      if (status.value === 'playing') {
+        const data = getSpectralData()
+        if (data) {
+          emit('spectralData', data)
+        }
       }
     }, 100)
   }
@@ -136,7 +140,7 @@ function trackData(type: string | string[]) {
 
 function getAmplitudeData() {
   if (analyser.value) {
-    analyser.value.fftSize = 2048
+    analyser.value.fftSize = 2048 * 4
     const bufferLength = analyser.value.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength)
     const amplitudeData = new Float32Array(dataArray)

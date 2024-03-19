@@ -5,7 +5,9 @@
       <div v-for="(audio, idx) of audios" :key="idx">
         <AudioPlayer
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
-          :audio-status="audio.status" @audio-status-updated="updateAudioStatus"
+          :audio-status="audio.status" :data-tracking="audio.dataTracking" class="data-tracking"
+          :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent' }"
+          @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
         />
         <button @click="toggleAudio(idx)">
           {{ audio.status }}
@@ -112,6 +114,12 @@ const audios = ref([
     status: 'stopped',
     volumeBar: true,
   },
+  {
+    src: 'https://stream.sonicscape.land/audiohijack1',
+    stream: true,
+    status: 'stopped',
+    dataTracking: 'amplitude',
+  },
 ])
 // const audioFile = ref()
 const audioFile = ref(audios.value[0].src)
@@ -160,6 +168,20 @@ function handlePrevious() {
 function handleShuffleToggle(active: boolean) {
   shuffleActive.value = active
 }
+
+const dbOpacity = ref(0)
+
+const mapNumRange = (num: number, inMin: number, inMax: number, outMin: number, outMax: number) => ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
+
+function onAmplitudeData(data: any) {
+  const { avg } = data
+  const val = mapNumRange(avg, -50, 0, 0, 100)
+  if (Number.isFinite(val)) {
+    dbOpacity.value = val
+  } else {
+    dbOpacity.value = 0
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -181,6 +203,10 @@ function handleShuffleToggle(active: boolean) {
     margin: 0 1rem;
     font-size: 0.75rem;
   }
+}
+
+.data-tracking {
+  transition: background-color 10ms linear;
 }
 
 :deep(.audio-player-container .audio-player .button) {
