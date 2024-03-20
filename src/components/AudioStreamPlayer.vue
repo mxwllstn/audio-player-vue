@@ -128,9 +128,7 @@ function trackData(type: string | string[]) {
     setInterval(() => {
       if (status.value === 'playing') {
         const data = getAmplitudeData()
-        if (data && Number.isFinite(data.avg)) {
-          emit('amplitudeData', data)
-        }
+        data && Number.isFinite(data.avg) ? emit('amplitudeData', data) : emit('amplitudeData', null)
       }
     }, 50)
   }
