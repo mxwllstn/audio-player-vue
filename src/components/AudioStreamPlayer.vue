@@ -119,6 +119,10 @@ audioPlayer.value.addEventListener('canplaythrough', () => {
   }
 })
 
+function resetDataTracking() {
+  props.dataTracking.includes('amplitude') && emit('amplitudeData', null)
+}
+
 function trackData(type: string | string[]) {
   if (type.includes('amplitude')) {
     setInterval(() => {
@@ -189,6 +193,8 @@ async function toggleAudio() {
   } else {
     start()
   }
+
+  props.dataTracking && resetDataTracking()
 
   isPaused.value = audioPlayer.value.paused
 }

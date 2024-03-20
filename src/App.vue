@@ -175,10 +175,9 @@ const dbOpacity = ref(0)
 const mapNumRange = (num: number, inMin: number, inMax: number, outMin: number, outMax: number) => ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
 
 function onAmplitudeData(data: any) {
-  const { avg } = data
-  const val = mapNumRange(avg, -50, 0, 0, 100)
+  const { avg } = data || {}
+  const val = avg ? mapNumRange(avg, -50, 0, 0, 100) : 0
   dbOpacity.value = val
-  console.log(val)
 }
 </script>
 
