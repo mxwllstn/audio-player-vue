@@ -60,11 +60,11 @@ const showVolume = ref(false)
 const volume = ref(100)
 
 const analyser = ref(null as AnalyserNode | null)
-const isReady = ref()
+const canPlayThrough = ref()
 const initVolume = ref(Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const isLoading = computed((): boolean => props.loading)
-const isConnecting = computed(() => !isLoading.value && isReady.value === false)
+const isConnecting = computed(() => !isLoading.value && canPlayThrough.value === false)
 const status = computed((): string => isConnecting.value ? 'connecting' : isLoading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
 
 watch(() => props.audioStatus, () => {
@@ -106,17 +106,15 @@ function initAudioContext() {
   gainNode.value.connect(audioContext.value.destination)
   analyser.value = audioContext.value.createAnalyser()
   analyser.value.connect(audioContext.value.destination)
-  setGain(0)
-}
-
-audioPlayer.value.addEventListener('canplaythrough', () => {
   source.value && analyser.value && source.value.connect(analyser.value)
-  setGain(initVolume.value)
-  isReady.value = true
   if (props.dataTracking) {
     props.dataTracking.includes('amplitude') && trackData('amplitude')
     props.dataTracking.includes('spectral') && trackData('spectral')
   }
+}
+
+audioPlayer.value.addEventListener('canplaythrough', () => {
+  canPlayThrough.value = true
 })
 
 function resetDataTracking() {
@@ -126,7 +124,7 @@ function resetDataTracking() {
 function trackData(type: string | string[]) {
   if (type.includes('amplitude')) {
     setInterval(() => {
-      if (status.value === 'playing' || status.value === 'connecting') {
+      if (status.value === 'playing') {
         const data = getAmplitudeData()
         if (data && Number.isFinite(data.avg)) {
           emit('amplitudeData', data)
@@ -184,8 +182,8 @@ async function toggleAudio() {
     initAudioContext()
   }
 
-  if (!isReady.value) {
-    isReady.value = false
+  if (!canPlayThrough.value) {
+    canPlayThrough.value = false
   }
 
   if (isPlaying.value) {
