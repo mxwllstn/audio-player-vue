@@ -111,10 +111,12 @@ function initAudioContext() {
     props.dataTracking.includes('amplitude') && trackData('amplitude')
     props.dataTracking.includes('spectral') && trackData('spectral')
   }
+  !canPlayThrough.value && setGain(0)
 }
 
 audioPlayer.value.addEventListener('canplaythrough', () => {
   canPlayThrough.value = true
+  setGain(initVolume.value)
 })
 
 function resetDataTracking() {
