@@ -8,7 +8,7 @@
           :audio-status="audio.status" :data-tracking="audio.dataTracking"
           @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
         >
-          <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent' }" />
+          <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
         </AudioPlayer>
         <button @click="toggleAudio(idx)">
           {{ audio.status }}
@@ -207,7 +207,7 @@ function onAmplitudeData(data: any) {
 }
 
 .data-tracking {
-  transition: background-color 10ms linear;
+  transition: background-color 50ms linear, transform 500ms linear;
 }
 
 .amplitude {
