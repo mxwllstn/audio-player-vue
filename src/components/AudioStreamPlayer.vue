@@ -61,7 +61,7 @@ const volume = ref(100)
 
 const analyser = ref(null as AnalyserNode | null)
 const isReady = ref()
-const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
+const initVolume = ref(Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const isLoading = computed((): boolean => props.loading)
 const isConnecting = computed(() => !isLoading.value && isReady.value === false)
@@ -104,13 +104,14 @@ function initAudioContext() {
   gainNode.value = audioContext.value.createGain()
   source.value.connect(gainNode.value)
   gainNode.value.connect(audioContext.value.destination)
-  setGain(volume.value)
   analyser.value = audioContext.value.createAnalyser()
   analyser.value.connect(audioContext.value.destination)
+  setGain(0)
 }
 
 audioPlayer.value.addEventListener('canplaythrough', () => {
   source.value && analyser.value && source.value.connect(analyser.value)
+  setGain(initVolume.value)
   isReady.value = true
   if (props.dataTracking) {
     props.dataTracking.includes('amplitude') && trackData('amplitude')
@@ -121,9 +122,11 @@ audioPlayer.value.addEventListener('canplaythrough', () => {
 function trackData(type: string | string[]) {
   if (type.includes('amplitude')) {
     setInterval(() => {
-      if (status.value === 'playing') {
+      if (status.value === 'playing' || status.value === 'connecting') {
         const data = getAmplitudeData()
-        emit('amplitudeData', data)
+        if (data && Number.isFinite(data.avg)) {
+          emit('amplitudeData', data)
+        }
       }
     }, 50)
   }

@@ -177,11 +177,8 @@ const mapNumRange = (num: number, inMin: number, inMax: number, outMin: number, 
 function onAmplitudeData(data: any) {
   const { avg } = data
   const val = mapNumRange(avg, -50, 0, 0, 100)
-  if (Number.isFinite(val)) {
-    dbOpacity.value = val
-  } else {
-    dbOpacity.value = 0
-  }
+  dbOpacity.value = val
+  console.log(val)
 }
 </script>
 
