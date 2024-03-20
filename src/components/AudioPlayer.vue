@@ -15,7 +15,9 @@
       :use-audio-context="true" :master-volume="masterVolume" :loading="loading" :data-tracking="dataTracking"
       @audio-status-updated="updateAudioStatus" @stream-ended="error = 'Stream ended'"
       @amplitude-data="onAmplitudeData" @spectral-data="onSpectralData"
-    />
+    >
+      <slot />
+    </AudioStreamPlayer>
     <AudioFilePlayer
       v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
       :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"

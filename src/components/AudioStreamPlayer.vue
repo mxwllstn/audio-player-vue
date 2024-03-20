@@ -10,6 +10,7 @@
     <div class="title">
       Stream
     </div>
+    <slot />
     <audio ref="audioPlayer" :src="src" />
   </div>
 </template>

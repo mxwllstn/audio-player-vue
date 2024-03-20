@@ -5,10 +5,11 @@
       <div v-for="(audio, idx) of audios" :key="idx">
         <AudioPlayer
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
-          :audio-status="audio.status" :data-tracking="audio.dataTracking" class="data-tracking"
-          :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent' }"
+          :audio-status="audio.status" :data-tracking="audio.dataTracking"
           @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
-        />
+        >
+          <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent' }" />
+        </AudioPlayer>
         <button @click="toggleAudio(idx)">
           {{ audio.status }}
         </button>
@@ -207,6 +208,12 @@ function onAmplitudeData(data: any) {
 
 .data-tracking {
   transition: background-color 10ms linear;
+}
+
+.amplitude {
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 1.25rem;
 }
 
 :deep(.audio-player-container .audio-player .button) {
