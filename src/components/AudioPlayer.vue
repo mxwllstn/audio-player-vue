@@ -176,6 +176,7 @@ async function initAudioPlayer() {
 .audio-player-container {
   display: flex;
   flex-direction: column;
+  color: #000;
 
   .loading,
   .error {

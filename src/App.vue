@@ -184,6 +184,7 @@ function onAmplitudeData(data: any) {
 <style lang="scss" scoped>
 .content {
   font-family: AuthenticSans, Arial, sans-serif;
+  color: red;
 
   .container {
     padding: 1rem 0;
