@@ -19,7 +19,7 @@
       <h4>single audio example</h4>
       <AudioPlayer
         :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
-        rounded @audio-status-updated="updateAudioStatus"
+        @audio-status-updated="updateAudioStatus"
       >
         <ExtendedInfo
           :audio-data="audioData" :extended-info-open="false" :queue-button="true"

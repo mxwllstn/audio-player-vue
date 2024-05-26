@@ -197,7 +197,7 @@ async function initAudioPlayer() {
     padding: 0.75rem 1rem;
 
     @include md {
-      padding: 1rem 1rem 1rem 0.75rem;
+      padding: 1.25rem 1rem 1rem 0.75rem;
     }
 
     .button {
