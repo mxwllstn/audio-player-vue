@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-player-container">
+  <div class="audio-player-container" :class="{ rounded }">
     <slot name="extended-top" />
     <div v-if="loading || error" class="audio-player">
       <AntennaIcon class="button" />
@@ -99,6 +99,10 @@ const props = defineProps({
     type: [String, Array],
     default: null,
   },
+  rounded: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'amplitudeData', 'spectralData'])
@@ -185,10 +189,6 @@ async function initAudioPlayer() {
     line-height: 2.25rem;
   }
 
-  @include md {
-    padding: 1rem;
-  }
-
   .audio-player {
     font-family: SpaceGrotesk, Arial, sans-serif;
     display: flex;
@@ -198,13 +198,33 @@ async function initAudioPlayer() {
 
     @include md {
       padding: 1rem 1rem 1rem 0.75rem;
-      border-radius: 0.25rem;
     }
 
     .button {
       height: 1rem;
       width: auto;
       flex-shrink: 0;
+    }
+  }
+
+  &.rounded {
+    @include md {
+      .audio-player {
+        border-radius: 0.25rem;
+
+        .playbar {
+          border-radius: 0.25rem 0.25rem 0 0;
+        }
+
+        &.extended-info-opened {
+          border-radius: 0 0 0.25rem 0.25rem;
+
+          .playbar {
+            border-radius: 0;
+          }
+        }
+
+      }
     }
   }
 }

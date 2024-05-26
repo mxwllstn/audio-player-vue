@@ -19,7 +19,7 @@
       <h4>single audio example</h4>
       <AudioPlayer
         :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount"
-        @audio-status-updated="updateAudioStatus"
+        rounded @audio-status-updated="updateAudioStatus"
       >
         <ExtendedInfo
           :audio-data="audioData" :extended-info-open="false" :queue-button="true"
@@ -40,11 +40,11 @@
       </button>
     </div>
     <div class="container">
-      <h4>single audio example</h4>
+      <h4>single audio example 2</h4>
       <AudioPlayer
         :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
         :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true"
-        @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
+        :extended-info-opened="showExtended" rounded @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
         @shuffle-toggle="handleShuffleToggle"
       >
         <template v-if="showExtended" #extended-top>
@@ -211,6 +211,18 @@ function onAmplitudeData(data: any) {
   height: 1.25rem;
   width: 1.25rem;
   border-radius: 1.25rem;
+}
+
+:deep(.audio-player-container) {
+  // padding-top: 1rem;
+  // padding-bottom: 1rem;
+  padding: 1rem 0;
+
+  @include md {
+    &.rounded {
+      padding: 1rem;
+    }
+  }
 }
 
 :deep(.audio-player-container .audio-player .button) {

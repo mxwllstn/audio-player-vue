@@ -85,10 +85,6 @@ onMounted(() => {
     height: 0.25rem;
     position: relative;
 
-    @include md {
-      border-radius: 0.25rem 0.25rem 0 0;
-    }
-
     .elapsed {
       content: '';
       background: #000;
