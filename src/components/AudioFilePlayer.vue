@@ -227,7 +227,7 @@ function setSeekTime(seekPosition: number | null) {
   emit('seekUpdate', seekTime.value)
 }
 function seek(seekPosition: number) {
-  seekTime.value = null
+  setSeekTime(null)
   audioPlayer.value.currentTime = duration.value * seekPosition
   setCurrentTime(audioPlayer.value.currentTime)
   !isPlaying.value && props.playOnSeek && toggleAudio()
