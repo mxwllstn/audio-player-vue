@@ -145,6 +145,11 @@ onMounted(async () => {
   props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
 })
 
+function setCurrentTime(val: number) {
+  currentTime.value = val
+  emit('timeUpdate', { time: currentTime.value, duration: duration.value })
+}
+
 function setDuration(val: number) {
   duration.value = val
   emit('timeUpdate', { time: currentTime.value, duration: duration.value })
@@ -174,13 +179,13 @@ function initAudioPlayer() {
       clearInterval(timeUpdate.value)
     }
 
-    currentTime.value = duration.value
+    setCurrentTime(duration.value)
     isPaused.value = audioPlayer.value.paused
     props.resetOnEnd && resetCurrentTime()
   }
 }
 function resetCurrentTime() {
-  currentTime.value = 0
+  setCurrentTime(0)
 }
 function resumeAudioContext() {
   if (audioContext.value) {
@@ -223,13 +228,12 @@ function setSeekTime(seekPosition: number) {
 function seek(seekPosition: number) {
   seekTime.value = null
   audioPlayer.value.currentTime = duration.value * seekPosition
-  currentTime.value = audioPlayer.value.currentTime
+  setCurrentTime(audioPlayer.value.currentTime)
   !isPlaying.value && props.playOnSeek && toggleAudio()
 }
 function startTimeUpdate() {
   timeUpdate.value = window.setInterval(() => {
-    currentTime.value = audioPlayer.value?.currentTime
-    emit('timeUpdate', { time: currentTime.value, duration: duration.value })
+    setCurrentTime(audioPlayer.value?.currentTime)
   }, 25)
 }
 function stopTimeUpdate() {
