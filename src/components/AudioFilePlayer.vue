@@ -147,6 +147,7 @@ onMounted(async () => {
 
 function setDuration(val: number) {
   duration.value = val
+  emit('timeUpdate', { time: currentTime.value, duration: duration.value })
 }
 
 async function initAudioContext() {
