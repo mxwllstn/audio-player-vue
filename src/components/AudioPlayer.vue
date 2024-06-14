@@ -24,7 +24,7 @@
       :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
       :class="{ 'extended-info-opened': extendedInfoOpened }" :master-volume="masterVolume"
       @audio-status-updated="updateAudioStatus" @previous="$emit('previous')" @next="$emit('next')"
-      @shuffle-toggle="handleShuffleToggle"
+      @shuffle-toggle="handleShuffleToggle" @time-update="$emit('timeUpdate', $event)"
     >
       <slot />
     </AudioFilePlayer>
@@ -105,7 +105,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'amplitudeData', 'spectralData'])
+const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'amplitudeData', 'spectralData', 'timeUpdate'])
 
 const loading = ref(true)
 const error = ref(null as string | null)

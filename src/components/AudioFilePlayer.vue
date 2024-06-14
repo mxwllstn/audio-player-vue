@@ -89,7 +89,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle'])
+const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'timeUpdate'])
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)
@@ -224,6 +224,7 @@ function seek(seekPosition: number) {
 function startTimeUpdate() {
   timeUpdate.value = window.setInterval(() => {
     currentTime.value = audioPlayer.value?.currentTime
+    emit('timeUpdate', currentTime.value)
   }, 25)
 }
 function stopTimeUpdate() {
