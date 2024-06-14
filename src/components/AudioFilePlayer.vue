@@ -89,7 +89,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'timeUpdate'])
+const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate'])
 
 const audioPlayer = ref()
 const audioContext = ref(undefined as AudioContext | undefined)
@@ -133,17 +133,21 @@ watch(
 onMounted(async () => {
   initAudioPlayer()
   audioPlayer.value.onloadstart = () => {
-    duration.value = 0
+    setDuration(0)
   }
   audioPlayer.value.onloadedmetadata = () => {
     resetCurrentTime()
-    duration.value = audioPlayer.value.duration
+    setDuration(audioPlayer.value.duration)
     props.playOnMount && play()
     loading.value = false
   }
   props.useAudioContext && await initAudioContext()
   props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
 })
+
+function setDuration(val: number) {
+  duration.value = val
+}
 
 async function initAudioContext() {
   const { data } = await axios.get(props.src, {
@@ -153,7 +157,7 @@ async function initAudioContext() {
   audioContext.value = new AudioContext()
   /* set duration */
   const decoded = await audioContext.value.decodeAudioData(data)
-  duration.value = decoded.duration
+  setDuration(decoded.duration)
 
   /* gainNode setup */
   source.value = audioContext.value.createMediaElementSource(audioPlayer.value as HTMLMediaElement)
@@ -162,7 +166,7 @@ async function initAudioContext() {
   gainNode.value.connect(audioContext.value.destination)
 }
 function initAudioPlayer() {
-  duration.value = props.initDuration
+  setDuration(props.initDuration)
   audioPlayer.value.crossOrigin = 'anonymous'
   audioPlayer.value.onended = () => {
     if (timeUpdate.value) {
@@ -224,7 +228,7 @@ function seek(seekPosition: number) {
 function startTimeUpdate() {
   timeUpdate.value = window.setInterval(() => {
     currentTime.value = audioPlayer.value?.currentTime
-    emit('timeUpdate', currentTime.value)
+    emit('timeUpdate', { time: currentTime.value, duration: duration.value })
   }, 25)
 }
 function stopTimeUpdate() {
