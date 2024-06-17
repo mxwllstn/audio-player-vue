@@ -43,14 +43,22 @@ const audioPlayerOffset = computed(() => ((window.innerWidth - props.audioPlayer
 function initDrag(event: { x: number }): void {
   const windowOffset = -audioPlayerOffset.value
   dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-  emit('setSeekTime', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
+  emit('setSeekTime', dragPosition.value / 100 >= 0
+    ? dragPosition.value / 100 <= 1
+      ? dragPosition.value / 100
+      : 1
+    : 0)
   dragInit.value = true
 }
 function drag(event: { x: number }): void {
   if (dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-    emit('setSeekTime', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
+    emit('setSeekTime', dragPosition.value / 100 >= 0
+      ? dragPosition.value / 100 <= 1
+        ? dragPosition.value / 100
+        : 1
+      : 0)
   }
 }
 function handleMouseup(event: { x: number }): void {
