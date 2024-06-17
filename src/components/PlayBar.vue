@@ -19,6 +19,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  audioPlayerWidth: {
+    type: Number,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['seek', 'setSeekTime'])
@@ -34,22 +38,24 @@ const markerPosition = computed((): number => {
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
+const audioPlayerOffset = computed(() => ((window.innerWidth - props.audioPlayerWidth - 32) / 2) + 2)
+
 function initDrag(event: { x: number }): void {
-  const windowOffset = window.innerWidth < 768 ? -16 : -2
+  const windowOffset = -audioPlayerOffset.value
   dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
   emit('setSeekTime', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   dragInit.value = true
 }
 function drag(event: { x: number }): void {
   if (dragInit.value) {
-    const windowOffset = window.innerWidth < 768 ? -16 : -2
+    const windowOffset = -audioPlayerOffset.value
     dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('setSeekTime', dragPosition.value / 100 >= 0 ? dragPosition.value / 100 : 0)
   }
 }
 function handleMouseup(event: { x: number }): void {
   if (dragInit.value) {
-    const windowOffset = window.innerWidth < 768 ? -16 : -2
+    const windowOffset = -audioPlayerOffset.value
     dragPosition.value = null
     dragInit.value = false
     const seekPosition = (event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth

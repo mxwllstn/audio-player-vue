@@ -1,12 +1,12 @@
 <template>
-  <div class="audio-player">
+  <div ref="audioPlayerContainer" class="audio-player">
     <div class="controls">
       <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
       <LoadingSpinner v-if="loading" class="button" />
       <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
       <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
       <TimeDisplay type="current" class="current" :current-time="displayTime" />
-      <PlayBar :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
+      <PlayBar :audio-player-width="audioPlayerWidth" :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
       <TimeDisplay type="duration" class="duration" :duration="duration" />
       <ShuffleButton
         v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
@@ -107,6 +107,8 @@ const volume = ref(100)
 
 const shuffleActive = ref(false)
 
+const audioPlayerContainer = ref()
+const audioPlayerWidth = ref()
 const initVolume = computed(() => Number((volume.value) || 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => (isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
@@ -130,8 +132,25 @@ watch(
   },
 )
 
+const audioPlayerResizeObserver = ref()
+function onAudioPlayerResize(entries: any[]) {
+  entries.forEach((entry) => {
+    if (entry.contentRect.width !== audioPlayerWidth.value) {
+      audioPlayerWidth.value = entry.contentRect.width
+      console.log(audioPlayerWidth.value, window.innerWidth)
+    }
+  })
+}
+
+function initAudioPlayerResizeObserver() {
+  audioPlayerResizeObserver.value = new ResizeObserver(onAudioPlayerResize)
+  audioPlayerResizeObserver.value.observe(audioPlayerContainer.value)
+}
+
 onMounted(async () => {
   initAudioPlayer()
+  initAudioPlayerResizeObserver()
+
   audioPlayer.value.onloadstart = () => {
     setDuration(0)
   }

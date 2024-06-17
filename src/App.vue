@@ -43,9 +43,9 @@
       <h4>single audio example 2</h4>
       <AudioPlayer
         :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true"
-        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true"
-        :extended-info-opened="showExtended" rounded @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious"
-        @shuffle-toggle="handleShuffleToggle"
+        :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true" rounded
+        :extended-info-opened="showExtended" @audio-status-updated="updateAudioStatus" @next="handleNext"
+        @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle"
       >
         <template v-if="showExtended" #extended-top>
           <div>test</div>
