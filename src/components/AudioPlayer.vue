@@ -221,6 +221,10 @@ async function initAudioPlayer() {
 
           .playbar {
             border-radius: 0;
+
+            .elapsed {
+              border-radius: 0;
+            }
           }
         }
 
