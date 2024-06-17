@@ -137,7 +137,6 @@ function onAudioPlayerResize(entries: any[]) {
   entries.forEach((entry) => {
     if (entry.contentRect.width !== audioPlayerWidth.value) {
       audioPlayerWidth.value = entry.contentRect.width
-      console.log(audioPlayerWidth.value, window.innerWidth)
     }
   })
 }
