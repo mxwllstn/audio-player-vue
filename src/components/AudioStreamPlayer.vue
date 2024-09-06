@@ -187,7 +187,7 @@ async function toggleAudio() {
   }
 
   if (isPlaying.value) {
-    stop()
+    pause()
   } else {
     start()
   }
@@ -197,16 +197,17 @@ async function toggleAudio() {
   isPaused.value = audioPlayer.value.paused
 }
 function start() {
-  audioPlayer.value.src = props.src
   audioPlayer.value.load()
   play()
 }
-function stop() {
-  pause()
-  audioPlayer.value.src = 'reset'
-  audioPlayer.value.load()
-}
+// function stop() {
+//   pause()
+//   audioPlayer.value.src = 'reset'
+//   audioPlayer.value.load()
+// }
 function play() {
+  audioPlayer.value.src = props.src
+  audioPlayer.value.load()
   audioPlayer.value.play()
 }
 function pause() {
