@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-player-container" :class="{ rounded }">
+  <div v-show="!hidden" class="audio-player-container" :class="{ rounded }">
     <slot name="extended-top" />
     <div v-if="loading || error" class="audio-player">
       <AntennaIcon class="button" />
@@ -100,6 +100,10 @@ const props = defineProps({
     default: null,
   },
   rounded: {
+    type: Boolean,
+    default: false,
+  },
+  hidden: {
     type: Boolean,
     default: false,
   },

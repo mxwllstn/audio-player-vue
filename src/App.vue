@@ -5,7 +5,7 @@
       <div v-for="(audio, idx) of audios" :key="idx">
         <AudioPlayer
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
-          :audio-status="audio.status" :data-tracking="audio.dataTracking"
+          :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden"
           @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
         >
           <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
@@ -105,18 +105,19 @@ const audios = ref([
     },
   },
   {
-    src: 'https://stream.sonicscape.land/audiohijack2',
+    src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
     status: 'stopped',
+    hidden: true,
   },
   {
-    src: 'https://stream.sonicscape.land/audiohijack2',
+    src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
     status: 'stopped',
     volumeBar: true,
   },
   {
-    src: 'https://stream.sonicscape.land/audiohijack1',
+    src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
     status: 'stopped',
     dataTracking: 'amplitude',
