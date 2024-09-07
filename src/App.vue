@@ -10,8 +10,8 @@
         >
           <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
         </AudioPlayer>
-        <button @click="toggleAudio(idx)">
-          {{ audio.status }}
+        <button :disabled="!audio.status" @click="toggleAudio(idx)">
+          {{ audio.status ? audio.status : 'initializing' }}
         </button>
       </div>
     </div>
@@ -81,7 +81,6 @@ const showExtended = ref(false)
 const audios = ref([
   {
     src: '/audio/1.mp3',
-    status: 'stopped',
     data: {
       artist: 'Max Stein',
       title: 'Parc Lafontaine 2023.08.09',
@@ -90,7 +89,6 @@ const audios = ref([
   },
   {
     src: '/audio/2.mp3',
-    status: 'stopped',
     data: {
       artist: 'Max Stein',
       title: 'Echo Park Lake 2023.03.01',
@@ -98,7 +96,6 @@ const audios = ref([
   },
   {
     src: '/audio/3.mp3',
-    status: 'stopped',
     data: {
       artist: 'Max Stein',
       title: 'Parc Jarry 2022.05.12',
@@ -107,22 +104,31 @@ const audios = ref([
   {
     src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
-    status: 'stopped',
-    hidden: true,
   },
   {
     src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
-    status: 'stopped',
     volumeBar: true,
   },
   {
     src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
-    status: 'stopped',
     dataTracking: 'amplitude',
   },
-])
+  {
+    src: 'https://stream.sonicscape.land/audiohijack4',
+    stream: true,
+    hidden: true,
+  },
+] as {
+  src: string
+  stream?: boolean
+  hidden?: boolean
+  status?: string
+  data?: any
+  dataTracking?: any
+  volumeBar?: boolean
+}[])
 // const audioFile = ref()
 const audioFile = ref(audios.value[0].src)
 const audioData = ref(audios.value[0].data)

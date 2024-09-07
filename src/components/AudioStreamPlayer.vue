@@ -11,7 +11,6 @@
       Stream
     </div>
     <slot />
-    <audio ref="audioPlayer" :src="src" />
   </div>
 </template>
 
@@ -61,7 +60,7 @@ const volume = ref(100)
 
 const analyser = ref(null as AnalyserNode | null)
 const canPlayThrough = ref()
-const initVolume = ref(Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
+const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
 const isLoading = computed((): boolean => props.loading)
 const isConnecting = computed(() => !isLoading.value && canPlayThrough.value === false)
@@ -77,13 +76,19 @@ watch(status, () => {
   emit('audioStatusUpdated', status.value)
 })
 
+watch(() => audioPlayer.value.paused, () => {
+  isPaused.value = true
+})
+
 watch(() => props.masterVolume, () => {
   setGain(volume.value)
 })
 
 onMounted(() => {
   initAudioPlayer()
-  props.volumeBar && setVolume(50)
+  if (props.volumeBar) {
+    setVolume(50)
+  }
 })
 
 function setVolume(vol: number) {
@@ -93,10 +98,15 @@ function setVolume(vol: number) {
 
 function initAudioPlayer() {
   audioPlayer.value.crossOrigin = 'anonymous'
+  audioPlayer.value.onloadedmetadata = () => {
+    !audioPlayer.value.paused && emit('audioStatusUpdated', 'playing')
+    canPlayThrough.value = true
+  }
   audioPlayer.value.onended = () => {
     emit('streamEnded')
     isPaused.value = audioPlayer.value.paused
   }
+  emit('audioStatusUpdated', status.value)
 }
 function initAudioContext() {
   audioContext.value = new AudioContext()
@@ -111,7 +121,6 @@ function initAudioContext() {
     props.dataTracking.includes('amplitude') && trackData('amplitude')
     props.dataTracking.includes('spectral') && trackData('spectral')
   }
-  !canPlayThrough.value && setGain(0)
 }
 
 audioPlayer.value.addEventListener('canplaythrough', () => {
@@ -197,6 +206,7 @@ async function toggleAudio() {
   isPaused.value = audioPlayer.value.paused
 }
 function start() {
+  canPlayThrough.value = false
   audioPlayer.value.load()
   play()
 }

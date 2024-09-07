@@ -111,7 +111,7 @@ const audioPlayerContainer = ref()
 const audioPlayerWidth = ref()
 const initVolume = computed(() => Number((volume.value) || 100) * props.masterVolume)
 const isPlaying = computed((): boolean => status.value === 'playing')
-const status = computed((): string => (isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
+const status = computed((): string => (loading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
 watch(
