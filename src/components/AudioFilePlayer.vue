@@ -109,7 +109,7 @@ const shuffleActive = ref(false)
 
 const audioPlayerContainer = ref()
 const audioPlayerWidth = ref()
-const initVolume = computed(() => Number((volume.value) || 100) * props.masterVolume)
+const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100))
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => (loading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
 const displayTime = computed((): number => seekTime.value || currentTime.value)
@@ -192,6 +192,7 @@ async function initAudioContext() {
 function initAudioPlayer() {
   setDuration(props.initDuration)
   audioPlayer.value.crossOrigin = 'anonymous'
+  setGain(initVolume.value)
   audioPlayer.value.onended = () => {
     if (timeUpdate.value) {
       clearInterval(timeUpdate.value)

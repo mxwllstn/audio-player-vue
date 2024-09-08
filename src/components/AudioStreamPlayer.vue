@@ -60,7 +60,7 @@ const volume = ref(100)
 
 const analyser = ref(null as AnalyserNode | null)
 const canPlayThrough = ref()
-const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100) * props.masterVolume)
+const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100))
 const isPlaying = computed((): boolean => status.value === 'playing')
 const isLoading = computed((): boolean => props.loading)
 const isConnecting = computed(() => !isLoading.value && canPlayThrough.value === false)
@@ -98,6 +98,7 @@ function setVolume(vol: number) {
 
 function initAudioPlayer() {
   audioPlayer.value.crossOrigin = 'anonymous'
+  setGain(initVolume.value)
   audioPlayer.value.onloadedmetadata = () => {
     !audioPlayer.value.paused && emit('audioStatusUpdated', 'playing')
     canPlayThrough.value = true

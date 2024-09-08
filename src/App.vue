@@ -6,7 +6,7 @@
         <AudioPlayer
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
           :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden"
-          @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
+          :master-volume="0.75" @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
         >
           <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
         </AudioPlayer>
