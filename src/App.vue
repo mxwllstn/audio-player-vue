@@ -5,12 +5,12 @@
       <div v-for="(audio, idx) of audios" :key="idx">
         <AudioPlayer
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
-          :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden"
-          :master-volume="0.75" @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
+          :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75"
+          @error="handleError($event, idx)" @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
         >
           <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
         </AudioPlayer>
-        <button :disabled="!audio.status" @click="toggleAudio(idx)">
+        <button v-if="audio?.status !== 'error'" :disabled="!audio.status" @click="toggleAudio(idx)">
           {{ audio.status ? audio.status : 'initializing' }}
         </button>
       </div>
@@ -137,7 +137,17 @@ const playOnMount = ref(false)
 
 const shuffleActive = ref(false)
 
+function handleError(error: string, idx: number) {
+  // if (idx !== null) {
+  //   audios.value[idx].status = error
+  // } else {
+  //   audioStatus.value = error
+  // }
+  console.log({ idx, error })
+}
+
 function updateAudioStatus(status: string, idx: number) {
+  console.log({ status })
   if (idx !== null) {
     audios.value[idx].status = status
   } else {

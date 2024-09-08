@@ -109,7 +109,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['loaded', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'amplitudeData', 'spectralData', 'timeUpdate', 'seekUpdate'])
+const emit = defineEmits(['loaded', 'error', 'audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'amplitudeData', 'spectralData', 'timeUpdate', 'seekUpdate'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
@@ -158,12 +158,16 @@ async function initAudioPlayer() {
       request.onerror = () => {
         setLoading(false)
         error.value = 'Stream not found'
+        updateAudioStatus('error')
+        emit('error', error.value)
       }
       request.onprogress = () => {
         if (request.status === 200) {
           request.abort()
         } else {
           error.value = 'Stream not found'
+          updateAudioStatus('error')
+          emit('error', error.value)
         }
 
         setLoading(false)
