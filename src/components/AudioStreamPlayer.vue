@@ -100,8 +100,8 @@ function initAudioPlayer() {
   audioPlayer.value.crossOrigin = 'anonymous'
   setGain(initVolume.value)
   audioPlayer.value.onloadedmetadata = () => {
-    !audioPlayer.value.paused && emit('audioStatusUpdated', 'playing')
-    canPlayThrough.value = true
+    // !audioPlayer.value.paused && emit('audioStatusUpdated', 'playing')
+    // canPlayThrough.value = true
   }
   audioPlayer.value.onended = () => {
     emit('streamEnded')
@@ -124,10 +124,13 @@ function initAudioContext() {
   }
 }
 
-audioPlayer.value.addEventListener('canplaythrough', () => {
+audioPlayer.value.addEventListener('canplaythrough', setCanPlayThrough)
+audioPlayer.value.addEventListener('canplay', setCanPlayThrough)
+
+function setCanPlayThrough() {
   canPlayThrough.value = true
   setGain(initVolume.value)
-})
+}
 
 function resetDataTracking() {
   props.dataTracking.includes('amplitude') && emit('amplitudeData', null)

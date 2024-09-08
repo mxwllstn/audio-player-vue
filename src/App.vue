@@ -102,7 +102,7 @@ const audios = ref([
     },
   },
   {
-    src: 'https://stream.sonicscape.land/audiohijack4',
+    src: 'https://stream.radiovestige.com/AcousticMirror',
     stream: true,
   },
   {
