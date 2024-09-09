@@ -19,9 +19,13 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  audioPlayerContainerWidth: {
+    type: Number,
+    default: 0,
+  },
   audioPlayerWidth: {
     type: Number,
-    default: null,
+    default: 0,
   },
 })
 
@@ -38,12 +42,12 @@ const markerPosition = computed((): number => {
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
-const audioPlayerOffset = computed(() => ((window.innerWidth - props.audioPlayerWidth - 32) / 2) + 2)
+const audioPlayerOffset = computed(() => ((props.audioPlayerContainerWidth - props.audioPlayerWidth - 32) / 2) + 2)
 
 function initDrag(event: { x: number }): void {
   if (playbar.value) {
     console.log({ event })
-    console.log(window.innerWidth, props.audioPlayerWidth)
+    console.log(props.audioPlayerContainerWidth, props.audioPlayerWidth)
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('setSeekTime', dragPosition.value / 100 >= 0

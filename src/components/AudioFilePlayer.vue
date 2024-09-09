@@ -6,7 +6,7 @@
       <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
       <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
       <TimeDisplay type="current" class="current" :current-time="displayTime" />
-      <PlayBar :audio-player-width="audioPlayerWidth" :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
+      <PlayBar :audio-player-container-width="audioPlayerContainerWidth" :audio-player-width="audioPlayerWidth" :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
       <TimeDisplay type="duration" class="duration" :duration="duration" />
       <ShuffleButton
         v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
@@ -37,6 +37,10 @@ const props = defineProps({
   useAudioContext: {
     type: Boolean,
     default: false,
+  },
+  audioPlayerContainerWidth: {
+    type: Number,
+    default: 0,
   },
   initDuration: {
     type: Number,
@@ -134,7 +138,6 @@ watch(
 const audioPlayerResizeObserver = ref()
 function onAudioPlayerResize(entries: any[]) {
   entries.forEach((entry) => {
-    console.log(entry)
     if (entry.contentRect.width !== audioPlayerWidth.value) {
       audioPlayerWidth.value = entry.contentRect.width
     }

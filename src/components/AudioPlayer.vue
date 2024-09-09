@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!hidden" class="audio-player-container" :class="{ rounded }">
+  <div v-show="!hidden" ref="audioPlayerContainer" class="audio-player-container" :class="{ rounded }">
     <slot name="extended-top" />
     <div v-if="loading || error" class="audio-player">
       <AntennaIcon class="button" />
@@ -19,7 +19,7 @@
       <slot />
     </AudioStreamPlayer>
     <AudioFilePlayer
-      v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount"
+      v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount" :audio-player-container-width="audioPlayerContainerWidth"
       :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
       :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
       :class="{ 'extended-info-opened': extendedInfoOpened }" :master-volume="masterVolume"
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import AntennaIcon from './AntennaIcon.vue'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
@@ -113,8 +113,10 @@ const emit = defineEmits(['loaded', 'error', 'audioStatusUpdated', 'previous', '
 
 const loading = ref(true)
 const error = ref(null as string | null)
+const audioPlayerContainer = useTemplateRef('audioPlayerContainer')
 
 const isStream = computed(() => props.stream !== null)
+const audioPlayerContainerWidth = computed(() => audioPlayerContainer.value?.clientWidth ?? 0)
 
 onMounted(async () => {
   await initAudioPlayer()
