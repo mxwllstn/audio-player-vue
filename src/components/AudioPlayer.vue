@@ -116,10 +116,25 @@ const error = ref(null as string | null)
 const audioPlayerContainer = useTemplateRef('audioPlayerContainer')
 
 const isStream = computed(() => props.stream !== null)
-const audioPlayerContainerWidth = computed(() => audioPlayerContainer.value?.clientWidth ?? 0)
+const audioPlayerContainerWidth = ref()
+
+const audioPlayerContainerResizeObserver = ref()
+function onAudioPlayerContainerResize(entries: any[]) {
+  entries.forEach((entry) => {
+    if (entry.contentRect.width !== audioPlayerContainerWidth.value) {
+      audioPlayerContainerWidth.value = entry.contentRect.width
+    }
+  })
+}
+
+function initAudioPlayerContainerResizeObserver() {
+  audioPlayerContainerResizeObserver.value = new ResizeObserver(onAudioPlayerContainerResize)
+  audioPlayerContainerResizeObserver.value.observe(audioPlayerContainer.value)
+}
 
 onMounted(async () => {
   await initAudioPlayer()
+  initAudioPlayerContainerResizeObserver()
 })
 
 function setLoading(state: boolean) {
