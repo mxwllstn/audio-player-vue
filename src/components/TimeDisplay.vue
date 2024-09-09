@@ -32,7 +32,11 @@ const showDuration = computed(() => !Number.isNaN(props.duration) && typeof prop
 
 function formatTime(time: number, durationType = 'seconds' as DurationUnitType, format = 'mm:ss') {
   const parsedTime = dayjs.duration(time, durationType) as Duration
-  return parsedTime.format(format)
+  if (format === 'mm:ss' && durationType === 'seconds' && time > 3600) {
+    return parsedTime.format('HH:mm:ss')
+  } else {
+    return parsedTime.format(format)
+  }
 }
 </script>
 
