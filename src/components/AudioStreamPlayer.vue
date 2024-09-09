@@ -17,8 +17,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import AntennaIcon from './AntennaIcon.vue'
-import VolumeBar from './VolumeBar.vue'
 import PlayButton from './PlayButton.vue'
+import VolumeBar from './VolumeBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
 
 const props = defineProps({
@@ -117,10 +117,16 @@ function initAudioContext() {
   gainNode.value.connect(audioContext.value.destination)
   analyser.value = audioContext.value.createAnalyser()
   analyser.value.connect(audioContext.value.destination)
-  source.value && analyser.value && source.value.connect(analyser.value)
+  if (source.value && analyser.value) {
+    source.value.connect(analyser.value)
+  }
   if (props.dataTracking) {
-    props.dataTracking.includes('amplitude') && trackData('amplitude')
-    props.dataTracking.includes('spectral') && trackData('spectral')
+    if (props.dataTracking.includes('amplitude')) {
+      trackData('amplitude')
+    }
+    if (props.dataTracking.includes('spectral')) {
+      trackData('spectral')
+    }
   }
 }
 
@@ -133,7 +139,9 @@ function setCanPlayThrough() {
 }
 
 function resetDataTracking() {
-  props.dataTracking.includes('amplitude') && emit('amplitudeData', null)
+  if (props.dataTracking.includes('amplitude')) {
+    emit('amplitudeData', null)
+  }
 }
 
 function trackData(type: string | string[]) {
@@ -141,7 +149,11 @@ function trackData(type: string | string[]) {
     setInterval(() => {
       if (status.value === 'playing') {
         const data = getAmplitudeData()
-        data && Number.isFinite(data.avg) ? emit('amplitudeData', data) : emit('amplitudeData', null)
+        if (data && Number.isFinite(data.avg)) {
+          emit('amplitudeData', data)
+        } else {
+          emit('amplitudeData', null)
+        }
       }
     }, 50)
   }
@@ -205,7 +217,9 @@ async function toggleAudio() {
     start()
   }
 
-  props.dataTracking && resetDataTracking()
+  if (props.dataTracking) {
+    resetDataTracking()
+  }
 
   isPaused.value = audioPlayer.value.paused
 }

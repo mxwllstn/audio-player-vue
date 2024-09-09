@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 
 const props = defineProps({
   volume: {
@@ -22,7 +22,7 @@ const emit = defineEmits(['setGain'])
 const dragPosition = ref(null as number | null)
 const gainPosition = ref(null as number | null)
 const dragInit = ref(false)
-const volumebar = ref()
+const volumebar = useTemplateRef('volumebar')
 
 const markerPosition = computed((): number => {
   const position = dragInit.value && dragPosition.value ? dragPosition.value : props.volume
@@ -36,13 +36,15 @@ function setGainPosition(position: number) {
   }
 }
 function initDrag(event: { x: number }): void {
-  const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
-  dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
-  setGainPosition(dragPosition.value)
-  dragInit.value = true
+  if (volumebar.value) {
+    const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
+    dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
+    setGainPosition(dragPosition.value)
+    dragInit.value = true
+  }
 }
 function drag(event: { x: number }): void {
-  if (dragInit.value) {
+  if (volumebar.value && dragInit.value) {
     const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
     dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
     setGainPosition(dragPosition.value)

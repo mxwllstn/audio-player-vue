@@ -26,8 +26,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import InfoButton from './InfoButton.vue'
-import QueueButton from './QueueButton.vue'
 import LocationButton from './LocationButton.vue'
+import QueueButton from './QueueButton.vue'
 
 const props = defineProps({
   audioData: {

@@ -34,9 +34,9 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
+import AntennaIcon from './AntennaIcon.vue'
 import AudioFilePlayer from './AudioFilePlayer.vue'
 import AudioStreamPlayer from './AudioStreamPlayer.vue'
-import AntennaIcon from './AntennaIcon.vue'
 
 const props = defineProps({
   useAudioContext: {
@@ -122,7 +122,9 @@ onMounted(async () => {
 
 function setLoading(state: boolean) {
   loading.value = state
-  state === false && emit('loaded')
+  if (state === false) {
+    emit('loaded')
+  }
 }
 
 function updateAudioStatus(status: any): void {

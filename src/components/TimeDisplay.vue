@@ -10,8 +10,8 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { Duration, DurationUnitType } from '../lib/dayjs'
 import dayjs from '../lib/dayjs'
+import type { Duration, DurationUnitType } from '../lib/dayjs'
 
 const props = defineProps({
   currentTime: {

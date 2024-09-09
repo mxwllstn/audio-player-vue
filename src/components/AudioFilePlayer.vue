@@ -1,5 +1,5 @@
 <template>
-  <div ref="audioPlayerContainer" class="audio-player">
+  <div ref="audioPlayerEl" class="audio-player">
     <div class="controls">
       <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
       <LoadingSpinner v-if="loading" class="button" />
@@ -18,21 +18,20 @@
       />
     </div>
     <slot />
-    <audio ref="audioPlayer" :src="src" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios'
-import { computed, onMounted, ref, watch } from 'vue'
-import PlayBar from './PlayBar.vue'
-import VolumeToggle from './VolumeToggle.vue'
-import TimeDisplay from './TimeDisplay.vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import LoadingSpinner from './LoadingSpinner.vue'
+import NextButton from './NextButton.vue'
+import PlayBar from './PlayBar.vue'
 import PlayButton from './PlayButton.vue'
 import PreviousButton from './PreviousButton.vue'
-import NextButton from './NextButton.vue'
 import ShuffleButton from './ShuffleButton.vue'
+import TimeDisplay from './TimeDisplay.vue'
+import VolumeToggle from './VolumeToggle.vue'
 
 const props = defineProps({
   useAudioContext: {
@@ -91,7 +90,7 @@ const props = defineProps({
 
 const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
 
-const audioPlayer = ref()
+const audioPlayer = ref(new Audio(props.src))
 const audioContext = ref(undefined as AudioContext | undefined)
 const loading = ref(true)
 
@@ -107,7 +106,7 @@ const volume = ref(100)
 
 const shuffleActive = ref(false)
 
-const audioPlayerContainer = ref()
+const audioPlayerEl = useTemplateRef('audioPlayerEl')
 const audioPlayerWidth = ref()
 const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100))
 const isPlaying = computed((): boolean => status.value === 'playing')
@@ -135,6 +134,7 @@ watch(
 const audioPlayerResizeObserver = ref()
 function onAudioPlayerResize(entries: any[]) {
   entries.forEach((entry) => {
+    console.log(entry)
     if (entry.contentRect.width !== audioPlayerWidth.value) {
       audioPlayerWidth.value = entry.contentRect.width
     }
@@ -143,7 +143,7 @@ function onAudioPlayerResize(entries: any[]) {
 
 function initAudioPlayerResizeObserver() {
   audioPlayerResizeObserver.value = new ResizeObserver(onAudioPlayerResize)
-  audioPlayerResizeObserver.value.observe(audioPlayerContainer.value)
+  audioPlayerResizeObserver.value.observe(audioPlayerEl.value)
 }
 
 onMounted(async () => {
@@ -156,11 +156,17 @@ onMounted(async () => {
   audioPlayer.value.onloadedmetadata = () => {
     resetCurrentTime()
     setDuration(audioPlayer.value.duration)
-    props.playOnMount && play()
+    if (props.playOnMount) {
+      play()
+    }
     loading.value = false
   }
-  props.useAudioContext && await initAudioContext()
-  props.spacebarToggle && window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
+  if (props.useAudioContext) {
+    await initAudioContext()
+  }
+  if (props.spacebarToggle) {
+    window.addEventListener('keyup', e => e.code === 'Space' && toggleAudio())
+  }
 })
 
 function setCurrentTime(val: number) {
@@ -200,7 +206,9 @@ function initAudioPlayer() {
 
     setCurrentTime(duration.value)
     isPaused.value = audioPlayer.value.paused
-    props.resetOnEnd && resetCurrentTime()
+    if (props.resetOnEnd) {
+      resetCurrentTime()
+    }
   }
 }
 function resetCurrentTime() {
@@ -249,7 +257,9 @@ function seek(seekPosition: number) {
   setSeekTime(null)
   audioPlayer.value.currentTime = duration.value * seekPosition
   setCurrentTime(audioPlayer.value.currentTime)
-  !isPlaying.value && props.playOnSeek && toggleAudio()
+  if (!isPlaying.value && props.playOnSeek) {
+    toggleAudio()
+  }
 }
 function startTimeUpdate() {
   timeUpdate.value = window.setInterval(() => {

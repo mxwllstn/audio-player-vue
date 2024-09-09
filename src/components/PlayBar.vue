@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 
 const props = defineProps({
   currentTime: {
@@ -29,7 +29,7 @@ const emit = defineEmits(['seek', 'setSeekTime'])
 
 const dragPosition = ref(null as number | null)
 const dragInit = ref(false)
-const playbar = ref()
+const playbar = useTemplateRef('playbar')
 
 const showDuration = computed(() => !Number.isNaN(props.duration) && typeof props.duration !== 'undefined')
 
@@ -41,17 +41,21 @@ const markerPosition = computed((): number => {
 const audioPlayerOffset = computed(() => ((window.innerWidth - props.audioPlayerWidth - 32) / 2) + 2)
 
 function initDrag(event: { x: number }): void {
-  const windowOffset = -audioPlayerOffset.value
-  dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-  emit('setSeekTime', dragPosition.value / 100 >= 0
-    ? dragPosition.value / 100 <= 1
-      ? dragPosition.value / 100
-      : 1
-    : 0)
-  dragInit.value = true
+  if (playbar.value) {
+    console.log({ event })
+    console.log(window.innerWidth, props.audioPlayerWidth)
+    const windowOffset = -audioPlayerOffset.value
+    dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
+    emit('setSeekTime', dragPosition.value / 100 >= 0
+      ? dragPosition.value / 100 <= 1
+        ? dragPosition.value / 100
+        : 1
+      : 0)
+    dragInit.value = true
+  }
 }
 function drag(event: { x: number }): void {
-  if (dragInit.value) {
+  if (playbar.value && dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('setSeekTime', dragPosition.value / 100 >= 0
@@ -62,7 +66,7 @@ function drag(event: { x: number }): void {
   }
 }
 function handleMouseup(event: { x: number }): void {
-  if (dragInit.value) {
+  if (playbar.value && dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = null
     dragInit.value = false
