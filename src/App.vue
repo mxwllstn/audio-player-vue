@@ -3,8 +3,14 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioPlayer
+        <!-- <AudioPlayer
+          v-if="idx === 1" ref="audioPlayer"
           :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
+          :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75"
+          @error="handleError($event, idx)" @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
+        /> -->
+        <AudioPlayer
+          ref="audioPlayer" :src="audio.src" :idx="idx" :stream="audio.stream" :volume-bar="audio.volumeBar"
           :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75"
           @error="handleError($event, idx)" @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData"
         >
@@ -12,6 +18,9 @@
         </AudioPlayer>
         <button v-if="audio?.status !== 'error'" :disabled="!audio.status" @click="toggleAudio(idx)">
           {{ audio.status ? audio.status : 'initializing' }}
+        </button>
+        <button v-if="idx === 1" @click="handleSeek(1, 0.5)">
+          seek
         </button>
       </div>
     </div>
@@ -72,9 +81,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import AudioPlayer from './components'
 import ExtendedInfo from './components/ExtendedInfo.vue'
+
+const audioPlayer = useTemplateRef('audioPlayer')
 
 const showExtended = ref(false)
 
@@ -144,6 +155,12 @@ function handleError(error: string, idx: number) {
   //   audioStatus.value = error
   // }
   console.log({ idx, error })
+}
+
+function handleSeek(idx: number, time: number) {
+  if (audioPlayer.value?.[idx]) {
+    audioPlayer.value[idx].seek(time)
+  }
 }
 
 function updateAudioStatus(status: string, idx: number) {

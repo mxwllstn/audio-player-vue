@@ -19,7 +19,7 @@
       <slot />
     </AudioStreamPlayer>
     <AudioFilePlayer
-      v-else :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount" :audio-player-container-width="audioPlayerContainerWidth"
+      v-else ref="audioPlayer" :src="src" :audio-status="audioStatus" :play-on-mount="playOnMount" :audio-player-container-width="audioPlayerContainerWidth"
       :previous-button="previousButton" :next-button="nextButton" :volume-button="volumeButton"
       :shuffle-button="shuffleButton" :spacebar-toggle="spacebarToggle" :use-audio-context="useAudioContext"
       :class="{ 'extended-info-opened': extendedInfoOpened }" :master-volume="masterVolume"
@@ -113,6 +113,7 @@ const emit = defineEmits(['loaded', 'error', 'audioStatusUpdated', 'previous', '
 
 const loading = ref(true)
 const error = ref(null as string | null)
+const audioPlayer = useTemplateRef('audioPlayer')
 const audioPlayerContainer = useTemplateRef('audioPlayerContainer')
 
 const isStream = computed(() => props.stream !== null)
@@ -199,6 +200,14 @@ async function initAudioPlayer() {
     console.error(error.message)
   }
 }
+
+function seek(seekPosition: number) {
+  if (audioPlayer.value) {
+    audioPlayer.value.seek(seekPosition)
+  }
+}
+
+defineExpose({ seek })
 </script>
 
 <style lang="scss">

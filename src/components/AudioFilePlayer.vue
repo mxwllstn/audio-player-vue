@@ -279,6 +279,8 @@ function toggleShuffle() {
   shuffleActive.value = !shuffleActive.value
   emit('shuffleToggle', shuffleActive.value)
 }
+
+defineExpose({ seek })
 </script>
 
 <style lang="scss" scoped>
