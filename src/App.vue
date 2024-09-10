@@ -238,7 +238,9 @@ function onAmplitudeData(data: any) {
 }
 
 .data-tracking {
-  transition: background-color 50ms linear, transform 500ms linear;
+  transition:
+    background-color 50ms linear,
+    transform 500ms linear;
 }
 
 .amplitude {

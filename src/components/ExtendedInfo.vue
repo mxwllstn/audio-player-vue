@@ -112,7 +112,6 @@ const image = computed(() => props.audioData.image)
             color: #000;
           }
         }
-
       }
 
       &:hover {

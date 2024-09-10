@@ -52,6 +52,7 @@
     "@vue/test-utils": "^2.4.6",
     "bumpp": "^9.5.2",
     "eslint": "^9.10.0",
+    "eslint-plugin-format": "^0.1.2",
     "happy-dom": "^15.7.3",
     "postcss-html": "^1.7.0",
     "ress": "^5.0.2",

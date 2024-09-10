@@ -117,7 +117,6 @@ function handleMouseup(event: { pageX: number }): void {
           border-radius: 0.25rem 0.25rem 0 0;
         }
       }
-
     }
 
     .marker {
@@ -134,15 +133,13 @@ function handleMouseup(event: { pageX: number }): void {
         display: none;
       }
     }
-
   }
 
   &:hover,
   &:active {
     .marker {
-      opacity: 1
+      opacity: 1;
     }
   }
-
 }
 </style>
