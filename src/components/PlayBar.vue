@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 
 const props = defineProps({
   currentTime: {
@@ -44,12 +44,13 @@ const markerPosition = computed((): number => {
 
 const audioPlayerOffset = computed(() => ((props.audioPlayerContainerWidth - props.audioPlayerWidth - 32) / 2) + 2)
 
-function initDrag(event: { x: number }): void {
+function initDrag(event: { pageX: number }): void {
   if (playbar.value) {
-    console.log({ event })
-    console.log(props.audioPlayerContainerWidth, props.audioPlayerWidth)
+    window.addEventListener('mousemove', drag)
+    window.addEventListener('mouseup', handleMouseup)
+
     const windowOffset = -audioPlayerOffset.value
-    dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
+    dragPosition.value = ((event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('setSeekTime', dragPosition.value / 100 >= 0
       ? dragPosition.value / 100 <= 1
         ? dragPosition.value / 100
@@ -58,10 +59,10 @@ function initDrag(event: { x: number }): void {
     dragInit.value = true
   }
 }
-function drag(event: { x: number }): void {
+function drag(event: { pageX: number }): void {
   if (playbar.value && dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
-    dragPosition.value = ((event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
+    dragPosition.value = ((event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('setSeekTime', dragPosition.value / 100 >= 0
       ? dragPosition.value / 100 <= 1
         ? dragPosition.value / 100
@@ -69,24 +70,18 @@ function drag(event: { x: number }): void {
       : 0)
   }
 }
-function handleMouseup(event: { x: number }): void {
+function handleMouseup(event: { pageX: number }): void {
   if (playbar.value && dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = null
     dragInit.value = false
-    const seekPosition = (event.x - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth
+    const seekPosition = (event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth
     emit('seek', seekPosition)
+
+    window.removeEventListener('mousemove', drag)
+    window.removeEventListener('mouseup', handleMouseup)
   }
 }
-
-onMounted(() => {
-  window.addEventListener('mousemove', (event) => {
-    drag(event)
-  })
-  window.addEventListener('mouseup', (event) => {
-    handleMouseup(event)
-  })
-})
 </script>
 
 <style lang="scss" scoped>
