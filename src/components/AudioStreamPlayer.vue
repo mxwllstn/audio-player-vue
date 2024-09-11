@@ -1,21 +1,32 @@
 <template>
-  <div v-if="src" class="audio-player">
-    <AntennaIcon v-if="isConnecting" class="button" />
-    <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
-    <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
-    <VolumeToggle
-      v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
-      @mouseleave="showVolume = false" @set-gain="setGain"
-    />
-    <div class="title">
-      Stream
+  <div v-show="!hidden" ref="audioPlayerContainer" class="audio-player-container" :class="{ rounded }">
+    <div v-if="loading || error" class="audio-player">
+      <AntennaIcon class="button" />
+      <div v-if="loading" class="loading">
+        Loading...
+      </div>
+      <div v-else-if="error" class="error">
+        {{ error }}
+      </div>
     </div>
-    <slot />
+    <div v-else-if="src" class="audio-player">
+      <AntennaIcon v-if="isConnecting" class="button" />
+      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
+      <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
+      <VolumeToggle
+        v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+        @mouseleave="showVolume = false" @set-gain="setGain"
+      />
+      <div class="title">
+        Stream
+      </div>
+      <slot />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import AntennaIcon from './AntennaIcon.vue'
 import PlayButton from './PlayButton.vue'
 import VolumeBar from './VolumeBar.vue'
@@ -24,6 +35,10 @@ import VolumeToggle from './VolumeToggle.vue'
 const props = defineProps({
   src: {
     type: String,
+    default: null,
+  },
+  idx: {
+    type: Number,
     default: null,
   },
   audioStatus: {
@@ -46,10 +61,21 @@ const props = defineProps({
     type: [String, Array],
     default: null,
   },
+  rounded: {
+    type: Boolean,
+    default: false,
+  },
+  hidden: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const emit = defineEmits(['streamEnded', 'audioStatusUpdated', 'spectralData', 'amplitudeData'])
+const emit = defineEmits(['streamEnded', 'audioStatusUpdated', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error'])
 
+const loading = ref(true)
+const error = ref(null as string | null)
+const audioPlayerContainer = useTemplateRef('audioPlayerContainer')
 const audioPlayer = ref(new Audio(props.src))
 const gainNode = ref(null as GainNode | null)
 const audioContext = ref(null as AudioContext | null)
@@ -64,7 +90,7 @@ const initVolume = computed(() => Number(volume.value !== null ? volume.value : 
 const isPlaying = computed((): boolean => status.value === 'playing')
 const isLoading = computed((): boolean => props.loading)
 const isConnecting = computed(() => !isLoading.value && canPlayThrough.value === false)
-const status = computed((): string => isConnecting.value ? 'connecting' : isLoading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
+const status = computed((): string => error.value ? 'error' : isConnecting.value ? 'connecting' : isLoading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
 
 watch(() => props.audioStatus, () => {
   if ((status.value !== 'loading' && status.value !== 'connecting') && props.audioStatus !== status.value) {
@@ -73,7 +99,7 @@ watch(() => props.audioStatus, () => {
 })
 
 watch(status, () => {
-  emit('audioStatusUpdated', status.value)
+  emit('audioStatusUpdated', status.value, props.idx)
 })
 
 watch(() => audioPlayer.value.paused, () => {
@@ -84,16 +110,60 @@ watch(() => props.masterVolume, () => {
   setGain(volume.value)
 })
 
-onMounted(() => {
+onMounted(async () => {
+  await initStream()
   initAudioPlayer()
   if (props.volumeBar) {
     setVolume(50)
   }
 })
 
+function setLoading(state: boolean) {
+  loading.value = state
+  if (state === false) {
+    emit('loaded')
+  }
+}
+
 function setVolume(vol: number) {
   volume.value = Number(vol)
   audioPlayer.value.volume = (volume.value * props.masterVolume) / 100
+}
+
+async function initStream() {
+  try {
+    if (!props.src) {
+      error.value = 'Select an audio source'
+      setLoading(false)
+      return
+    }
+    error.value = null
+    setLoading(true)
+
+    const request = new XMLHttpRequest()
+    request.open('GET', props.src)
+    request.responseType = 'arraybuffer'
+    request.send()
+    request.onerror = () => {
+      setLoading(false)
+      error.value = 'Stream not found'
+      emit('audioStatusUpdated', 'error', props.idx)
+      emit('error', error.value)
+    }
+    request.onprogress = () => {
+      if (request.status === 200) {
+        request.abort()
+      } else {
+        error.value = 'Stream not found'
+        emit('audioStatusUpdated', 'error', props.idx)
+        emit('error', error.value)
+      }
+      setLoading(false)
+    }
+  } catch (error: any) {
+    setLoading(false)
+    console.error(error.message)
+  }
 }
 
 function initAudioPlayer() {
@@ -107,7 +177,7 @@ function initAudioPlayer() {
     emit('streamEnded')
     isPaused.value = audioPlayer.value.paused
   }
-  emit('audioStatusUpdated', status.value)
+  emit('audioStatusUpdated', status.value, props.idx)
 }
 function initAudioContext() {
   audioContext.value = new AudioContext()
@@ -140,7 +210,7 @@ function setCanPlayThrough() {
 
 function resetDataTracking() {
   if (props.dataTracking.includes('amplitude')) {
-    emit('amplitudeData', null)
+    emit('amplitudeData', null, props.idx)
   }
 }
 
@@ -150,9 +220,9 @@ function trackData(type: string | string[]) {
       if (status.value === 'playing') {
         const data = getAmplitudeData()
         if (data && Number.isFinite(data.avg)) {
-          emit('amplitudeData', data)
+          emit('amplitudeData', data, props.idx)
         } else {
-          emit('amplitudeData', null)
+          emit('amplitudeData', null, props.idx)
         }
       }
     }, 50)
@@ -162,7 +232,7 @@ function trackData(type: string | string[]) {
       if (status.value === 'playing') {
         const data = getSpectralData()
         if (data) {
-          emit('spectralData', data)
+          emit('spectralData', data, props.idx)
         }
       }
     }, 100)
@@ -248,3 +318,64 @@ function setGain(vol: number) {
   }
 }
 </script>
+
+<style>
+@import 'ress';
+</style>
+
+<style lang="scss" scoped>
+.audio-player-container {
+  display: flex;
+  flex-direction: column;
+  color: #000;
+
+  .loading,
+  .error {
+    font-size: 1rem;
+    font-family: SpaceGrotesk, Arial, sans-serif;
+    line-height: 2.25rem;
+  }
+
+  .audio-player {
+    font-family: SpaceGrotesk, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+
+    @include md {
+      padding: 1.25rem 1rem 1rem 0.75rem;
+    }
+
+    .button {
+      height: 1rem;
+      width: auto;
+      flex-shrink: 0;
+    }
+  }
+
+  &.rounded {
+    @include md {
+      .audio-player {
+        border-radius: 0.25rem;
+
+        .playbar {
+          border-radius: 0.25rem 0.25rem 0 0;
+        }
+
+        &.extended-info-opened {
+          border-radius: 0 0 0.25rem 0.25rem;
+
+          .playbar {
+            border-radius: 0;
+
+            .elapsed {
+              border-radius: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>

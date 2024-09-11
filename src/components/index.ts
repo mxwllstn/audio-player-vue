@@ -1,3 +1,4 @@
-import AudioPlayer from './AudioPlayer.vue'
+import AudioFilePlayer from './AudioFilePlayer.vue'
+import AudioStreamPlayer from './AudioStreamPlayer.vue'
 
-export default AudioPlayer
+export { AudioFilePlayer, AudioStreamPlayer }
