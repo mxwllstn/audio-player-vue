@@ -1,23 +1,27 @@
 <template>
-  <div ref="audioPlayerEl" class="audio-player">
-    <div class="controls">
-      <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
-      <LoadingSpinner v-if="loading" class="button" />
-      <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
-      <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
-      <TimeDisplay type="current" class="current" :current-time="displayTime" />
-      <PlayBar :audio-player-container-width="audioPlayerContainerWidth" :audio-player-width="audioPlayerWidth" :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
-      <TimeDisplay type="duration" class="duration" :duration="duration" />
-      <ShuffleButton
-        v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
-        @click="toggleShuffle"
-      />
-      <VolumeToggle
-        v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
-        @mouseleave="showVolume = false" @set-gain="setGain"
-      />
+  <div v-show="!hidden" ref="audioPlayerContainerRef" class="audio-player-container" :class="{ rounded }">
+    <slot name="extended-top" />
+    <div ref="audioPlayerRef" class="audio-player">
+      <div class="controls">
+        <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
+        <LoadingSpinner v-if="loading" class="button" />
+        <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
+        <NextButton v-if="nextButton" class="button next" @click="$emit('next')" />
+        <TimeDisplay type="current" class="current" :current-time="displayTime" />
+        <PlayBar :audio-player-container-width="audioPlayerContainerWidth" :audio-player-width="audioPlayerWidth" :current-time="currentTime" :duration="duration" @seek="seek" @set-seek-time="setSeekTime" />
+        <TimeDisplay type="duration" class="duration" :duration="duration" />
+        <ShuffleButton
+          v-if="shuffleButton" class="button shuffle" :class="{ active: shuffleActive }"
+          @click="toggleShuffle"
+        />
+        <VolumeToggle
+          v-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+          @mouseleave="showVolume = false" @set-gain="setGain"
+        />
+      </div>
+      <slot />
     </div>
-    <slot />
+    <slot name="extended-bottom" />
   </div>
 </template>
 
@@ -37,6 +41,10 @@ const props = defineProps({
   useAudioContext: {
     type: Boolean,
     default: false,
+  },
+  idx: {
+    type: Number,
+    default: null,
   },
   audioPlayerContainerWidth: {
     type: Number,
@@ -90,6 +98,14 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  rounded: {
+    type: Boolean,
+    default: false,
+  },
+  hidden: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
@@ -110,8 +126,12 @@ const volume = ref(100)
 
 const shuffleActive = ref(false)
 
-const audioPlayerEl = useTemplateRef('audioPlayerEl')
+const audioPlayerRef = useTemplateRef('audioPlayerRef')
 const audioPlayerWidth = ref()
+
+const audioPlayerContainerRef = useTemplateRef('audioPlayerContainerRef')
+const audioPlayerContainerWidth = ref()
+
 const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100))
 const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => (loading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
@@ -126,7 +146,7 @@ watch(
   },
 )
 watch(status, () => {
-  emit('audioStatusUpdated', status.value)
+  emit('audioStatusUpdated', status.value, props.idx)
 })
 watch(
   () => props.masterVolume,
@@ -134,6 +154,20 @@ watch(
     setGain(volume.value)
   },
 )
+
+const audioPlayerContainerResizeObserver = ref()
+function onAudioPlayerContainerResize(entries: any[]) {
+  entries.forEach((entry) => {
+    if (entry.contentRect.width !== audioPlayerContainerWidth.value) {
+      audioPlayerContainerWidth.value = entry.contentRect.width
+    }
+  })
+}
+
+function initAudioPlayerContainerResizeObserver() {
+  audioPlayerContainerResizeObserver.value = new ResizeObserver(onAudioPlayerContainerResize)
+  audioPlayerContainerResizeObserver.value.observe(audioPlayerContainerRef.value)
+}
 
 const audioPlayerResizeObserver = ref()
 function onAudioPlayerResize(entries: any[]) {
@@ -146,11 +180,12 @@ function onAudioPlayerResize(entries: any[]) {
 
 function initAudioPlayerResizeObserver() {
   audioPlayerResizeObserver.value = new ResizeObserver(onAudioPlayerResize)
-  audioPlayerResizeObserver.value.observe(audioPlayerEl.value)
+  audioPlayerResizeObserver.value.observe(audioPlayerRef.value)
 }
 
 onMounted(async () => {
   initAudioPlayer()
+  initAudioPlayerContainerResizeObserver()
   initAudioPlayerResizeObserver()
 
   audioPlayer.value.onloadstart = () => {
@@ -198,6 +233,7 @@ async function initAudioContext() {
   source.value.connect(gainNode.value)
   gainNode.value.connect(audioContext.value.destination)
 }
+
 function initAudioPlayer() {
   setDuration(props.initDuration)
   audioPlayer.value.crossOrigin = 'anonymous'
@@ -213,16 +249,20 @@ function initAudioPlayer() {
       resetCurrentTime()
     }
   }
+  loading.value = false
 }
+
 function resetCurrentTime() {
   setCurrentTime(0)
 }
+
 function resumeAudioContext() {
   if (audioContext.value) {
     audioContext.value.resume()
     setGain(Number(volume.value))
   }
 }
+
 function toggleAudio() {
   if (audioContext.value && audioContext.value.state === 'suspended') {
     resumeAudioContext()
@@ -283,47 +323,101 @@ function toggleShuffle() {
 defineExpose({ seek })
 </script>
 
-<style lang="scss" scoped>
-.audio-player {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  position: relative;
-  background: #f4f4f4;
+<style>
+@import 'ress';
+</style>
 
-  .controls {
+<style lang="scss" scoped>
+.audio-player-container {
+  display: flex;
+  flex-direction: column;
+  color: #000;
+
+  .loading,
+  .error {
+    font-size: 1rem;
+    font-family: SpaceGrotesk, Arial, sans-serif;
+    line-height: 2.25rem;
+  }
+
+  .audio-player {
+    font-family: SpaceGrotesk, Arial, sans-serif;
     display: flex;
-    width: 100%;
     align-items: center;
     gap: 1rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    position: relative;
+    background: #f4f4f4;
 
     @include md {
-      width: auto;
-
-      .previous,
-      .next,
-      .shuffle {
-        display: none;
-      }
+      padding: 1.25rem 1rem 1rem 0.75rem;
     }
 
-    svg.button {
-      cursor: pointer;
+    .controls {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 1rem;
 
-      &.next {
-        padding-right: 0.5rem;
+      .button {
+        height: 1rem;
+        width: auto;
+        flex-shrink: 0;
       }
-    }
 
-    .duration {
       @include md {
-        display: none;
+        width: auto;
+
+        .previous,
+        .next,
+        .shuffle {
+          display: none;
+        }
+      }
+
+      svg.button {
+        cursor: pointer;
+
+        &.next {
+          padding-right: 0.5rem;
+        }
+      }
+
+      .duration {
+        @include md {
+          display: none;
+        }
+      }
+
+      .current {
+        @include md {
+          display: none;
+        }
       }
     }
 
-    .current {
+    &.rounded {
       @include md {
-        display: none;
+        .audio-player {
+          border-radius: 0.25rem;
+
+          .playbar {
+            border-radius: 0.25rem 0.25rem 0 0;
+          }
+
+          &.extended-info-opened {
+            border-radius: 0 0 0.25rem 0.25rem;
+
+            .playbar {
+              border-radius: 0;
+
+              .elapsed {
+                border-radius: 0;
+              }
+            }
+          }
+        }
       }
     }
   }

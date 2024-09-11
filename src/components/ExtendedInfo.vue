@@ -127,7 +127,8 @@ const image = computed(() => props.audioData.image)
 
     .button {
       height: 1rem;
-      cursor: pointer;
+      width: auto;
+      flex-shrink: 0;
     }
 
     .buttons {
