@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import AntennaIcon from './AntennaIcon.vue'
 import PlayButton from './PlayButton.vue'
 import VolumeBar from './VolumeBar.vue'
@@ -70,7 +70,7 @@ const props = defineProps({
 
 const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error'])
 
-const audioPlayer = useTemplateRef('audioPlayer') as any
+const audioPlayer = ref() as any
 const loading = ref(true)
 const error = ref(null as string | null)
 const gainNode = ref(null as GainNode | null)

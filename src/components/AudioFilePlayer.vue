@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import axios from 'axios'
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 import NextButton from './NextButton.vue'
 import PlayBar from './PlayBar.vue'
@@ -107,7 +107,7 @@ const props = defineProps({
 
 const emit = defineEmits(['previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
 
-const audioPlayer = useTemplateRef('audioPlayer') as any
+const audioPlayer = ref() as any
 const audioContext = ref(undefined as AudioContext | undefined)
 const loading = ref(true)
 
@@ -123,10 +123,10 @@ const volume = ref(100)
 
 const shuffleActive = ref(false)
 
-const audioPlayerRef = useTemplateRef('audioPlayerRef')
+const audioPlayerRef = ref()
 const audioPlayerWidth = ref()
 
-const audioPlayerContainerRef = useTemplateRef('audioPlayerContainerRef')
+const audioPlayerContainerRef = ref()
 const audioPlayerContainerWidth = ref()
 
 const initVolume = computed(() => Number(volume.value !== null ? volume.value : 100))

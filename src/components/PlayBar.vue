@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   currentTime: {
@@ -33,7 +33,7 @@ const emit = defineEmits(['seek', 'setSeekTime'])
 
 const dragPosition = ref(null as number | null)
 const dragInit = ref(false)
-const playbar = useTemplateRef('playbar')
+const playbar = ref()
 
 const showDuration = computed(() => !Number.isNaN(props.duration) && typeof props.duration !== 'undefined')
 

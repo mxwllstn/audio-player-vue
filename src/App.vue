@@ -40,12 +40,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 import { AudioFilePlayer, AudioStreamPlayer } from './components'
 import ExtendedInfo from './components/ExtendedInfo.vue'
 
-const audioPlayer = useTemplateRef('audioPlayer')
-const audioPlayers = useTemplateRef('audioPlayers')
+const audioPlayer = ref('audioPlayer') as any
+const audioPlayers = ref('audioPlayers') as any
 
 const showExtended = ref(false)
 

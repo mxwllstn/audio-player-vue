@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const props = defineProps({
   volume: {
@@ -22,7 +22,7 @@ const emit = defineEmits(['setGain'])
 const dragPosition = ref(null as number | null)
 const gainPosition = ref(null as number | null)
 const dragInit = ref(false)
-const volumebar = useTemplateRef('volumebar')
+const volumebar = ref()
 
 const markerPosition = computed((): number => {
   const position = dragInit.value && dragPosition.value ? dragPosition.value : props.volume
