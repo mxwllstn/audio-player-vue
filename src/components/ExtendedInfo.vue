@@ -50,9 +50,9 @@ const props = defineProps({
 
 defineEmits(['extendedClick'])
 
-const artist = computed(() => props.audioData.artist)
-const title = computed(() => props.audioData.title)
-const image = computed(() => props.audioData.image)
+const artist = computed(() => props.audioData?.artist)
+const title = computed(() => props.audioData?.title)
+const image = computed(() => props.audioData?.image)
 </script>
 
 <style lang="scss" scoped>
