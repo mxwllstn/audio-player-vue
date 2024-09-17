@@ -3,12 +3,12 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioStreamPlayer v-if="audio.stream" ref="audioPlayer" :src="audio.src" :idx="idx" :volume-bar="audio.volumeBar" :audio-status="audio.status" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75" @error="handleError($event, idx)" @audio-status-updated="updateAudioStatus" @amplitude-data="onAmplitudeData">
-          <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audio.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
+        <AudioStreamPlayer v-if="audio.stream" ref="audioPlayers" :src="audio.src" :idx="idx" :volume-bar="audio.volumeBar" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75" @error="handleError($event, idx)" @amplitude-data="onAmplitudeData">
+          <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audioPlayers?.[idx]?.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
         </AudioStreamPlayer>
-        <AudioFilePlayer v-else ref="audioPlayer" :src="audio.src" :idx="idx" :stream="audio.stream" :audio-status="audio.status" :hidden="audio.hidden" :master-volume="0.75" @error="handleError($event, idx)" @audio-status-updated="updateAudioStatus" />
-        <button v-if="audio?.status !== 'error'" :disabled="!audio.status" @click="toggleAudio(idx)">
-          {{ audio.status ? audio.status : 'initializing' }}
+        <AudioFilePlayer v-else ref="audioPlayers" :src="audio.src" :idx="idx" :stream="audio.stream" :hidden="audio.hidden" :master-volume="0.75" @error="handleError($event, idx)" />
+        <button v-if="audioPlayer?.status !== 'error'" :disabled="!audioPlayer?.status" @click="toggleAudio(idx)">
+          {{ audioPlayers?.[idx]?.status ? audioPlayers?.[idx]?.status : 'initializing' }}
         </button>
         <button v-if="idx === 1" @click="handleSeek(1, 0.5)">
           seek
@@ -17,11 +17,11 @@
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioFilePlayer :src="audioFile" :audio-status="audioStatus" :play-on-mount="playOnMount" @audio-status-updated="updateAudioStatus">
+      <AudioFilePlayer ref="audioPlayer" :src="audioFile" :play-on-mount="playOnMount">
         <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :queue-button="true" :location-button="true" />
       </AudioFilePlayer>
       <button @click="toggleAudio()">
-        {{ audioStatus }}
+        {{ audioPlayer?.status }}
       </button>
       <button @click="changeTrack(0)">
         track 1
@@ -35,14 +35,14 @@
     </div>
     <div class="container">
       <h4>single audio example 2</h4>
-      <AudioFilePlayer :src="audioFile" :audio-status="audioStatus" :next-button="true" :previous-button="true" :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true" rounded :extended-info-opened="showExtended" @audio-status-updated="updateAudioStatus" @next="handleNext" @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle">
+      <AudioFilePlayer :src="audioFile" :next-button="true" :previous-button="true" :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true" rounded :extended-info-opened="showExtended" @next="handleNext" @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle">
         <template v-if="showExtended" #extended-top>
           <div>test</div>
         </template>
         <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :location-button="true" @extended-click="showExtended = !showExtended" />
       </AudioFilePlayer>
       <button @click="toggleAudio()">
-        {{ audioStatus }}
+        {{ audioPlayer?.status }}
       </button>
       <button @click="changeTrack(0)">
         track 1
@@ -63,6 +63,7 @@ import { AudioFilePlayer, AudioStreamPlayer } from './components'
 import ExtendedInfo from './components/ExtendedInfo.vue'
 
 const audioPlayer = useTemplateRef('audioPlayer')
+const audioPlayers = useTemplateRef('audioPlayers')
 
 const showExtended = ref(false)
 
@@ -112,7 +113,6 @@ const audios = ref([
   src: string
   stream?: boolean
   hidden?: boolean
-  status?: string
   data?: any
   dataTracking?: any
   volumeBar?: boolean
@@ -120,34 +120,20 @@ const audios = ref([
 // const audioFile = ref()
 const audioFile = ref(audios.value[0].src)
 const audioData = ref(audios.value[0].data)
-const audioStatus = ref('stopped')
 const playOnMount = ref(false)
 
 const shuffleActive = ref(false)
 
 function handleError(error: string, idx: number) {
-  // if (idx !== null) {
-  //   audios.value[idx].status = error
-  // } else {
-  //   audioStatus.value = error
-  // }
   console.log({ idx, error })
 }
 
 function handleSeek(idx: number, time: number) {
-  if (audioPlayer.value?.[idx]) {
-    audioPlayer.value[idx].seek(time)
+  if (audioPlayers.value?.[idx]) {
+    audioPlayers.value[idx].seek(time)
   }
 }
 
-function updateAudioStatus(status: string, idx: number) {
-  console.log({ status, idx })
-  if (idx !== null) {
-    audios.value[idx].status = status
-  } else {
-    audioStatus.value = status
-  }
-}
 function changeTrack(idx: number) {
   playOnMount.value = true
   audioFile.value = audios.value[idx].src
@@ -156,17 +142,9 @@ function changeTrack(idx: number) {
 
 function toggleAudio(idx?: number) {
   if (idx !== undefined) {
-    if (audios.value[idx].status === 'playing') {
-      audios.value[idx].status = 'paused'
-    } else {
-      audios.value[idx].status = 'playing'
-    }
+    audioPlayers.value?.[idx]?.toggle()
   } else {
-    if (audioStatus.value === 'playing') {
-      audioStatus.value = 'paused'
-    } else {
-      audioStatus.value = 'playing'
-    }
+    audioPlayer.value?.toggle()
   }
 }
 function handleNext() {
