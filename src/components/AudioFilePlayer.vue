@@ -54,10 +54,6 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
-  audioStatus: {
-    type: String,
-    default: null,
-  },
   playOnSeek: {
     type: Boolean,
     default: false,
@@ -108,7 +104,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['audioStatusUpdated', 'previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
+const emit = defineEmits(['previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
 
 const audioPlayer = ref(new Audio(props.src))
 const audioContext = ref(undefined as AudioContext | undefined)
@@ -137,17 +133,6 @@ const isPlaying = computed((): boolean => status.value === 'playing')
 const status = computed((): string => (loading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused'))
 const displayTime = computed((): number => seekTime.value || currentTime.value)
 
-watch(
-  () => props.audioStatus,
-  () => {
-    if (props.audioStatus !== status.value) {
-      toggleAudio()
-    }
-  },
-)
-watch(status, () => {
-  emit('audioStatusUpdated', status.value, props.idx)
-})
 watch(
   () => props.masterVolume,
   () => {
@@ -320,7 +305,7 @@ function toggleShuffle() {
   emit('shuffleToggle', shuffleActive.value)
 }
 
-defineExpose({ seek })
+defineExpose({ seek, play, pause, toggle: toggleAudio, status })
 </script>
 
 <style>

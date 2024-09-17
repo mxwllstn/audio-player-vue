@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!hidden" ref="audioPlayerContainer" class="audio-player-container" :class="{ rounded }">
+  <div v-show="!hidden" class="audio-player-container" :class="{ rounded }">
     <div v-if="loading || error" class="audio-player">
       <AntennaIcon class="button" />
       <div v-if="loading" class="loading">
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import AntennaIcon from './AntennaIcon.vue'
 import PlayButton from './PlayButton.vue'
 import VolumeBar from './VolumeBar.vue'
@@ -40,10 +40,6 @@ const props = defineProps({
   idx: {
     type: Number,
     default: null,
-  },
-  audioStatus: {
-    type: String,
-    default: undefined,
   },
   volumeBar: {
     type: Boolean,
@@ -71,11 +67,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['streamEnded', 'audioStatusUpdated', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error'])
+const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error'])
 
 const loading = ref(true)
 const error = ref(null as string | null)
-const audioPlayerContainer = useTemplateRef('audioPlayerContainer')
 const audioPlayer = ref(new Audio(props.src))
 const gainNode = ref(null as GainNode | null)
 const audioContext = ref(null as AudioContext | null)
@@ -90,21 +85,7 @@ const initVolume = computed(() => Number(volume.value !== null ? volume.value : 
 const isPlaying = computed((): boolean => status.value === 'playing')
 const isLoading = computed((): boolean => props.loading)
 const isConnecting = computed(() => !isLoading.value && canPlayThrough.value === false)
-const status = computed((): string => error.value ? 'error' : isConnecting.value ? 'connecting' : isLoading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
-
-watch(() => props.audioStatus, () => {
-  if ((status.value !== 'loading' && status.value !== 'connecting') && props.audioStatus !== status.value) {
-    toggleAudio()
-  }
-})
-
-watch(status, () => {
-  emit('audioStatusUpdated', status.value, props.idx)
-})
-
-watch(() => audioPlayer.value.paused, () => {
-  isPaused.value = true
-})
+const status = computed((): string => error.value ? (error.value || 'error') : isConnecting.value ? 'connecting' : isLoading.value ? 'loading' : isPaused.value === undefined ? 'stopped' : !isPaused.value ? 'playing' : 'paused')
 
 watch(() => props.masterVolume, () => {
   setGain(volume.value)
@@ -147,16 +128,14 @@ async function initStream() {
     request.onerror = () => {
       setLoading(false)
       error.value = 'Stream not found'
-      emit('audioStatusUpdated', 'error', props.idx)
-      emit('error', error.value)
+      emit('error', error.value, props.idx)
     }
     request.onprogress = () => {
       if (request.status === 200) {
         request.abort()
       } else {
         error.value = 'Stream not found'
-        emit('audioStatusUpdated', 'error', props.idx)
-        emit('error', error.value)
+        emit('error', error.value, props.idx)
       }
       setLoading(false)
     }
@@ -169,15 +148,10 @@ async function initStream() {
 function initAudioPlayer() {
   audioPlayer.value.crossOrigin = 'anonymous'
   setGain(initVolume.value)
-  audioPlayer.value.onloadedmetadata = () => {
-    // !audioPlayer.value.paused && emit('audioStatusUpdated', 'playing')
-    // canPlayThrough.value = true
-  }
   audioPlayer.value.onended = () => {
     emit('streamEnded')
     isPaused.value = audioPlayer.value.paused
   }
-  emit('audioStatusUpdated', status.value, props.idx)
 }
 function initAudioContext() {
   audioContext.value = new AudioContext()
@@ -317,6 +291,8 @@ function setGain(vol: number) {
     gainNode.value.gain.value = (volume.value * props.masterVolume) / 100
   }
 }
+
+defineExpose({ play, pause, toggle: toggleAudio, status })
 </script>
 
 <style>
