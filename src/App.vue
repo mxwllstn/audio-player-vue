@@ -17,25 +17,7 @@
     </div>
     <div class="container">
       <h4>single audio example</h4>
-      <AudioFilePlayer ref="audioPlayer" :src="audioFile" :play-on-mount="playOnMount">
-        <ExtendedInfo :audio-data="audioData" :extended-info-open="false" :queue-button="true" :location-button="true" />
-      </AudioFilePlayer>
-      <button @click="toggleAudio()">
-        {{ audioPlayer?.status }}
-      </button>
-      <button @click="changeTrack(0)">
-        track 1
-      </button>
-      <button @click="changeTrack(1)">
-        track 2
-      </button>
-      <button @click="changeTrack(2)">
-        track 3
-      </button>
-    </div>
-    <div class="container">
-      <h4>single audio example 2</h4>
-      <AudioFilePlayer :src="audioFile" :next-button="true" :previous-button="true" :play-on-mount="playOnMount" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true" rounded :extended-info-opened="showExtended" @next="handleNext" @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle">
+      <AudioFilePlayer ref="audioPlayer" :src="audioFile" :next-button="true" :previous-button="true" :play-on-mount="true" :volume-button="false" :shuffle-button="true" :spacebar-toggle="true" rounded :extended-info-opened="showExtended" @next="handleNext" @previous="handlePrevious" @shuffle-toggle="handleShuffleToggle">
         <template v-if="showExtended" #extended-top>
           <div>test</div>
         </template>

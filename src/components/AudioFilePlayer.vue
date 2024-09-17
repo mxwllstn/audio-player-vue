@@ -22,6 +22,7 @@
       <slot />
     </div>
     <slot name="extended-bottom" />
+    <audio ref="audioPlayer" :src="props.src" />
   </div>
 </template>
 
@@ -106,7 +107,7 @@ const props = defineProps({
 
 const emit = defineEmits(['previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
 
-const audioPlayer = ref(new Audio(props.src))
+const audioPlayer = useTemplateRef('audioPlayer') as any
 const audioContext = ref(undefined as AudioContext | undefined)
 const loading = ref(true)
 
@@ -178,7 +179,7 @@ onMounted(async () => {
   }
   audioPlayer.value.onloadedmetadata = () => {
     resetCurrentTime()
-    setDuration(audioPlayer.value.duration)
+    setDuration(audioPlayer.value?.duration)
     if (props.playOnMount) {
       play()
     }
@@ -229,7 +230,7 @@ function initAudioPlayer() {
     }
 
     setCurrentTime(duration.value)
-    isPaused.value = audioPlayer.value.paused
+    isPaused.value = audioPlayer.value?.paused
     if (props.resetOnEnd) {
       resetCurrentTime()
     }
@@ -260,9 +261,9 @@ function toggleAudio() {
   }
 }
 function play() {
-  audioPlayer.value.play()
+  audioPlayer.value?.play()
   startTimeUpdate()
-  isPaused.value = audioPlayer.value.paused
+  isPaused.value = audioPlayer.value?.paused
 }
 function setGain(vol: number) {
   volume.value = Number(vol)
@@ -275,7 +276,7 @@ function setGain(vol: number) {
 function pause() {
   audioPlayer.value.pause()
   stopTimeUpdate()
-  isPaused.value = audioPlayer.value.paused
+  isPaused.value = audioPlayer.value?.paused
 }
 function setSeekTime(seekPosition: number | null) {
   seekTime.value = seekPosition ? duration.value * seekPosition : null
@@ -284,7 +285,7 @@ function setSeekTime(seekPosition: number | null) {
 function seek(seekPosition: number) {
   setSeekTime(null)
   audioPlayer.value.currentTime = duration.value * seekPosition
-  setCurrentTime(audioPlayer.value.currentTime)
+  setCurrentTime(audioPlayer.value?.currentTime)
   if (!isPlaying.value && props.playOnSeek) {
     toggleAudio()
   }
@@ -305,7 +306,7 @@ function toggleShuffle() {
   emit('shuffleToggle', shuffleActive.value)
 }
 
-defineExpose({ seek, play, pause, toggle: toggleAudio, status })
+defineExpose({ seek, play, pause, toggle: toggleAudio, status, isPlaying })
 </script>
 
 <style>

@@ -22,11 +22,12 @@
       </div>
       <slot />
     </div>
+    <audio ref="audioPlayer" :src="props.src" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import AntennaIcon from './AntennaIcon.vue'
 import PlayButton from './PlayButton.vue'
 import VolumeBar from './VolumeBar.vue'
@@ -69,9 +70,9 @@ const props = defineProps({
 
 const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error'])
 
+const audioPlayer = useTemplateRef('audioPlayer') as any
 const loading = ref(true)
 const error = ref(null as string | null)
-const audioPlayer = ref(new Audio(props.src))
 const gainNode = ref(null as GainNode | null)
 const audioContext = ref(null as AudioContext | null)
 const source = ref(null as MediaElementAudioSourceNode | null)
@@ -148,9 +149,13 @@ async function initStream() {
 function initAudioPlayer() {
   audioPlayer.value.crossOrigin = 'anonymous'
   setGain(initVolume.value)
+
+  audioPlayer.value?.addEventListener('canplaythrough', setCanPlayThrough)
+  audioPlayer.value?.addEventListener('canplay', setCanPlayThrough)
+
   audioPlayer.value.onended = () => {
     emit('streamEnded')
-    isPaused.value = audioPlayer.value.paused
+    isPaused.value = audioPlayer.value?.paused
   }
 }
 function initAudioContext() {
@@ -173,9 +178,6 @@ function initAudioContext() {
     }
   }
 }
-
-audioPlayer.value.addEventListener('canplaythrough', setCanPlayThrough)
-audioPlayer.value.addEventListener('canplay', setCanPlayThrough)
 
 function setCanPlayThrough() {
   canPlayThrough.value = true
@@ -265,25 +267,20 @@ async function toggleAudio() {
     resetDataTracking()
   }
 
-  isPaused.value = audioPlayer.value.paused
+  isPaused.value = audioPlayer.value?.paused
 }
 function start() {
   canPlayThrough.value = false
-  audioPlayer.value.load()
+  audioPlayer.value?.load()
   play()
 }
-// function stop() {
-//   pause()
-//   audioPlayer.value.src = 'reset'
-//   audioPlayer.value.load()
-// }
 function play() {
   audioPlayer.value.src = props.src
-  audioPlayer.value.load()
-  audioPlayer.value.play()
+  audioPlayer.value?.load()
+  audioPlayer.value?.play()
 }
 function pause() {
-  audioPlayer.value.pause()
+  audioPlayer.value?.pause()
 }
 function setGain(vol: number) {
   setVolume(vol)
