@@ -5,12 +5,16 @@
         <div class="container">
           <div class="image" :style="{ backgroundImage: `url(${image})` }" />
           <div class="info">
-            <p class="artist">
-              {{ artist }}
-            </p>
-            <p class="title">
-              {{ title }}
-            </p>
+            <Vue3Marquee :animate-on-overflow-only="true" :pause-on-hover="true" :delay="2">
+              <p class="artist">
+                {{ artist }}
+              </p>
+            </Vue3Marquee>
+            <Vue3Marquee :animate-on-overflow-only="true" :pause-on-hover="true" :delay="2">
+              <p class="title">
+                {{ title }}
+              </p>
+            </Vue3Marquee>
           </div>
         </div>
         <InfoButton class="button" :open="extendedInfoOpen" />
@@ -25,6 +29,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { Vue3Marquee } from 'vue3-marquee'
 import InfoButton from './InfoButton.vue'
 import LocationButton from './LocationButton.vue'
 import QueueButton from './QueueButton.vue'
@@ -89,8 +94,8 @@ const image = computed(() => props.audioData?.image)
         gap: 0.5rem;
 
         .image {
-          height: 30px;
-          width: 30px;
+          min-height: 30px;
+          min-width: 30px;
           background-size: cover;
           background-position: center;
         }
@@ -105,11 +110,19 @@ const image = computed(() => props.audioData?.image)
           .artist {
             transition: color 300ms;
             color: #808080;
+
+            &::after {
+              content: '\00a0\00a0\00a0\00a0';
+            }
           }
 
           .title {
             transition: color 300ms;
             color: #000;
+
+            &::after {
+              content: '\00a0\00a0\00a0\00a0';
+            }
           }
         }
       }

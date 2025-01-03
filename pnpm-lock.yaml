@@ -14,6 +14,9 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
+      vue3-marquee:
+        specifier: ^4.2.2
+        version: 4.2.2(vue@3.5.6(typescript@5.6.2))
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^3.6.2
@@ -2676,6 +2679,12 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
+
+  vue3-marquee@4.2.2:
+    resolution: {integrity: sha512-FeFvGUVInKfFilXFcnl8sDRBJBZCZSNLlQDquJErB9db6W2xICRVqbRV/jtdzsEP0rftarLQhx9MeEAU0+TPuQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      vue: ^3.2
 
   vue@3.5.6:
     resolution: {integrity: sha512-zv+20E2VIYbcJOzJPUWp03NOGFhMmpCKOfSxVTmCYyYFFko48H9tmuQFzYj7tu4qX1AeXlp9DmhIP89/sSxxhw==}
@@ -5563,6 +5572,10 @@ snapshots:
       '@vue/language-core': 2.1.6(typescript@5.6.2)
       semver: 7.6.3
       typescript: 5.6.2
+
+  vue3-marquee@4.2.2(vue@3.5.6(typescript@5.6.2)):
+    dependencies:
+      vue: 3.5.6(typescript@5.6.2)
 
   vue@3.5.6(typescript@5.6.2):
     dependencies:
