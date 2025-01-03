@@ -27,6 +27,10 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  rounded: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['seek', 'setSeekTime'])
@@ -42,7 +46,9 @@ const markerPosition = computed((): number => {
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
-const audioPlayerOffset = computed(() => ((props.audioPlayerContainerWidth - props.audioPlayerWidth - 32) / 2) + 2)
+const audioPlayerContainerOffset = computed(() => window.innerWidth - props.audioPlayerContainerWidth)
+
+const audioPlayerOffset = computed(() => ((props.audioPlayerContainerWidth - props.audioPlayerWidth + audioPlayerContainerOffset.value - 32) / 2) + 2)
 
 function initDrag(event: { pageX: number }): void {
   if (playbar.value) {
@@ -50,6 +56,9 @@ function initDrag(event: { pageX: number }): void {
     window.addEventListener('mouseup', handleMouseup)
 
     const windowOffset = -audioPlayerOffset.value
+
+    console.log(props.audioPlayerContainerWidth, props.audioPlayerWidth, props.audioPlayerContainerWidth - props.audioPlayerWidth, audioPlayerContainerOffset.value)
+
     dragPosition.value = ((event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
     emit('setSeekTime', dragPosition.value / 100 >= 0
       ? dragPosition.value / 100 <= 1

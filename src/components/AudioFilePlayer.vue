@@ -47,10 +47,6 @@ const props = defineProps({
     type: Number,
     default: null,
   },
-  audioPlayerContainerWidth: {
-    type: Number,
-    default: 0,
-  },
   initDuration: {
     type: Number,
     default: 0,
