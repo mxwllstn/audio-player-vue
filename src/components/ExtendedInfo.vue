@@ -5,12 +5,12 @@
         <div class="container">
           <div class="image" :style="{ backgroundImage: `url(${image})` }" />
           <div class="info">
-            <Vue3Marquee :animate-on-overflow-only="true" :pause-on-hover="true" :delay="2">
+            <Vue3Marquee :animate-on-overflow-only="true" :pause-on-hover="true" :delay="1">
               <p class="artist">
                 {{ artist }}
               </p>
             </Vue3Marquee>
-            <Vue3Marquee :animate-on-overflow-only="true" :pause-on-hover="true" :delay="2">
+            <Vue3Marquee :animate-on-overflow-only="true" :pause-on-hover="true" :delay="1">
               <p class="title">
                 {{ title }}
               </p>
@@ -64,6 +64,7 @@ const image = computed(() => props.audioData?.image)
 .extended-info {
   @include md {
     width: 100%;
+    min-width: 0;
   }
 
   .extended {
@@ -89,9 +90,17 @@ const image = computed(() => props.audioData?.image)
       margin: -0.5rem 0;
       width: 100%;
 
+      @include md {
+        min-width: 0;
+      }
+
       .container {
         display: flex;
         gap: 0.5rem;
+
+        @include md {
+          min-width: 0;
+        }
 
         .image {
           min-height: 30px;
@@ -107,22 +116,33 @@ const image = computed(() => props.audioData?.image)
           line-height: 1;
           justify-content: space-between;
 
+          @include md {
+            min-width: 0;
+          }
+
           .artist {
             transition: color 300ms;
             color: #808080;
-
-            &::after {
-              content: '\00a0\00a0\00a0\00a0';
-            }
           }
 
           .title {
             transition: color 300ms;
             color: #000;
+          }
 
-            &::after {
-              content: '\00a0\00a0\00a0\00a0';
+          .marquee {
+            p.artist,
+            p.title {
+              &::after {
+                content: '\00a0\00a0\00a0\00a0\00a0';
+              }
             }
+          }
+
+          .ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
       }

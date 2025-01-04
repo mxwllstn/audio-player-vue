@@ -99,7 +99,6 @@ const audios = ref([
   dataTracking?: any
   volumeBar?: boolean
 }[])
-// const audioFile = ref()
 const audioFile = ref(audios.value[0].src)
 const audioData = ref(audios.value[0].data)
 const playOnMount = ref(false)
