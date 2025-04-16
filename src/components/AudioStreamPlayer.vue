@@ -68,7 +68,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error'])
+const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error', 'connected'])
 
 const audioPlayer = ref() as any
 const loading = ref(true)
@@ -181,6 +181,7 @@ function initAudioContext() {
 
 function setCanPlayThrough() {
   canPlayThrough.value = true
+  emit('connected')
   setGain(initVolume.value)
 }
 

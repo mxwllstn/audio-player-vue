@@ -36,6 +36,13 @@
         track 3
       </button>
     </div>
+    <div class="container">
+      <h4>hidden audio example</h4>
+      <AudioFilePlayer ref="audioPlayerHidden" :hidden="true" :src="audioFile" />
+      <button @click="toggleAudioHidden()">
+        {{ audioPlayerHidden?.status }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -45,6 +52,7 @@ import { AudioFilePlayer, AudioStreamPlayer } from './components'
 import ExtendedInfo from './components/ExtendedInfo.vue'
 
 const audioPlayer = ref('audioPlayer') as any
+const audioPlayerHidden = ref('audioPlayerHidden') as any
 const audioPlayers = ref('audioPlayers') as any
 
 const showExtended = ref(false)
@@ -127,6 +135,9 @@ function toggleAudio(idx?: number) {
   } else {
     audioPlayer.value?.toggle()
   }
+}
+function toggleAudioHidden() {
+  audioPlayerHidden.value?.toggle()
 }
 function handleNext() {
   changeTrack(2)
