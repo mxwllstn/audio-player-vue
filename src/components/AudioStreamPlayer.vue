@@ -68,7 +68,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error', 'connected'])
+const emit = defineEmits(['streamEnded', 'spectralData', 'amplitudeData', 'loading', 'loaded', 'error', 'connected', 'toggle'])
 
 const audioPlayer = ref() as any
 const loading = ref(true)
@@ -269,6 +269,7 @@ async function toggleAudio() {
   }
 
   isPaused.value = audioPlayer.value?.paused
+  emit('toggle')
 }
 function start() {
   canPlayThrough.value = false
