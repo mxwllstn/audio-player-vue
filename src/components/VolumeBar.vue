@@ -37,7 +37,7 @@ function setGainPosition(position: number) {
 }
 function initDrag(event: { x: number }): void {
   if (volumebar.value) {
-    const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
+    const position = ((event.x - (volumebar.value.offsetParent.offsetLeft + volumebar.value.offsetLeft)) / volumebar.value.offsetWidth) * 100
     dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
     setGainPosition(dragPosition.value)
     dragInit.value = true
@@ -45,7 +45,7 @@ function initDrag(event: { x: number }): void {
 }
 function drag(event: { x: number }): void {
   if (volumebar.value && dragInit.value) {
-    const position = ((event.x - volumebar.value.offsetLeft) / volumebar.value.offsetWidth) * 100
+    const position = ((event.x - (volumebar.value.offsetParent.offsetLeft + volumebar.value.offsetLeft)) / volumebar.value.offsetWidth) * 100
     dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
     setGainPosition(dragPosition.value)
   }
