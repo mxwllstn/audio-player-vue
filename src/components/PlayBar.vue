@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag">
+  <div v-if="showDuration" class="playbar-container" @mousedown="initDrag" @touchstart="initDrag">
     <div ref="playbar" class="playbar">
       <div v-if="duration" class="elapsed" :class="{ complete: markerPosition >= 100 }" :style="{ width: `${markerPosition}%` }" />
       <div class="marker" :style="{ left: `${markerPosition}%` }" />
@@ -50,10 +50,12 @@ const audioPlayerContainerOffset = computed(() => window.innerWidth - props.audi
 
 const audioPlayerOffset = computed(() => ((props.audioPlayerContainerWidth - props.audioPlayerWidth + audioPlayerContainerOffset.value - 32) / 2) + 2)
 
-function initDrag(event: { pageX: number }): void {
+function initDrag(event: any): void {
   if (playbar.value) {
     window.addEventListener('mousemove', drag)
     window.addEventListener('mouseup', handleMouseup)
+    window.addEventListener('touchmove', drag)
+    window.addEventListener('touchend', handleMouseup)
 
     const windowOffset = -audioPlayerOffset.value
 
@@ -68,7 +70,7 @@ function initDrag(event: { pageX: number }): void {
     dragInit.value = true
   }
 }
-function drag(event: { pageX: number }): void {
+function drag(event: any): void {
   if (playbar.value && dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = ((event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
@@ -79,7 +81,7 @@ function drag(event: { pageX: number }): void {
       : 0)
   }
 }
-function handleMouseup(event: { pageX: number }): void {
+function handleMouseup(event: any): void {
   if (playbar.value && dragInit.value) {
     const windowOffset = -audioPlayerOffset.value
     dragPosition.value = null
@@ -89,6 +91,8 @@ function handleMouseup(event: { pageX: number }): void {
 
     window.removeEventListener('mousemove', drag)
     window.removeEventListener('mouseup', handleMouseup)
+    window.removeEventListener('touchmove', drag)
+    window.removeEventListener('touchend', handleMouseup)
   }
 }
 </script>

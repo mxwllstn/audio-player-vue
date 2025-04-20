@@ -1,5 +1,5 @@
 <template>
-  <div class="volumebar-container" @mousedown="initDrag">
+  <div class="volumebar-container" @mousedown="initDrag" @touchstart="initDrag">
     <div ref="volumebar" class="volumebar">
       <div class="elapsed" :style="{ width: `${markerPosition}%` }" />
       <div class="marker" :style="{ left: `${markerPosition}%` }" />
@@ -35,17 +35,17 @@ function setGainPosition(position: number) {
     emit('setGain', gainPosition.value)
   }
 }
-function initDrag(event: { x: number }): void {
+function initDrag(event: any): void {
   if (volumebar.value) {
-    const position = ((event.x - (volumebar.value.offsetParent.offsetLeft + volumebar.value.offsetLeft)) / volumebar.value.offsetWidth) * 100
+    const position = ((event.pageX - (volumebar.value.offsetParent.offsetLeft + volumebar.value.offsetLeft)) / volumebar.value.offsetWidth) * 100
     dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
     setGainPosition(dragPosition.value)
     dragInit.value = true
   }
 }
-function drag(event: { x: number }): void {
+function drag(event: any): void {
   if (volumebar.value && dragInit.value) {
-    const position = ((event.x - (volumebar.value.offsetParent.offsetLeft + volumebar.value.offsetLeft)) / volumebar.value.offsetWidth) * 100
+    const position = ((event.pageX - (volumebar.value.offsetParent.offsetLeft + volumebar.value.offsetLeft)) / volumebar.value.offsetWidth) * 100
     dragPosition.value = position > 100 ? 100 : position < 0 ? 0 : position
     setGainPosition(dragPosition.value)
   }
@@ -62,6 +62,12 @@ onMounted(() => {
     drag(event)
   })
   window.addEventListener('mouseup', () => {
+    handleMouseup()
+  })
+  window.addEventListener('touchmove', (event) => {
+    drag(event)
+  })
+  window.addEventListener('touchend', () => {
     handleMouseup()
   })
 })
