@@ -17,8 +17,8 @@
         v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
         @mouseleave="showVolume = false" @set-gain="setGain"
       />
-      <div class="title">
-        Stream
+      <div v-if="title" class="title">
+        {{ title }}
       </div>
       <slot />
     </div>
@@ -65,6 +65,10 @@ const props = defineProps({
   hidden: {
     type: Boolean,
     default: false,
+  },
+  title: {
+    type: String,
+    default: null,
   },
 })
 

@@ -3,7 +3,7 @@
     <div class="container">
       <h4>multiple audio example</h4>
       <div v-for="(audio, idx) of audios" :key="idx">
-        <AudioStreamPlayer v-if="audio.stream" ref="audioPlayers" :src="audio.src" :idx="idx" :volume-bar="audio.volumeBar" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75" @error="handleError($event, idx)" @amplitude-data="onAmplitudeData">
+        <AudioStreamPlayer v-if="audio.stream" ref="audioPlayers" :src="audio.src" :idx="idx" :volume-bar="audio.volumeBar" :data-tracking="audio.dataTracking" :hidden="audio.hidden" :master-volume="0.75" :title="audio.title" @error="handleError($event, idx)" @amplitude-data="onAmplitudeData">
           <div v-if="audio.dataTracking" class="amplitude data-tracking" :style="{ background: audio.dataTracking && audioPlayers?.[idx]?.status === 'playing' ? `rgb(199 0 57 / ${dbOpacity}%` : 'transparent', transform: `scale(${dbOpacity / 100 * 2})` }" />
         </AudioStreamPlayer>
         <AudioFilePlayer v-else ref="audioPlayers" :src="audio.src" :idx="idx" :stream="audio.stream" :hidden="audio.hidden" :master-volume="0.75" @error="handleError($event, idx)" />
@@ -88,6 +88,7 @@ const audios = ref([
     src: 'https://stream.sonicscape.land/audiohijack4',
     stream: true,
     volumeBar: true,
+    title: 'Test title',
   },
   {
     src: 'https://stream.sonicscape.land/audiohijack4',
@@ -106,6 +107,7 @@ const audios = ref([
   data?: any
   dataTracking?: any
   volumeBar?: boolean
+  title?: string
 }[])
 const audioFile = ref(audios.value[0].src)
 const audioData = ref(audios.value[0].data)
