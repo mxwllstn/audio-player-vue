@@ -14,7 +14,7 @@
       <PlayButton v-else :is-playing="isPlaying" class="button" @click="toggleAudio" />
       <VolumeBar v-if="volumeBar" :volume="volume" @set-gain="setGain" />
       <VolumeToggle
-        v-else :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
+        v-else-if="volumeButton" :init-volume="initVolume" :show-volume="showVolume" @mouseover="showVolume = true"
         @mouseleave="showVolume = false" @set-gain="setGain"
       />
       <div v-if="title" class="title">
@@ -45,6 +45,9 @@ const props = defineProps({
   volumeBar: {
     type: Boolean,
     default: false,
+  },
+  volumeButton: {
+    default: true,
   },
   masterVolume: {
     type: Number,
