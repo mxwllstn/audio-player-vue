@@ -73,7 +73,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .volumebar-container {
   width: 100%;
   margin: 0 1rem;

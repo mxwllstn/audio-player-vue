@@ -11,13 +11,6 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "src/assets/scss/global.scss";`,
-      },
-    },
-  },
   build: {
     copyPublicDir: false,
     lib: {

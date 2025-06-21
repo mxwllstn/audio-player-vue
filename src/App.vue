@@ -164,7 +164,7 @@ function onAmplitudeData(data: any) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .content {
   font-family: AuthenticSans, Arial, sans-serif;
   color: red;
@@ -200,11 +200,9 @@ function onAmplitudeData(data: any) {
 }
 
 :deep(.audio-player-container) {
-  // padding-top: 1rem;
-  // padding-bottom: 1rem;
   padding: 1rem 0;
 
-  @include md {
+  @media (max-width: 768px) {
     &.rounded {
       padding: 1rem;
     }

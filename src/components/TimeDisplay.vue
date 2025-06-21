@@ -40,7 +40,7 @@ function formatTime(time: number, durationType = 'seconds' as DurationUnitType, 
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .time {
   position: relative;
   top: -1px;
@@ -49,7 +49,7 @@ function formatTime(time: number, durationType = 'seconds' as DurationUnitType, 
   flex-shrink: 0;
   user-select: none;
 
-  @include md {
+  @media (max-width: 768px) {
     top: 0;
   }
 }

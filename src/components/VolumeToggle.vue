@@ -42,7 +42,7 @@ function toggleMute() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .volume {
   display: block;
   position: relative;

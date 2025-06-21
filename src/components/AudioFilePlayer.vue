@@ -37,6 +37,7 @@ import PreviousButton from './PreviousButton.vue'
 import ShuffleButton from './ShuffleButton.vue'
 import TimeDisplay from './TimeDisplay.vue'
 import VolumeToggle from './VolumeToggle.vue'
+import '../assets/css/main.css'
 
 const props = defineProps({
   useAudioContext: {
@@ -309,7 +310,7 @@ defineExpose({ seek, play, pause, toggle: toggleAudio, status, isPlaying })
 @import 'ress';
 </style>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .audio-player-container {
   display: flex;
   flex-direction: column;
@@ -332,7 +333,7 @@ defineExpose({ seek, play, pause, toggle: toggleAudio, status, isPlaying })
     position: relative;
     background: #f4f4f4;
 
-    @include md {
+    @media (max-width: 768px) {
       padding: 1.25rem 1rem 1rem 0.75rem;
     }
 
@@ -348,7 +349,7 @@ defineExpose({ seek, play, pause, toggle: toggleAudio, status, isPlaying })
         flex-shrink: 0;
       }
 
-      @include md {
+      @media (max-width: 768px) {
         width: auto;
 
         .previous,
@@ -367,20 +368,20 @@ defineExpose({ seek, play, pause, toggle: toggleAudio, status, isPlaying })
       }
 
       .duration {
-        @include md {
+        @media (max-width: 768px) {
           display: none;
         }
       }
 
       .current {
-        @include md {
+        @media (max-width: 768px) {
           display: none;
         }
       }
     }
 
     &.rounded {
-      @include md {
+      @media (max-width: 768px) {
         .audio-player {
           border-radius: 0.25rem;
 

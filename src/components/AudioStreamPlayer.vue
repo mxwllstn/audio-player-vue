@@ -32,6 +32,7 @@ import AntennaIcon from './AntennaIcon.vue'
 import PlayButton from './PlayButton.vue'
 import VolumeBar from './VolumeBar.vue'
 import VolumeToggle from './VolumeToggle.vue'
+import '../assets/css/main.css'
 
 const props = defineProps({
   src: {
@@ -305,7 +306,7 @@ defineExpose({ play, pause, toggle: toggleAudio, status })
 @import 'ress';
 </style>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .audio-player-container {
   display: flex;
   flex-direction: column;
@@ -325,7 +326,7 @@ defineExpose({ play, pause, toggle: toggleAudio, status })
     gap: 1rem;
     padding: 0.75rem 1rem;
 
-    @include md {
+    @media (max-width: 768px) {
       padding: 1.25rem 1rem 1rem 0.75rem;
     }
 
@@ -337,7 +338,7 @@ defineExpose({ play, pause, toggle: toggleAudio, status })
   }
 
   &.rounded {
-    @include md {
+    @media (max-width: 768px) {
       .audio-player {
         border-radius: 0.25rem;
 

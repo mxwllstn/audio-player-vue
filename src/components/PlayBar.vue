@@ -97,13 +97,13 @@ function handleMouseup(event: any): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .playbar-container {
   width: 100%;
   padding: 1rem 0;
   cursor: pointer;
 
-  @include md {
+  @media (max-width: 768px) {
     padding: 0;
     position: absolute;
     top: 0;
@@ -123,7 +123,7 @@ function handleMouseup(event: any): void {
       left: 0;
       top: 0;
 
-      @include md {
+      @media (max-width: 768px) {
         border-radius: 0.25rem 0 0;
 
         &.complete {
@@ -142,7 +142,7 @@ function handleMouseup(event: any): void {
       width: 0.25rem;
       transition: opacity 100ms;
 
-      @include md {
+      @media (max-width: 768px) {
         display: none;
       }
     }

@@ -60,9 +60,9 @@ const title = computed(() => props.audioData?.title)
 const image = computed(() => props.audioData?.image)
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .extended-info {
-  @include md {
+  @media (max-width: 768px) {
     width: 100%;
     min-width: 0;
   }
@@ -75,7 +75,7 @@ const image = computed(() => props.audioData?.image)
     width: 360px;
     margin-left: 1rem;
 
-    @include md {
+    @media (max-width: 768px) {
       width: auto;
       margin-left: 0;
     }
@@ -90,7 +90,7 @@ const image = computed(() => props.audioData?.image)
       margin: -0.5rem 0;
       width: 100%;
 
-      @include md {
+      @media (max-width: 768px) {
         min-width: 0;
       }
 
@@ -98,7 +98,7 @@ const image = computed(() => props.audioData?.image)
         display: flex;
         gap: 0.5rem;
 
-        @include md {
+        @media (max-width: 768px) {
           min-width: 0;
         }
 
@@ -116,7 +116,7 @@ const image = computed(() => props.audioData?.image)
           line-height: 1;
           justify-content: space-between;
 
-          @include md {
+          @media (max-width: 768px) {
             min-width: 0;
           }
 
