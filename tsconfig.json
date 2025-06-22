@@ -4,9 +4,6 @@
     "paths": {
       "@mxwllstn/audio-player-vue": [
         "./package/src/index.ts"
-      ],
-      "@mxwllstn/audio-player-vue/*": [
-        "./package/src/*"
       ]
     }
   }

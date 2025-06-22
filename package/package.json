@@ -29,11 +29,9 @@
   ],
   "scripts": {
     "build": "pnpm run typecheck && vite build",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "preinstall": "npx only-allow pnpm",
-    "prepublish": "yarn lint && yarn build",
-    "release": "npm run lint && npm run test && npm run build && bumpp && npm publish",
+    "prepublish": "pnpm run lint && pnpm run build",
+    "release": "pnpm run lint && pnpm run test && pnpm run build && bumpp && pnpm publish",
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
