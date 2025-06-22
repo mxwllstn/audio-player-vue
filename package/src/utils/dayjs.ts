@@ -6,7 +6,7 @@ import duration from 'dayjs/plugin/duration'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-export { Duration, DurationUnitType } from 'dayjs/plugin/duration'
+export type { Duration, DurationUnitType } from 'dayjs/plugin/duration'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
