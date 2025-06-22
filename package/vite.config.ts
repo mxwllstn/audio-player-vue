@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import path from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
@@ -8,13 +7,10 @@ import dts from 'vite-plugin-dts'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), dts(), cssInjectedByJsPlugin()],
-  test: {
-    environment: 'happy-dom',
-  },
   build: {
     copyPublicDir: false,
     lib: {
-      entry: path.resolve(__dirname, 'src/components/index.ts'),
+      entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'AudioFilePlayer',
       fileName: format => (format === 'es' ? 'audio-player.mjs' : 'audio-player.cjs'),
     },

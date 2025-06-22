@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { Duration, DurationUnitType } from '../lib/dayjs'
+import type { Duration, DurationUnitType } from '../utils/dayjs.js'
 import { computed } from 'vue'
-import dayjs from '../lib/dayjs'
+import dayjs from '../utils/dayjs.js'
 
 const props = defineProps({
   currentTime: {
