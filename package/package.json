@@ -45,6 +45,7 @@
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/test-utils": "^2.4.6",
     "bumpp": "^10.2.0",
+    "eslint": "^9.29.0",
     "happy-dom": "^18.0.1",
     "postcss-html": "^1.8.0",
     "ress": "^5.0.2",
