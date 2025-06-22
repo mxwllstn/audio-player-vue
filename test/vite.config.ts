@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import path from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
@@ -7,7 +8,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@mxwllstn/audio-player-vue': path.resolve(__dirname, '../package/src'), // maps 'ui' to actual source
+      '@mxwllstn/audio-player-vue': path.resolve(__dirname, '../package/src'),
     },
   },
   test: {

@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@mxwllstn/audio-player-vue': path.resolve(__dirname, '../package/src'), // maps '@mxwllstn/audio-player-vue' to package source
+      '@mxwllstn/audio-player-vue': path.resolve(__dirname, '../package/src'),
     },
   },
 })
