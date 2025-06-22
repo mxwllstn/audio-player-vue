@@ -31,6 +31,8 @@
     "build": "pnpm run typecheck && vite build",
     "preinstall": "npx only-allow pnpm",
     "prepublish": "pnpm run lint && pnpm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "release": "pnpm run lint && pnpm run test && pnpm run build && bumpp && pnpm publish",
     "typecheck": "vue-tsc --noEmit"
   },

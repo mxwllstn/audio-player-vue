@@ -3,6 +3,8 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "typecheck": "vue-tsc --noEmit"
   },
   "devDependencies": {

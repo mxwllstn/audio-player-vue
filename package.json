@@ -6,8 +6,8 @@
     "build": "pnpm run --parallel build",
     "preview": "pnpm run --parallel preview",
     "test": "pnpm run --parallel test",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "pnpm run --parallel lint",
+    "lint:fix": "pnpm run --parallel lint:fix",
     "typecheck": "pnpm run --parallel typecheck",
     "prepublish": "pnpm --filter @mxwllstn/audio-player-vue run prepublish",
     "release": "pnpm --filter @mxwllstn/audio-player-vue run release"
