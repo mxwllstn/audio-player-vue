@@ -1,6 +1,6 @@
+import { AudioFilePlayer } from '@mxwllstn/audio-player-vue'
 import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
-import AudioFilePlayer from '../components/AudioFilePlayer.vue'
 
 const wrapper = mount(AudioFilePlayer, {
   propsData: { src: '1.mp3' },

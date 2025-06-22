@@ -29,15 +29,15 @@
 <script lang="ts" setup>
 import axios from 'axios'
 import { computed, onMounted, ref, watch } from 'vue'
-import LoadingSpinner from './LoadingSpinner.vue'
-import NextButton from './NextButton.vue'
-import PlayBar from './PlayBar.vue'
-import PlayButton from './PlayButton.vue'
-import PreviousButton from './PreviousButton.vue'
-import ShuffleButton from './ShuffleButton.vue'
-import TimeDisplay from './TimeDisplay.vue'
-import VolumeToggle from './VolumeToggle.vue'
-import '../assets/css/main.css'
+import LoadingSpinner from './components/LoadingSpinner.vue'
+import NextButton from './components/NextButton.vue'
+import PlayBar from './components/PlayBar.vue'
+import PlayButton from './components/PlayButton.vue'
+import PreviousButton from './components/PreviousButton.vue'
+import ShuffleButton from './components/ShuffleButton.vue'
+import TimeDisplay from './components/TimeDisplay.vue'
+import VolumeToggle from './components/VolumeToggle.vue'
+import './assets/css/main.css'
 
 const props = defineProps({
   useAudioContext: {

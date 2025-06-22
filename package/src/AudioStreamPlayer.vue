@@ -28,11 +28,11 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import AntennaIcon from './AntennaIcon.vue'
-import PlayButton from './PlayButton.vue'
-import VolumeBar from './VolumeBar.vue'
-import VolumeToggle from './VolumeToggle.vue'
-import '../assets/css/main.css'
+import AntennaIcon from './components/AntennaIcon.vue'
+import PlayButton from './components/PlayButton.vue'
+import VolumeBar from './components/VolumeBar.vue'
+import VolumeToggle from './components/VolumeToggle.vue'
+import './assets/css/main.css'
 
 const props = defineProps({
   src: {
