@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
 
 const wrapper = mount(AudioFilePlayer, {
-  propsData: { src: '1.mp3' },
+  props: { src: '1.mp3' },
 })
 
 it('testing AudioPlayer component props', async () => {

@@ -2,7 +2,8 @@
   "name": "audio-player-vue-test",
   "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "vue-tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^24.0.3",
