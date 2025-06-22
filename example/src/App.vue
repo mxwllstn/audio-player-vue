@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { AudioFilePlayer, AudioStreamPlayer } from '@mxwllstn/audio-player-vue/index.ts'
+import { AudioFilePlayer, AudioStreamPlayer } from '@mxwllstn/audio-player-vue'
 import { ref } from 'vue'
 import ExtendedInfo from './components/ExtendedInfo.vue'
 
