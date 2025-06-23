@@ -6,20 +6,23 @@ import { finished } from 'node:stream/promises'
 import AdmZip from 'adm-zip'
 import axios from 'axios'
 
+const packageName = 'audio-player-vue'
 const releaseDataUrl = 'https://api.github.com/repos/mxwllstn/audio-player-vue/releases/latest'
 
 async function getReleaseUrl() {
   const { data } = await axios.get(releaseDataUrl)
 
-  const release = data.assets.find((asset: { name: string | string[] }) => asset.name.includes('audio-player-vue'))
+  const release = data.assets.find((asset: { name: string | string[] }) => asset.name.includes(packageName))
   return release.browser_download_url
 }
 
 function unzip(zipPath: string) {
   const zip = new AdmZip(zipPath)
-  const destination = path.dirname(zipPath)
+  const destination = path.join(path.dirname(zipPath), packageName)
   zip.extractAllTo(destination)
+  console.log(`Output: Package extracted to ${destination}`)
 }
+
 async function downloadFile(url: string, outputDir: string, filename?: string) {
   const res = await fetch(url)
   try {

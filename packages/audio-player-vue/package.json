@@ -24,7 +24,9 @@
   },
   "main": "./dist/audio-player.cjs",
   "module": "./dist/audio-player.mjs",
-  "bin": "../cli/dist/index.mjs",
+  "bin": {
+    "@mxwllstn/audio-player-vue": "./bin/index.mjs"
+  },
   "files": [
     "dist"
   ],
