@@ -3,7 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@mxwllstn/audio-player-vue": [
-        "./package/src/index.ts"
+        "./packages/audio-player-vue/src/index.ts"
       ]
     }
   }
