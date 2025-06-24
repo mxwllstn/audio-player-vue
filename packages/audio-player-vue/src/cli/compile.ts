@@ -3,12 +3,12 @@ import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
 import AdmZip from 'adm-zip'
-import packageJson from '../../audio-player-vue/package.json' with { type: 'json' }
+import packageJson from '../../package.json' with { type: 'json' }
 
 const componentPath = '../audio-player-vue'
 
 const srcPath = path.join(componentPath, 'src')
-const outputPath = path.join('./dist')
+const outputPath = path.join('./exports')
 
 if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath)
