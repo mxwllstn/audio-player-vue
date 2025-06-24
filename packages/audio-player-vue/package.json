@@ -24,14 +24,13 @@
   },
   "main": "./dist/audio-player.cjs",
   "module": "./dist/audio-player.mjs",
-  "bin": {
-    "@mxwllstn/audio-player-vue": "./bin/index.mjs"
-  },
+  "bin": "./cli.mjs",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "pnpm run typecheck && vite build",
+    "postbuild": "cp ../cli/dist/cli.mjs ./dist",
     "prepublish": "pnpm run lint && pnpm run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -39,6 +38,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "axios": "^1.10.0",
     "dayjs": "^1.11.13"
   },

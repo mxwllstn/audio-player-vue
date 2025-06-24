@@ -3,13 +3,13 @@ import { runExport } from './export.js'
 const args = process.argv.slice(2)
 
 const job = args[0]
-if (!job || job !== 'export') {
-  console.error('Usage: npx @mxwllstn/audio-player-vue export <abs-output-directory>')
+if (!job || job !== '--export') {
+  console.error('Usage: npx @mxwllstn/audio-player-vue --export <abs-output-directory>')
   process.exit(1)
 }
 const outputDirArg = args[1]
 if (!outputDirArg) {
-  console.error('Usage: npx @mxwllstn/audio-player-vue export <abs-output-directory>')
+  console.error('Usage: npx @mxwllstn/audio-player-vue --export <abs-output-directory>')
   process.exit(1)
 }
 
