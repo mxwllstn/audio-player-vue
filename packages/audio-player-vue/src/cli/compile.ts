@@ -20,6 +20,8 @@ const output = path.join(outputPath, 'audio-player-vue.zip')
 
 // archive src directory
 zip.addLocalFolder(srcPath, 'src')
+zip.deleteFile('src/cli')
+zip.deleteFile('cli.ts')
 
 // remove unneeded data from package.json and write to archive
 const { packageManager, exports, main, module, bin, files, scripts, ...config } = packageJson
