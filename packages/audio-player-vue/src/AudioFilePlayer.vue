@@ -1,6 +1,6 @@
 <template>
   <div v-show="!hidden" ref="audioPlayerContainerRef" class="audio-player-container" :class="{ rounded }">
-    <slot name="extended-top" />
+    <slot v-if="hasExtendedTopSlot" name="extended-top" />
     <div ref="audioPlayerRef" class="audio-player">
       <div class="controls">
         <PreviousButton v-if="previousButton" class="button previous" @click="$emit('previous')" />
@@ -19,16 +19,16 @@
           @mouseleave="showVolume = false" @set-gain="setGain"
         />
       </div>
-      <slot />
+      <slot v-if="hasDefaultSlot" />
     </div>
-    <slot name="extended-bottom" />
+    <slot v-if="hasExtendedBottomSlot" name="extended-bottom" />
     <audio ref="audioPlayer" :src="props.src" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, useSlots, watch } from 'vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
 import NextButton from './components/NextButton.vue'
 import PlayBar from './components/PlayBar.vue'
@@ -101,8 +101,11 @@ const props = defineProps({
     default: false,
   },
 })
-
 const emit = defineEmits(['previous', 'next', 'shuffleToggle', 'timeUpdate', 'durationUpdate', 'seekUpdate'])
+const slots = useSlots()
+const hasDefaultSlot = !!slots.default
+const hasExtendedTopSlot = !!slots?.['extended-top']
+const hasExtendedBottomSlot = !!slots?.['extended-bottom']
 
 const audioPlayer = ref() as any
 const audioContext = ref(undefined as AudioContext | undefined)
