@@ -40,26 +40,26 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "axios": "^1.10.0",
-    "dayjs": "^1.11.13"
+    "axios": "^1.12.2",
+    "dayjs": "^1.11.18"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
-    "@types/node": "^24.0.3",
-    "@vitejs/plugin-vue": "^5.2.4",
-    "bumpp": "^10.2.0",
+    "@types/node": "^24.5.2",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "bumpp": "^10.2.3",
     "copyfiles": "^2.4.1",
-    "eslint": "^9.31.0",
+    "eslint": "^9.36.0",
     "postcss-html": "^1.8.0",
     "ress": "^5.0.2",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3",
-    "unbuild": "^3.5.0",
-    "vite": "^6.3.5",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "unbuild": "^3.6.1",
+    "vite": "^7.1.6",
     "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^4.5.4",
-    "vue": "^3.5.17",
-    "vue-tsc": "^2.2.10",
+    "vue": "^3.5.21",
+    "vue-tsc": "^3.0.7",
     "vue3-marquee": "^4.2.2"
   }
 }

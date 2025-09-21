@@ -109,8 +109,8 @@ const audios = ref([
   volumeBar?: boolean
   title?: string
 }[])
-const audioFile = ref(audios.value[0].src)
-const audioData = ref(audios.value[0].data)
+const audioFile = ref(audios.value[0]?.src)
+const audioData = ref(audios.value[0]?.data)
 const playOnMount = ref(false)
 
 const shuffleActive = ref(false)
@@ -127,8 +127,8 @@ function handleSeek(idx: number, time: number) {
 
 function changeTrack(idx: number) {
   playOnMount.value = true
-  audioFile.value = audios.value[idx].src
-  audioData.value = audios.value[idx].data
+  audioFile.value = audios.value[idx]?.src
+  audioData.value = audios.value[idx]?.data
 }
 
 function toggleAudio(idx?: number) {
