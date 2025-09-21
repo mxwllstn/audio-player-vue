@@ -44,6 +44,7 @@
     "dayjs": "^1.11.18"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
     "@types/adm-zip": "^0.5.7",
     "@types/node": "^24.5.2",
     "@vitejs/plugin-vue": "^6.0.1",
@@ -52,6 +53,7 @@
     "eslint": "^9.36.0",
     "postcss-html": "^1.8.0",
     "ress": "^5.0.2",
+    "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "unbuild": "^3.6.1",

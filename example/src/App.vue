@@ -165,7 +165,7 @@ function onAmplitudeData(data: any) {
 </script>
 
 <style lang="css" scoped>
-.content {
+/* .content {
   font-family: AuthenticSans, Arial, sans-serif;
   color: red;
   padding: 1rem 0 2rem;
@@ -215,5 +215,5 @@ function onAmplitudeData(data: any) {
       fill: green;
     }
   }
-}
+} */
 </style>

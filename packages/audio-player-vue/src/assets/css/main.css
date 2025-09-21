@@ -1,3 +1,7 @@
+@import 'tailwindcss';
+@source "../..";
+@source "../../components";
+
 @font-face {
   font-family: SpaceGrotesk;
   src: url('../fonts/space-grotesk/SpaceGrotesk-Regular.woff2') format('woff2');

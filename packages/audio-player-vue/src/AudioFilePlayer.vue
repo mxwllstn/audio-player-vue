@@ -309,10 +309,6 @@ function toggleShuffle() {
 defineExpose({ seek, play, pause, toggle: toggleAudio, status, isPlaying })
 </script>
 
-<style>
-@import 'ress';
-</style>
-
 <style lang="css" scoped>
 .audio-player-container {
   display: flex;

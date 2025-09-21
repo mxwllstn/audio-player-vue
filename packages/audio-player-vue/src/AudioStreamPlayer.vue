@@ -302,10 +302,6 @@ function setGain(vol: number) {
 defineExpose({ play, pause, toggle: toggleAudio, status })
 </script>
 
-<style>
-@import 'ress';
-</style>
-
 <style lang="css" scoped>
 .audio-player-container {
   display: flex;

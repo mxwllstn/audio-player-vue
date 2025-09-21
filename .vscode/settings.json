@@ -20,12 +20,9 @@
     "yaml",
     "toml"
   ],
-  "stylelint.validate": [
-    "css",
-    "less",
-    "vue",
-    "scss"
-  ],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   // Avoid polluting search results with lockfile content
   "search.exclude": {
     "pnpm-lock.yaml": true
