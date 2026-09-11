@@ -19,6 +19,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  fullWidth: {
+    type: Boolean,
+    default: false,
+  },
   audioPlayerContainerWidth: {
     type: Number,
     default: 0,
@@ -46,54 +50,81 @@ const markerPosition = computed((): number => {
   return position > 100 ? 100 : position < 0 ? 0 : position
 })
 
-const audioPlayerContainerOffset = computed(() => window.innerWidth - props.audioPlayerContainerWidth)
+const audioPlayerOffset = computed(() => {
+  // POPUP or non-full-width layout: no horizontal offset needed
+  if (!props.fullWidth) {
+    return 1
+  }
 
-const audioPlayerOffset = computed(() => ((props.audioPlayerContainerWidth - props.audioPlayerWidth + audioPlayerContainerOffset.value - 32) / 2) + 2)
+  // FULL WIDTH PLAYER LAYOUT
+  const containerOffset = window.innerWidth - props.audioPlayerContainerWidth
+
+  return (
+    (props.audioPlayerContainerWidth - props.audioPlayerWidth + containerOffset - 32) / 2
+  ) + 2
+})
+
+// Helper to get mouse/touch X
+function getClientX(e: MouseEvent | TouchEvent): number {
+  if ('touches' in e) {
+    return e.touches[0]?.clientX ?? 0
+  }
+  return e.clientX
+}
+
+// Clamp 0–1
+const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1)
 
 function initDrag(event: any): void {
-  if (playbar.value) {
-    window.addEventListener('mousemove', drag)
-    window.addEventListener('mouseup', handleMouseup)
-    window.addEventListener('touchmove', drag)
-    window.addEventListener('touchend', handleMouseup)
-
-    const windowOffset = -audioPlayerOffset.value
-
-    console.log(props.audioPlayerContainerWidth, props.audioPlayerWidth, props.audioPlayerContainerWidth - props.audioPlayerWidth, audioPlayerContainerOffset.value)
-
-    dragPosition.value = ((event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-    emit('setSeekTime', dragPosition.value / 100 >= 0
-      ? dragPosition.value / 100 <= 1
-        ? dragPosition.value / 100
-        : 1
-      : 0)
-    dragInit.value = true
+  if (!playbar.value) {
+    return
   }
+
+  window.addEventListener('mousemove', drag)
+  window.addEventListener('mouseup', handleMouseup)
+  window.addEventListener('touchmove', drag)
+  window.addEventListener('touchend', handleMouseup)
+
+  dragInit.value = true
+  drag(event) // perform first position update immediately
 }
+
 function drag(event: any): void {
-  if (playbar.value && dragInit.value) {
-    const windowOffset = -audioPlayerOffset.value
-    dragPosition.value = ((event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth) * 100
-    emit('setSeekTime', dragPosition.value / 100 >= 0
-      ? dragPosition.value / 100 <= 1
-        ? dragPosition.value / 100
-        : 1
-      : 0)
+  if (!playbar.value || !dragInit.value) {
+    return
   }
-}
-function handleMouseup(event: any): void {
-  if (playbar.value && dragInit.value) {
-    const windowOffset = -audioPlayerOffset.value
-    dragPosition.value = null
-    dragInit.value = false
-    const seekPosition = (event.pageX - playbar.value.offsetLeft + windowOffset) / playbar.value.offsetWidth
-    emit('seek', seekPosition)
 
-    window.removeEventListener('mousemove', drag)
-    window.removeEventListener('mouseup', handleMouseup)
-    window.removeEventListener('touchmove', drag)
-    window.removeEventListener('touchend', handleMouseup)
+  const rect = playbar.value.getBoundingClientRect()
+  const clientX = getClientX(event)
+
+  const windowOffset = -audioPlayerOffset.value
+
+  const pos = (clientX - rect.left + windowOffset) / rect.width
+  dragPosition.value = pos * 100
+
+  emit('setSeekTime', clamp01(pos))
+}
+
+function handleMouseup(event: any): void {
+  if (!playbar.value || !dragInit.value) {
+    return
   }
+
+  const rect = playbar.value.getBoundingClientRect()
+  const clientX = getClientX(event)
+  const windowOffset = -audioPlayerOffset.value
+
+  const seekPosition = (clientX - rect.left + windowOffset) / rect.width
+
+  dragPosition.value = null
+  dragInit.value = false
+
+  emit('seek', clamp01(seekPosition))
+
+  window.removeEventListener('mousemove', drag)
+  window.removeEventListener('mouseup', handleMouseup)
+  window.removeEventListener('touchmove', drag)
+  window.removeEventListener('touchend', handleMouseup)
 }
 </script>
 
@@ -102,13 +133,6 @@ function handleMouseup(event: any): void {
   width: 100%;
   padding: 1rem 0;
   cursor: pointer;
-
-  @media (max-width: 768px) {
-    padding: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
 
   .playbar {
     background: #808080;
@@ -122,14 +146,6 @@ function handleMouseup(event: any): void {
       position: absolute;
       left: 0;
       top: 0;
-
-      @media (max-width: 768px) {
-        border-radius: 0.25rem 0 0;
-
-        &.complete {
-          border-radius: 0.25rem 0.25rem 0 0;
-        }
-      }
     }
 
     .marker {
@@ -141,10 +157,6 @@ function handleMouseup(event: any): void {
       left: 0;
       width: 0.25rem;
       transition: opacity 100ms;
-
-      @media (max-width: 768px) {
-        display: none;
-      }
     }
   }
 
@@ -152,6 +164,30 @@ function handleMouseup(event: any): void {
   &:active {
     .marker {
       opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .playbar-container {
+    padding: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    .playbar {
+      border-radius: 0.25rem 0.25rem 0 0;
+
+      .marker {
+        display: none;
+      }
+      .elapsed {
+        border-radius: 0.25rem 0 0;
+
+        &.complete {
+          border-radius: 0.25rem 0.25rem 0 0;
+        }
+      }
     }
   }
 }
