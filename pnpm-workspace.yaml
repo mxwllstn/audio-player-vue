@@ -3,5 +3,5 @@ packages:
   - example
   - test
 
-ignoredBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: true
