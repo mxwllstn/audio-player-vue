@@ -38,7 +38,8 @@ async function downloadFile(url: string, outputDir: string, filename?: string) {
       await finished(Readable.fromWeb(res.body as any).pipe(fileStream))
       return destination
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.log('Error ', err)
   }
 }
