@@ -3,28 +3,33 @@ Vue component for embedding audio files and streams
 
 ## Usage
 
-#### Component
 ```vue
-  /* audio file player */
-  <AudioPlayer src="https://test.com/file.mp3" />
+import { AudioFilePlayer, AudioStreamPlayer } from '@mxwllstn/audio-player-vue'
 
-  /* audio stream player */
-  <AudioPlayer src="https://test.com/stream" stream />
+/* audio file player */
+<AudioFilePlayer src="https://test.com/file.mp3" />
+
+/* audio stream player */
+<AudioStreamPlayer src="https://test.com/stream" />
 ```
 
-## Development Setup (Vue + Vite)
+## Source Export
+
+Copy the raw source into your project (shadcn-style):
+
+```bash
+npx @mxwllstn/audio-player-vue --export ./src/components/audio-player
+```
+
+## Development Setup
 
 ```bash
 # install dependencies
-$ pnpm i
+pnpm i
 
 # serve with hot reload
-$ pnpm run dev
+pnpm run dev
 
 # build for production
-$ pnpm run build
-
-# preview production build
-$ pnpm run preview
-
+pnpm run build
 ```
